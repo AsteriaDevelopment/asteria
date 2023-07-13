@@ -1,0 +1,99 @@
+plugins {
+    id 'fabric-loom' version '1.2-SNAPSHOT'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "io.freefair.lombok" version "8.0.1"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+loom {
+    accessWidenerPath = file("src/main/resources/phosphor.accesswidener")
+}
+
+repositories {
+    maven { url 'https://api.modrinth.com/maven' }
+}
+
+configurations {
+    shadowImpl
+
+    implementation.extendsFrom shadowImpl
+}
+
+dependencies {
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    modRuntimeOnly "maven.modrinth:modmenu:4.1.2"
+    modRuntimeOnly "maven.modrinth:lazydfu:0.1.3"
+
+    shadowImpl "io.github.spair:imgui-java-binding:${project.imguiVersion}"
+    shadowImpl "io.github.spair:imgui-java-lwjgl3:${project.imguiVersion}"
+
+    shadowImpl "io.github.spair:imgui-java-natives-windows-ft:${project.imguiVersion}"
+    shadowImpl "io.github.spair:imgui-java-natives-linux-ft:${project.imguiVersion}"
+    shadowImpl "io.github.spair:imgui-java-natives-macos-ft:${project.imguiVersion}"
+}
+
+processResources {
+    inputs.property "version", project.version
+    filteringCharset "UTF-8"
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+def targetJavaVersion = 17
+tasks.withType(JavaCompile).configureEach {
+    // ensure that the encoding is set to UTF-8, no matter what the system default is
+    // this fixes some edge cases with special characters not displaying correctly
+    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+    // If Javadoc is generated, this must be specified in that task too.
+    it.options.encoding = "UTF-8"
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        it.options.release = targetJavaVersion
+    }
+}
+
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+    archivesBaseName = project.archives_base_name
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this line, sources will not be generated.
+    withSourcesJar()
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}"}
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadowImpl]
+    archiveClassifier = "shadow"
+
+    dependencies {
+        exclude(dependency('org.lwjgl:lwjgl'))
+        exclude(dependency('org.lwjgl:lwjgl-glfw'))
+        exclude(dependency('org.lwjgl:lwjgl-opengl'))
+    }
+}
+
+remapJar {
+    dependsOn shadowJar
+    inputFile.set(shadowJar.archiveFile)
+
+    archiveClassifier = null
+}

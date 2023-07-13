@@ -1,0 +1,49 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.caffeinemc.phosphor.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ClientPlayerInteractionManagerAccessor",
+    "EntityVelocityUpdateS2CPacketAccessor",
+    "MinecraftClientAccessor"
+  ],
+  "client": [
+    "ClientConnectionMixin",
+    "ClientPlayerEntityMixin",
+    "ClientPlayerInteractionManagerMixin",
+    "ClientWorldMixin",
+    "EndCrystalEntityMixin",
+    "EntityMixin",
+    "EntityRenderDispatcherMixin",
+    "EntityRendererMixin",
+    "InGameHudMixin",
+    "KeyboardMixin",
+    "MinecraftClientMixin",
+    "MouseMixin",
+    "RenderSystemMixin",
+    "WindowMixin",
+    "block.MixinAbstractBlockState",
+    "block.MixinShapeCache",
+    "chunk.MixinChunkNibbleArray",
+    "chunk.MixinChunkStatus",
+    "chunk.MixinProtoChunk",
+    "chunk.MixinWorldChunk",
+    "chunk.light.MixinBlockLightStorage",
+    "chunk.light.MixinBlockLightStorageData",
+    "chunk.light.MixinChunkBlockLightProvider",
+    "chunk.light.MixinChunkLightProvider",
+    "chunk.light.MixinChunkSkyLightProvider",
+    "chunk.light.MixinChunkToNibbleArrayMap",
+    "chunk.light.MixinLevelPropagator",
+    "chunk.light.MixinLightingProvider",
+    "chunk.light.MixinLightStorage",
+    "chunk.light.MixinServerLightingProvider",
+    "chunk.light.MixinSkyLightStorage",
+    "chunk.light.MixinSkyLightStorageData",
+    "world.ThreadedAnvilChunkStorageAccess"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
