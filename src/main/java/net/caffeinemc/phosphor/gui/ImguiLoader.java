@@ -80,7 +80,7 @@ public class ImguiLoader {
             JsonReader jsonReader = new JsonReader(new FileReader(jsonFile));
             JsonObject parsedJson = gson.fromJson(jsonReader, JsonObject.class);
 
-            if (parsedJson == null || parsedJson.isJsonNull()) {
+            if (parsedJson == null || !parsedJson.isJsonObject()) {
                 System.out.println(String.format("Empty file %s!", jsonName) + "\n" +
                         "Create a ticket in our discord server to get license key and put it in.");
                 System.exit(0);
@@ -88,7 +88,7 @@ public class ImguiLoader {
 
             JsonElement licenseKeyJson = parsedJson.get("licenseKey");
 
-            if (licenseKeyJson == null || licenseKeyJson.isJsonNull()) {
+            if (licenseKeyJson == null || !licenseKeyJson.isJsonPrimitive()) {
                 System.out.println(String.format("No license key in %s!", jsonName) + "\n" +
                         "Create a ticket in our discord server to get one and put it in.");
                 System.exit(0);
