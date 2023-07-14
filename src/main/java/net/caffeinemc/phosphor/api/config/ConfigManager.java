@@ -38,7 +38,7 @@ public class ConfigManager {
                     continue;
                 JsonObject moduleConfig = moduleJson.getAsJsonObject();
 
-                JsonElement enabledJson = moduleConfig.get("enabledJson");
+                JsonElement enabledJson = moduleConfig.get("enabled");
                 if (enabledJson == null || !enabledJson.isJsonPrimitive())
                     continue;
 
