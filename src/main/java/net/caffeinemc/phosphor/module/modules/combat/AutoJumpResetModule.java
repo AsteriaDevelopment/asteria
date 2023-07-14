@@ -40,6 +40,12 @@ public class AutoJumpResetModule extends Module {
         if (mc.player.isInsideWaterOrBubbleColumn()) {
             return;
         }
+        if (mc.player.isInsideWall()) {
+            return;
+        }
+        if (mc.player.isTouchingWater()) {
+            return;
+        }
         if (mc.player.hurtTime == mc.player.maxHurtTime - 1) {
             mc.player.jump();
         }
