@@ -64,21 +64,9 @@ public class SlientAimModule extends Module {
 
                 if (lookAtNearest.isEnabled()) {
                     double halfHitboxSize = (targetPlayer.getBoundingBox().getXLength() / 2) - 0.01d;
-                    double offsetX;
 
-                    if (mc.player.getX() - targetPlayer.getX() > 0) {
-                        offsetX = halfHitboxSize;
-                    } else {
-                        offsetX = -halfHitboxSize;
-                    }
-
-                    double offsetZ;
-
-                    if (mc.player.getZ() - targetPlayer.getZ() > 0) {
-                        offsetZ = halfHitboxSize;
-                    } else {
-                        offsetZ = -halfHitboxSize;
-                    }
+                    double offsetX = (mc.player.getX() - targetPlayer.getX()) > 0 ? halfHitboxSize : -halfHitboxSize;
+                    double offsetZ = (mc.player.getZ() - targetPlayer.getZ()) > 0 ? halfHitboxSize : -halfHitboxSize;
 
                     targetPlayerPos = targetPlayerPos.add(offsetX, 0, offsetZ);
                 }
@@ -125,6 +113,7 @@ public class SlientAimModule extends Module {
                 mc.player.setYaw(yaw);
                 mc.player.setPitch(pitch);
 
+                // TODO: can someone check properly if rotation is finished pls
                 if (MathHelper.wrapDegrees(beforeRot.yaw()) == MathHelper.wrapDegrees(yaw) &&
                         MathHelper.wrapDegrees(beforeRot.pitch()) == MathHelper.wrapDegrees(pitch)) {
                     rotateStatus = RotateStatus.IDLE;
