@@ -26,7 +26,7 @@ public class FastPlaceModule extends Module {
     private int placeClock = 0;
 
     public void reset() {
-        placeClock = delay.getIValue();
+        placeClock = 0;
     }
 
     @Override
@@ -40,16 +40,13 @@ public class FastPlaceModule extends Module {
             if (mc.currentScreen instanceof HandledScreen && !this.doPlaceInGui.isEnabled())
                 return;
 
-            ItemStack mainHandStack = mc.player.getMainHandStack();
-
-            if (placeClock > 0) {
-                placeClock--;
+            if (placeClock <= delay.getIValue()) {
+                placeClock++;
                 return;
             }
 
-            int randomNum = MathUtils.getRandomInt(1, 100);
-
-            if (randomNum <= useChance.getIValue()) {
+            if (MathUtils.getRandomInt(1, 100) <= useChance.getIValue()) {
+                ItemStack mainHandStack = mc.player.getMainHandStack();
                 Item mainHandItem = mainHandStack.getItem();
 
                 if (mainHandItem instanceof BlockItem) {
@@ -71,7 +68,7 @@ public class FastPlaceModule extends Module {
 
                 ((MinecraftClientAccessor) mc).callDoItemUse();
 
-                placeClock = delay.getIValue();
+                reset();
             }
         }
     }
