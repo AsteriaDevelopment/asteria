@@ -60,7 +60,7 @@ public final class Phosphor {
 		EVENTBUS.subscribe(crystalUtils);
 		WorldRenderEvents.END.register((context) -> { EVENTBUS.post(WorldRenderEvent.get(context)); });
 
-		configManager.loadConfig();
+		this.configManager.loadConfig();
 		this.moduleManager.getModule(RadiumSettingsModule.class).enable();
 	}
 }
