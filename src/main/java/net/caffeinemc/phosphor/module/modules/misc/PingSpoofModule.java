@@ -6,38 +6,29 @@ import net.caffeinemc.phosphor.api.event.orbit.EventPriority;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.network.PacketCallbacks;
 
-public class FakePingModule extends Module {
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+public class PingSpoofModule extends Module {
     public final NumberSetting ping = new NumberSetting("Ping", this, 200, 0, 200, 1);
 
-    public FakePingModule() {
-        super("FakePing", "Fakes player's ping", Category.MISCELLANEOUS);
+    public PingSpoofModule() {
+        super("PingSpoof", "Spoofing player's ping", Category.MISCELLANEOUS);
     }
+
+    private final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1000);
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void onPacketSend(PacketEvent.Send event) {
-        if (mc.player == null)
-            return;
-
-        int origPing;
         PlayerListEntry playerListEntry = mc.getNetworkHandler().getPlayerListEntry(mc.player.getUuid());
 
-        if (playerListEntry != null)
-            origPing = playerListEntry.getLatency();
-        else
-            origPing = 0;
-
+        int origPing = playerListEntry != null ? playerListEntry.getLatency() : 0;
         if (origPing >= ping.getIValue())
             return;
 
-        new Thread(() -> {
-            try {
-                Thread.sleep(ping.getIValue() - origPing);
-                mc.getNetworkHandler().getConnection().send(event.packet, null);
-            } catch (InterruptedException ignored) {}
-        }).start();
-
+        scheduler.schedule(() -> mc.getNetworkHandler().getConnection().send(event.packet), ping.getIValue() - origPing, TimeUnit.MILLISECONDS);
         event.cancel();
     }
 }

@@ -3,7 +3,7 @@ package net.caffeinemc.phosphor.module;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.caffeinemc.phosphor.module.modules.misc.FakePingModule;
+import net.caffeinemc.phosphor.module.modules.misc.PingSpoofModule;
 import net.caffeinemc.phosphor.module.modules.misc.FakePlayerModule;
 import net.caffeinemc.phosphor.module.modules.render.ShieldStatusModule;
 import org.jetbrains.annotations.Nullable;
@@ -107,7 +107,7 @@ public class ModuleManager {
 		addModule(new ArrayListModule());
 
 		// MISC
-		addModule(new FakePingModule());
+		addModule(new PingSpoofModule());
 		addModule(new FakePlayerModule());
 	}
 
