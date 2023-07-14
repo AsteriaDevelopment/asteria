@@ -17,7 +17,8 @@ public class RadiumMenu implements Renderable {
     public static RadiumMenu getInstance() {
         if (instance == null) {
             instance = new RadiumMenu();
-
+        }
+        if (instance.tabs.isEmpty()) {
             for (Module.Category category : Module.Category.values()) {
                 instance.tabs.add(new CategoryTab(category));
             }
