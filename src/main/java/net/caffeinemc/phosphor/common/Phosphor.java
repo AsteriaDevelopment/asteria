@@ -40,16 +40,6 @@ public final class Phosphor {
 	public ConfigManager configManager;
 	public CrystalUtils crystalUtils;
 
-	public final Logger LOGGER = LogManager.getLogger("client-base");
-
-	public final Object syncronize = new Object();
-
-	public void printLog(String text) {
-		synchronized (syncronize) {
-			this.LOGGER.info(text);
-		}
-	}
-
 	public void init() {
 		this.moduleManager = new ModuleManager();
 		this.configManager = new ConfigManager();
