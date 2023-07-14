@@ -20,10 +20,13 @@ public class EntityRenderDispatcherMixin {
             )
     )
     private static Box onRenderHitboxEditBox(Box box) {
-        HitboxesModule hitboxes = Phosphor.moduleManager().getModule(HitboxesModule.class);
-        if (hitboxes.isEnabled() && RadiumMenu.isClientEnabled()) {
-            return box.expand(hitboxes.expand.getValue());
+        if (RadiumMenu.isClientEnabled()) {
+            HitboxesModule hitboxes = Phosphor.moduleManager().getModule(HitboxesModule.class);
+            if (hitboxes.isEnabled()) {
+                return box.expand(hitboxes.getRenderHitboxSize());
+            }
         }
+
         return box;
     }
 }

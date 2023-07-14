@@ -22,7 +22,7 @@ public class EntityMixin {
     private void onGetTargetingMargin(CallbackInfoReturnable<Float> cir) {
         HitboxesModule hitboxes = Phosphor.moduleManager().getModule(HitboxesModule.class);
         if (RadiumMenu.isClientEnabled() && hitboxes.isEnabled()) {
-            cir.setReturnValue(hitboxes.expand.getFValue());
+            cir.setReturnValue(hitboxes.getHitboxSize((Entity) (Object) this));
         }
     }
 }
