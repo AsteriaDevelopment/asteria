@@ -4,6 +4,7 @@ import net.caffeinemc.phosphor.api.event.events.WorldTickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.module.Module;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class AutoJumpResetModule extends Module {
     public AutoJumpResetModule() {
@@ -31,6 +32,12 @@ public class AutoJumpResetModule extends Module {
             return;
         }
         if (mc.player.hurtTime == 0) {
+            return;
+        }
+        if (!(mc.player.getAttacker() instanceof PlayerEntity)) {
+            return;
+        }
+        if (mc.player.isInsideWaterOrBubbleColumn()) {
             return;
         }
         if (mc.player.hurtTime == mc.player.maxHurtTime - 1) {
