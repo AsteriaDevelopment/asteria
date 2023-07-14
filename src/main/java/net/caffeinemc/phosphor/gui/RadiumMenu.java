@@ -2,20 +2,25 @@ package net.caffeinemc.phosphor.gui;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiWindowFlags;
-import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RadiumMenu implements Renderable {
     private static RadiumMenu instance;
 
     private static final AtomicBoolean clientEnabled = new AtomicBoolean(true);
+    private final List<CategoryTab> tabs = new ArrayList<>();
 
-    private static RadiumMenu getInstance() {
+    public static RadiumMenu getInstance() {
         if (instance == null) {
             instance = new RadiumMenu();
+
+            for (Module.Category category : Module.Category.values()) {
+                instance.tabs.add(new CategoryTab(category));
+            }
         }
         return instance;
     }
@@ -39,64 +44,14 @@ public class RadiumMenu implements Renderable {
 
     @Override
     public String getName() {
-        return Phosphor.name;
+        return "Radium";
     }
 
     @Override
     public void render() {
-        int imGuiWindowFlags = 0;
-        imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
-        ImGui.begin(Phosphor.name, imGuiWindowFlags);
-
-        if (ImGui.beginTabBar("TabBar")) {
-            for (Module.Category category : Module.Category.values()) {
-                if (ImGui.beginTabItem(category.name())) {
-                    for (Module module : Phosphor.moduleManager().getModulesByCategory(category)) {
-                        ImGui.pushID(module.getName());
-
-                        if (module.isEnabled()) {
-                            ImGui.pushStyleColor(ImGuiCol.Button, 0.90f, 0.27f, 0.33f, 0.75f);
-                            ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.90f, 0.27f, 0.33f, 0.90f);
-                        } else {
-                            ImGui.pushStyleColor(ImGuiCol.Button, 0.90f, 0.27f, 0.33f, 0.50f);
-                            ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.90f, 0.27f, 0.33f, 0.65f);
-                        }
-
-                        boolean isToggled = ImGui.button(module.getName());
-
-                        ImGui.popStyleColor(2);
-
-                        if (isToggled) {
-                            module.toggle();
-                        }
-
-                        if (ImGui.isItemHovered()) {
-                            ImGui.setTooltip(module.getDescription());
-
-                            if (ImGui.isMouseClicked(1)) {
-                                module.toggleShowOptions();
-                            }
-                        }
-
-                        if (module.showOptions()) {
-                            ImGui.indent();
-
-                            module.renderSettings();
-
-                            ImGui.unindent();
-                        }
-
-                        ImGui.popID();
-                    }
-
-                    ImGui.endTabItem();
-                }
-            }
-
-            ImGui.endTabBar();
+        for (CategoryTab categoryTab : tabs) {
+            categoryTab.render();
         }
-
-        ImGui.end();
     }
 
     @Override
@@ -168,6 +123,7 @@ public class RadiumMenu implements Renderable {
                 ImGui.getStyle().setPopupRounding(4);
                 ImGui.getStyle().setScrollbarRounding(4);
                 ImGui.getStyle().setTabRounding(4);
+                ImGui.getStyle().setWindowTitleAlign(0.5f, 0.5f);
 
                 if (ImguiLoader.getCustomFont() != null) {
                     ImGui.pushFont(ImguiLoader.getCustomFont());
