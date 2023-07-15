@@ -25,7 +25,6 @@ public class RotationManager {
     public void setRotation(RotationUtils.Rotation rotation) {
         currentRotation = rotation;
         if (currentRotation != null) {
-            currentRotation.sendPacket();
             setServerRotation(currentRotation);
         }
     }
