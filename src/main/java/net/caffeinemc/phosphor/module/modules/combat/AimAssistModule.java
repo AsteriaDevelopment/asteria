@@ -9,7 +9,7 @@ import net.minecraft.util.math.Vec3d;
 import net.caffeinemc.phosphor.api.event.events.MouseUpdateEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.util.PlayerUtils;
-import net.caffeinemc.phosphor.api.util.RotationUtils;
+import net.caffeinemc.phosphor.api.rotation.RotationUtils;
 import net.caffeinemc.phosphor.module.Module;
 
 public class AimAssistModule extends Module {

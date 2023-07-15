@@ -1,6 +1,7 @@
 package net.caffeinemc.phosphor.common;
 
 import net.caffeinemc.phosphor.api.config.ConfigManager;
+import net.caffeinemc.phosphor.api.rotation.RotationManager;
 import net.caffeinemc.phosphor.api.util.CrystalUtils;
 import net.caffeinemc.phosphor.module.ModuleManager;
 import net.caffeinemc.phosphor.module.modules.client.RadiumSettingsModule;
@@ -32,6 +33,10 @@ public final class Phosphor {
 		return INSTANCE.configManager;
 	}
 
+	public static RotationManager rotationManager() {
+		return INSTANCE.rotationManager;
+	}
+
 	public Phosphor() {
 		INSTANCE = this;
 	}
@@ -39,18 +44,20 @@ public final class Phosphor {
 	public ModuleManager moduleManager;
 	public ConfigManager configManager;
 	public CrystalUtils crystalUtils;
+	public RotationManager rotationManager;
 
 	public void init() {
 		this.moduleManager = new ModuleManager();
 		this.configManager = new ConfigManager();
 		this.crystalUtils = new CrystalUtils();
+		this.rotationManager = new RotationManager();
 
 		EVENTBUS.registerLambdaFactory(packagePrefix, (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
 		EVENTBUS.subscribe(moduleManager);
 		EVENTBUS.subscribe(crystalUtils);
+		EVENTBUS.subscribe(rotationManager);
 		WorldRenderEvents.END.register((context) -> { EVENTBUS.post(WorldRenderEvent.get(context)); });
 
 		this.configManager.loadConfig();
-		this.moduleManager.getModule(RadiumSettingsModule.class).enable();
 	}
 }

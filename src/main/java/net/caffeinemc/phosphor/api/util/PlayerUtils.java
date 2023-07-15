@@ -4,10 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.modules.combat.ReachModule;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
@@ -56,20 +55,22 @@ public class PlayerUtils {
         return minPlayer;
     }
 
-    public static Entity findNearestEntity(PlayerEntity toPlayer, float range, boolean seeOnly) {
+    public static LivingEntity findNearestEntity(PlayerEntity toPlayer, float range, boolean seeOnly) {
         float minRange = Float.MAX_VALUE;
-        Entity minEntity = null;
+        LivingEntity minEntity = null;
 
         for (Entity entity : mc.world.getEntities()) {
-            if (entity instanceof PlayerEntity player && isFriend(player))
-                continue;
+            if (entity instanceof LivingEntity livingEntity) {
+                if (entity instanceof PlayerEntity player && isFriend(player))
+                    continue;
 
-            float distance = entity.distanceTo(toPlayer);
+                float distance = entity.distanceTo(toPlayer);
 
-            if (entity != toPlayer && distance <= range && toPlayer.canSee(entity) == seeOnly) {
-                if (distance < minRange) {
-                    minRange = distance;
-                    minEntity = entity;
+                if (entity != toPlayer && distance <= range && toPlayer.canSee(entity) == seeOnly) {
+                    if (distance < minRange) {
+                        minRange = distance;
+                        minEntity = livingEntity;
+                    }
                 }
             }
         }
@@ -117,5 +118,10 @@ public class PlayerUtils {
             return reach.reach.getValue();
 
         return mc.interactionManager.getCurrentGameMode().isCreative() ? 4D : 3D;
+    }
+
+    public static void attackEntity(Entity entity) {
+        mc.interactionManager.attackEntity(mc.player, entity);
+        mc.player.swingHand(Hand.MAIN_HAND);
     }
 }

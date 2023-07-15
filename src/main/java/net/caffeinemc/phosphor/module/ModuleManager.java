@@ -90,7 +90,7 @@ public class ModuleManager {
 		addModule(new BlinkModule());
 		addModule(new HitboxesModule());
 		addModule(new ReachModule());
-		addModule(new SlientAimModule());
+		addModule(new SilentAimModule());
 		addModule(new TriggerBotModule());
 
 		// RENDER
