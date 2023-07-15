@@ -133,14 +133,14 @@ public class ArrayListModule extends Module implements Renderable {
                 ImGui.getStyle().setScrollbarRounding(4);
                 ImGui.getStyle().setTabRounding(4);
 
-                if (ImguiLoader.getCustomFont() != null) {
-                    ImGui.pushFont(ImguiLoader.getCustomFont());
+                if (ImguiLoader.getBigCustomFont() != null) {
+                    ImGui.pushFont(ImguiLoader.getBigCustomFont());
                 }
             }
 
             @Override
             public void postRender() {
-                if (ImguiLoader.getCustomFont() != null) {
+                if (ImguiLoader.getBigCustomFont() != null) {
                     ImGui.popFont();
                 }
             }

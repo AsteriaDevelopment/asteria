@@ -38,6 +38,8 @@ public class ImguiLoader {
 
     @Getter
     private static ImFont customFont;
+    @Getter
+    private static ImFont bigCustomFont;
 
     public static void onGlfwInit(long handle) {
         initializeImGui();
@@ -154,6 +156,7 @@ public class ImguiLoader {
         try (InputStream is = ImguiLoader.class.getClassLoader().getResourceAsStream("assets/JetBrainsMono-Regular.ttf")) {
             if (is != null) {
                 customFont = fontAtlas.addFontFromMemoryTTF(is.readAllBytes(), 18);
+                bigCustomFont = fontAtlas.addFontFromMemoryTTF(is.readAllBytes(), 22);
             }
         } catch (IOException ignored) {
             // do nothing, we already have font :3
