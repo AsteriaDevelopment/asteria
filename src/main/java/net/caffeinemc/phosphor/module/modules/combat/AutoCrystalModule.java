@@ -4,6 +4,7 @@ import net.caffeinemc.phosphor.api.event.events.TickEvent;
 import net.caffeinemc.phosphor.api.event.events.WorldTickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.util.CrystalUtils;
+import net.caffeinemc.phosphor.api.util.KeyUtils;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.ModeSetting;
@@ -21,12 +22,12 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import org.lwjgl.glfw.GLFW;
 
 import static net.caffeinemc.phosphor.api.util.CrystalUtils.canPlaceCrystalServer;
 import static net.caffeinemc.phosphor.api.util.CrystalUtils.isCrystalBroken;
 
 public class AutoCrystalModule extends Module {
-    public final ModeSetting mode = new ModeSetting("Mode", this, "On Tick", "On Render", "On Tick");
     public final BooleanSetting onRmb = new BooleanSetting("On RMB", this, true);
     public final NumberSetting placeDelay = new NumberSetting("Place Delay", this, 0, 0, 5, 1);
     public final NumberSetting breakDelay = new NumberSetting("Break Delay", this, 0, 0, 5, 1);
@@ -100,32 +101,16 @@ public class AutoCrystalModule extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Pre event) {
-        if (mode.is("On Tick")) {
-            if (!mc.options.useKey.isPressed() && onRmb.isEnabled())
-                return;
+        if (!KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_RIGHT) && onRmb.isEnabled())
+            return;
 
-            if (nullCheck()) {
-                ++tickTimer;
-
-                placeCrystal();
-                breakCrystal();
-            } else {
-                tickTimer = 0;
-            }
-        }
-    }
-
-    @EventHandler
-    public void onWorldRender(WorldTickEvent event) {
-        if (mode.is("On Render")) {
-            if (!mc.options.useKey.isPressed() && onRmb.isEnabled())
-                return;
-
-            if (!nullCheck())
-                return;
+        if (nullCheck()) {
+            ++tickTimer;
 
             placeCrystal();
             breakCrystal();
+        } else {
+            tickTimer = 0;
         }
     }
 }
