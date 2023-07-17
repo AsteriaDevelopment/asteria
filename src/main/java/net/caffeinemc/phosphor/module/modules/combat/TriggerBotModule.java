@@ -39,7 +39,7 @@ public class TriggerBotModule extends Module {
     }
 
     private double currentRange;
-    private Entity focusedTarget;
+    private LivingEntity focusedTarget;
 
     @Override
     public void onEnable() {
@@ -54,6 +54,7 @@ public class TriggerBotModule extends Module {
         if (focusMode.isEnabled()) {
             if (focusedTarget != null) {
                 if (!focusedTarget.isAlive() ||
+                        focusedTarget.isDead() ||
                         focusedTarget.isRemoved() ||
                         focusedTarget.distanceTo(mc.player) > focusRange.getValue())
                     focusedTarget = null;
@@ -77,21 +78,24 @@ public class TriggerBotModule extends Module {
         if (weaponOnly.isEnabled() && !isHoldingWeapon())
             return;
 
-        if (mc.player.isBlocking() || mc.player.isUsingItem() || !(target instanceof LivingEntity) || ((LivingEntity) target).getHealth() <= 0.0f)
+        if (mc.player.isBlocking() || mc.player.isUsingItem() || !(target instanceof LivingEntity livingTarget) || ((LivingEntity) target).getHealth() <= 0.0f)
             return;
 
         if ((mc.player.isOnGround() && mc.player.getAttackCooldownProgress(0.5f) < 0.92f) || (!mc.player.isOnGround() && mc.player.getAttackCooldownProgress(0.5f) < 0.95f))
             return;
 
+        if (livingTarget.isDead() || !livingTarget.isAlive() || livingTarget.isInvisible())
+            return;
+
         if (currentRange == 0)
             currentRange = MathUtils.getRandomDouble(Math.min(minRange.getValue(), maxRange.getValue()), Math.max(minRange.getValue(), maxRange.getValue()));
 
-        if (target.distanceTo(mc.player) > currentRange)
+        if (livingTarget.distanceTo(mc.player) > currentRange)
             return;
 
         if (focusMode.isEnabled()) {
-            if (focusedTarget == null) focusedTarget = target;
-            if (focusedTarget != target) return;
+            if (focusedTarget == null) focusedTarget = livingTarget;
+            if (focusedTarget != livingTarget) return;
         }
 
         mc.interactionManager.attackEntity(mc.player, target);
