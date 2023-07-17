@@ -41,14 +41,14 @@ public class ArrayListModule extends Module implements Renderable {
 
     @Override
     public void render() {
-        ImGui.setWindowPos(0, 0);
-
         int imGuiWindowFlags = 0;
         imGuiWindowFlags |= ImGuiWindowFlags.NoBackground;
         imGuiWindowFlags |= ImGuiWindowFlags.NoTitleBar;
         imGuiWindowFlags |= ImGuiWindowFlags.NoMove;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
         imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
         ImGui.begin("ArrayList", imGuiWindowFlags);
+        ImGui.setWindowPos(0, 0);
 
         for (Module module : modules) {
             if (module.isEnabled())

@@ -35,15 +35,14 @@ public class KeybindSetting extends Setting implements RenderableSetting {
 	public void render() {
 		ImGui.pushID(parent.getName()+"/"+this.getName());
 
+		ImGui.text(this.name);
+
 		if (!isButtonWasPressed) {
 			isButtonWasPressed = ImGui.button(KeyUtils.getKeyName(getKeyCode()));
 		} else {
 			ImGui.button("Press key...");
 			Phosphor.EVENTBUS.subscribe(this);
 		}
-
-		ImGui.sameLine();
-		ImGui.text(this.name);
 
 		ImGui.popID();
 	}

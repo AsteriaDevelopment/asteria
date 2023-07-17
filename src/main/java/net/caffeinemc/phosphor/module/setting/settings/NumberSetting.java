@@ -73,19 +73,24 @@ public class NumberSetting extends Setting implements RenderableSetting {
 
 	@Override
 	public void render() {
+		ImGui.text(this.name);
 		boolean changed;
 
 		if (decimal) {
 			ImDouble val = new ImDouble(this.value);
 
-			changed = ImGui.sliderScalar(name, ImGuiDataType.Double, val, minimum, maximum, "%.3f");
+			ImGui.pushItemWidth(170f);
+			changed = ImGui.sliderScalar("", ImGuiDataType.Double, val, minimum, maximum, "%.2f");
+			ImGui.popItemWidth();
 
 			if (changed)
 				this.value = val.doubleValue();
 		} else {
 			ImInt val = new ImInt((int) this.value);
 
-			changed = ImGui.sliderScalar(name, ImGuiDataType.S32, val, (int) minimum, (int) maximum);
+			ImGui.pushItemWidth(170f);
+			changed = ImGui.sliderScalar("", ImGuiDataType.S32, val, (int) minimum, (int) maximum);
+			ImGui.popItemWidth();
 
 			if (changed)
 				this.value = val.doubleValue();

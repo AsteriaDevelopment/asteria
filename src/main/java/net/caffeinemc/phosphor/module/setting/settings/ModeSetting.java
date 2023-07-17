@@ -43,9 +43,13 @@ public class ModeSetting extends Setting implements RenderableSetting {
 
 	@Override
 	public void render() {
+		ImGui.text(this.name);
+
 		ImInt currentItem = new ImInt(this.index);
 
-		ImGui.listBox(this.name, currentItem, modes);
+		ImGui.pushItemWidth(170f);
+		ImGui.listBox("", currentItem, modes);
+		ImGui.popItemWidth();
 
 		this.index = currentItem.get();
 	}

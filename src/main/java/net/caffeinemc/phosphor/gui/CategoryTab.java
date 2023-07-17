@@ -8,9 +8,14 @@ import net.caffeinemc.phosphor.module.Module;
 
 public class CategoryTab implements Renderable {
     public Module.Category category;
+    private boolean firstFrame;
+    private float posX, posY;
 
-    public CategoryTab(Module.Category category) {
+    public CategoryTab(Module.Category category, float posX, float posY) {
         this.category = category;
+        this.posX = posX;
+        this.posY = posY;
+        this.firstFrame = true;
     }
 
     @Override
@@ -22,7 +27,13 @@ public class CategoryTab implements Renderable {
     public void render() {
         int imGuiWindowFlags = 0;
         imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
         ImGui.begin(getName(), imGuiWindowFlags);
+
+        if (firstFrame) {
+            ImGui.setWindowPos(posX, posY);
+            firstFrame = false;
+        }
 
         for (Module module : Phosphor.moduleManager().getModulesByCategory(category)) {
             ImGui.pushID(module.getName());
@@ -52,11 +63,11 @@ public class CategoryTab implements Renderable {
             }
 
             if (module.showOptions()) {
-                ImGui.indent();
+                ImGui.indent(10f);
 
                 module.renderSettings();
 
-                ImGui.unindent();
+                ImGui.unindent(10f);
             }
 
             ImGui.popID();

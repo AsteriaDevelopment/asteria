@@ -29,7 +29,8 @@ public class BooleanSetting extends Setting implements RenderableSetting {
 
 	@Override
 	public void render() {
-		if (ImGui.checkbox(this.name, this.enabled)) {
+		ImGui.text(this.name);
+		if (ImGui.checkbox("", this.enabled)) {
 			toggle();
 		}
 	}

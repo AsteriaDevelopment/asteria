@@ -19,8 +19,10 @@ public class RadiumMenu implements Renderable {
             instance = new RadiumMenu();
         }
         if (instance.tabs.isEmpty()) {
+            float posX = 10f;
             for (Module.Category category : Module.Category.values()) {
-                instance.tabs.add(new CategoryTab(category));
+                instance.tabs.add(new CategoryTab(category, posX, 10f));
+                posX += 200f;
             }
         }
         return instance;
