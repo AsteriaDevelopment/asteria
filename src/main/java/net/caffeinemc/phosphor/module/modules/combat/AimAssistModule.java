@@ -14,11 +14,11 @@ import net.caffeinemc.phosphor.module.Module;
 
 public class AimAssistModule extends Module {
     public final ModeSetting aimAt = new ModeSetting("Aim at", this, "Head", "Chest", "Legs", "Head");
-    public final BooleanSetting lookAtNearest = new BooleanSetting("Look At Nearest Hitbox's Corner", this, false);
+    public final BooleanSetting lookAtNearest = new BooleanSetting("Look At Corner", this, false);
     public final BooleanSetting yawAssist = new BooleanSetting("Horizontal", this, true);
     public final NumberSetting yawSpeed = new NumberSetting("Horizontal Speed", this, 1d, 0.1d, 10d, 0.1d);
     public final BooleanSetting pitchAssist = new BooleanSetting("Vertical", this, true);
-    public final NumberSetting pitchSpeed = new NumberSetting("Verical Speed", this, 0.5d, 0.1d, 10d, 0.1d);
+    public final NumberSetting pitchSpeed = new NumberSetting("Vertical Speed", this, 0.5d, 0.1d, 10d, 0.1d);
     public final NumberSetting distance = new NumberSetting("Distance", this, 6d, 3d, 10d, 0.1d);
     public final NumberSetting fov = new NumberSetting("FOV", this, 180d, 1d, 360d, 1d);
     public final BooleanSetting seeOnly = new BooleanSetting("See Only", this, true);
