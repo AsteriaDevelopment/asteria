@@ -30,8 +30,4 @@ public class RadiumSettingsModule extends Module {
     public void onDisable() {
         RadiumMenu.toggleVisibility();
     }
-
-    @Override
-    public void render() {
-    }
 }

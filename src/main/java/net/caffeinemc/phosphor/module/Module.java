@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiWindowFlags;
+import net.caffeinemc.phosphor.gui.*;
 import net.caffeinemc.phosphor.module.setting.RenderableSetting;
 import net.caffeinemc.phosphor.module.setting.Setting;
 import net.caffeinemc.phosphor.module.setting.settings.KeybindSetting;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.minecraft.client.MinecraftClient;
 
-public abstract class Module {
+public abstract class Module implements Renderable {
 	protected MinecraftClient mc = MinecraftClient.getInstance();
 
 	public String name, description;
@@ -153,10 +157,20 @@ public abstract class Module {
 		}
 	}
 
-	public void render() {
-		if (ImGui.checkbox(this.getName(), this.enabled))
-			toggle();
+	//public void render() {
+	//	if (ImGui.checkbox(this.getName(), this.enabled))
+	//		toggle();
+	//}
+
+
+	public void toggleVisibility() {
+		if (ImguiLoader.isRendered(this)) {
+			ImguiLoader.queueRemove(this);
+		} else {
+			ImguiLoader.addRenderable(this);
+		}
 	}
+
 
 	public void renderSettings() {
 		for (Setting setting : this.settings) {
@@ -164,5 +178,20 @@ public abstract class Module {
 				renderableSetting.render();
 			}
 		}
+	}
+
+	@Override
+	public void render() {
+		int imGuiWindowFlags = 0;
+		imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
+		imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
+		ImGui.begin(getName(), imGuiWindowFlags);
+		this.renderSettings();
+		ImGui.end();
+	}
+
+	@Override
+	public Theme getTheme() {
+		return RadiumMenu.getInstance().getTheme();
 	}
 }
