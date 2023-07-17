@@ -16,7 +16,6 @@
     "EndCrystalEntityMixin",
     "EntityMixin",
     "EntityRenderDispatcherMixin",
-    "EntityRendererMixin",
     "InGameHudMixin",
     "KeyboardMixin",
     "MinecraftClientMixin",
