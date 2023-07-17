@@ -48,12 +48,21 @@ public class TriggerBotModule extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (!RadiumMenu.isClientEnabled())
+        if (mc.player == null)
             return;
+
+        if (focusMode.isEnabled()) {
+            if (focusedTarget != null) {
+                if (!focusedTarget.isAlive() ||
+                        focusedTarget.isRemoved() ||
+                        focusedTarget.distanceTo(mc.player) > focusRange.getValue())
+                    focusedTarget = null;
+            }
+        }
 
         Entity target = mc.crosshairTarget instanceof EntityHitResult result ? result.getEntity() : null;
 
-        if (target == null || mc.player == null || mc.interactionManager == null || mc.currentScreen instanceof HandledScreen)
+        if (target == null || mc.interactionManager == null || mc.currentScreen instanceof HandledScreen)
             return;
 
         if (target.getName().equals(mc.player.getName()))
@@ -74,14 +83,8 @@ public class TriggerBotModule extends Module {
         if ((mc.player.isOnGround() && mc.player.getAttackCooldownProgress(0.5f) < 0.92f) || (!mc.player.isOnGround() && mc.player.getAttackCooldownProgress(0.5f) < 0.95f))
             return;
 
-        if (focusMode.isEnabled()) {
-            if (focusedTarget != null) {
-                if (focusedTarget.distanceTo(mc.player) > focusRange.getValue()) return;
-            }
-        }
-
         if (currentRange == 0)
-            currentRange = MathUtils.getRandomDouble(minRange.getValue(), maxRange.getValue());
+            currentRange = MathUtils.getRandomDouble(Math.min(minRange.getValue(), maxRange.getValue()), Math.max(minRange.getValue(), maxRange.getValue()));
 
         if (target.distanceTo(mc.player) > currentRange)
             return;
