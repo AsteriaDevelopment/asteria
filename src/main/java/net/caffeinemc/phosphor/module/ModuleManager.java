@@ -6,6 +6,7 @@ import java.util.List;
 import net.caffeinemc.phosphor.module.modules.misc.PingSpoofModule;
 import net.caffeinemc.phosphor.module.modules.misc.FakePlayerModule;
 import net.caffeinemc.phosphor.module.modules.render.ShieldStatusModule;
+import net.minecraft.client.gui.screen.ChatScreen;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -117,6 +118,9 @@ public class ModuleManager {
 			return;
 
 		if (event.action == GLFW.GLFW_RELEASE)
+			return;
+
+		if (MinecraftClient.getInstance().currentScreen instanceof ChatScreen)
 			return;
 
 		if (InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_F3))
