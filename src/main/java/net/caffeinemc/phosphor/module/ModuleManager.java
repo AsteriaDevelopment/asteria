@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.caffeinemc.phosphor.module.modules.misc.PingSpoofModule;
 import net.caffeinemc.phosphor.module.modules.misc.FakePlayerModule;
-import net.caffeinemc.phosphor.module.modules.render.ShieldStatusModule;
 import net.minecraft.client.gui.screen.ChatScreen;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -95,7 +94,7 @@ public class ModuleManager {
 		addModule(new TriggerBotModule());
 
 		// RENDER
-		addModule(new ShieldStatusModule());
+
 
 		// PLAYER
 		addModule(new CrystalOptimizerModule());
