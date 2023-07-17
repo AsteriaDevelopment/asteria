@@ -25,18 +25,35 @@ public class MinecraftClientMixin {
     }
 
     @Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)
-    private void onAttack(CallbackInfoReturnable<Boolean> cir) {
-        if (Phosphor.EVENTBUS.post(AttackEvent.get()).isCancelled()) cir.setReturnValue(false);
+    private void onPreAttack(CallbackInfoReturnable<Boolean> cir) {
+        if (Phosphor.EVENTBUS.post(AttackEvent.Pre.get()).isCancelled()) cir.setReturnValue(false);
+    }
+
+    @Inject(method = "doAttack", at = @At("TAIL"), cancellable = true)
+    private void onPostAttack(CallbackInfoReturnable<Boolean> cir) {
+        if (Phosphor.EVENTBUS.post(AttackEvent.Post.get()).isCancelled()) cir.setReturnValue(false);
     }
 
     @Inject(method = "doItemUse", at = @At("HEAD"), cancellable = true)
-    private void onItemUse(CallbackInfo ci) {
-        if (Phosphor.EVENTBUS.post(ItemUseEvent.get()).isCancelled()) ci.cancel();
+    private void onPreItemUse(CallbackInfo ci) {
+        if (Phosphor.EVENTBUS.post(ItemUseEvent.Pre.get()).isCancelled()) ci.cancel();
+    }
+
+    @Inject(method = "doItemUse", at = @At("TAIL"), cancellable = true)
+    private void onPostItemUse(CallbackInfo ci) {
+        if (Phosphor.EVENTBUS.post(ItemUseEvent.Post.get()).isCancelled()) ci.cancel();
     }
 
     @Inject(method = "handleBlockBreaking", at = @At("HEAD"), cancellable = true)
-    private void onItemUse(boolean breaking, CallbackInfo ci) {
-        if (Phosphor.EVENTBUS.post(BlockBreakEvent.get()).isCancelled()) ci.cancel();
+    private void onPreBlockBreak(boolean breaking, CallbackInfo ci) {
+        if (breaking)
+            if (Phosphor.EVENTBUS.post(BlockBreakEvent.Pre.get()).isCancelled()) ci.cancel();
+    }
+
+    @Inject(method = "handleBlockBreaking", at = @At("TAIL"), cancellable = true)
+    private void onPostBlockBreak(boolean breaking, CallbackInfo ci) {
+        if (breaking)
+            if (Phosphor.EVENTBUS.post(BlockBreakEvent.Post.get()).isCancelled()) ci.cancel();
     }
 
     @Inject(method = "run", at = @At("HEAD"))
