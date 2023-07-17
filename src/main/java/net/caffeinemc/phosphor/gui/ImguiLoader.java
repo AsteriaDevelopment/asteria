@@ -41,6 +41,11 @@ public class ImguiLoader {
     @Getter
     private static ImFont bigCustomFont;
 
+    @Getter
+    private static ImFont dosisFont;
+    @Getter
+    private static ImFont bigDosisFont;
+
     public static void onGlfwInit(long handle) {
         initializeImGui();
         imGuiGlfw.init(handle,true);
@@ -159,6 +164,17 @@ public class ImguiLoader {
 
                 customFont = fontAtlas.addFontFromMemoryTTF(fontData, 18);
                 bigCustomFont = fontAtlas.addFontFromMemoryTTF(fontData, 24);
+            }
+        } catch (IOException ignored) {
+            // do nothing, we already have font :3
+        }
+
+        try (InputStream is = ImguiLoader.class.getClassLoader().getResourceAsStream("assets/Dosis-Medium.ttf")) {
+            if (is != null) {
+                byte[] fontData = is.readAllBytes();
+
+                dosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 18);
+                bigDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 24);
             }
         } catch (IOException ignored) {
             // do nothing, we already have font :3
