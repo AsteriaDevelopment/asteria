@@ -43,6 +43,8 @@ public class ModeSetting extends Setting implements RenderableSetting {
 
 	@Override
 	public void render() {
+		ImGui.pushID(parent.getName()+"/"+this.getName());
+
 		ImGui.text(this.name);
 
 		ImInt currentItem = new ImInt(this.index);
@@ -52,5 +54,7 @@ public class ModeSetting extends Setting implements RenderableSetting {
 		ImGui.popItemWidth();
 
 		this.index = currentItem.get();
+
+		ImGui.popID();
 	}
 }

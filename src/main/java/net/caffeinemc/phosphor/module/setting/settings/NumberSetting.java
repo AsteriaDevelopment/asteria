@@ -73,6 +73,8 @@ public class NumberSetting extends Setting implements RenderableSetting {
 
 	@Override
 	public void render() {
+		ImGui.pushID(parent.getName()+"/"+this.getName());
+
 		ImGui.text(this.name);
 		boolean changed;
 
@@ -95,5 +97,7 @@ public class NumberSetting extends Setting implements RenderableSetting {
 			if (changed)
 				this.value = val.doubleValue();
 		}
+
+		ImGui.popID();
 	}
 }

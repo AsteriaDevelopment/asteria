@@ -29,9 +29,13 @@ public class BooleanSetting extends Setting implements RenderableSetting {
 
 	@Override
 	public void render() {
+		ImGui.pushID(parent.getName()+"/"+this.getName());
+
 		ImGui.text(this.name);
 		if (ImGui.checkbox("", this.enabled)) {
 			toggle();
 		}
+
+		ImGui.popID();
 	}
 }

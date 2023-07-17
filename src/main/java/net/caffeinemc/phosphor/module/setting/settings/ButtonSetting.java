@@ -29,10 +29,14 @@ public class ButtonSetting extends Setting implements RenderableSetting {
 
     @Override
     public void render() {
+        ImGui.pushID(parent.getName()+"/"+this.getName());
+
         if (ImGui.button(name))
             runnable.run();
 
         if (sameLine)
             ImGui.sameLine();
+
+        ImGui.popID();
     }
 }
