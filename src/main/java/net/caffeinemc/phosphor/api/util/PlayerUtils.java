@@ -41,7 +41,7 @@ public class PlayerUtils {
 
             float distance = player.distanceTo(toPlayer);
 
-            if (player.getName().equals(toPlayer.getName()) &&
+            if (!player.getName().equals(toPlayer.getName()) &&
                     player != toPlayer &&
                     distance <= range &&
                     toPlayer.canSee(player) == seeOnly) {
