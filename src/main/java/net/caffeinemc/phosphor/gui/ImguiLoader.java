@@ -40,11 +40,15 @@ public class ImguiLoader {
     private static ImFont customFont;
     @Getter
     private static ImFont bigCustomFont;
+    @Getter
+    private static ImFont biggerCustomFont;
 
     @Getter
     private static ImFont dosisFont;
     @Getter
     private static ImFont bigDosisFont;
+    @Getter
+    private static ImFont biggerDosisFont;
 
     public static void onGlfwInit(long handle) {
         initializeImGui();
@@ -149,8 +153,8 @@ public class ImguiLoader {
         io.setIniFilename(null);                               // We don't want to save .ini file
         io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard); // Enable Keyboard Controls
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);     // Enable Docking
-        io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);   // Enable Multi-Viewport / Platform Windows
-        io.setConfigViewportsNoTaskBarIcon(true);
+        //io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);   // Enable Multi-Viewport / Platform Windows
+        //io.setConfigViewportsNoTaskBarIcon(true);
 
         final ImFontAtlas fontAtlas = io.getFonts();
         final ImFontConfig fontConfig = new ImFontConfig(); // Natively allocated object, should be explicitly destroyed
@@ -164,6 +168,7 @@ public class ImguiLoader {
 
                 customFont = fontAtlas.addFontFromMemoryTTF(fontData, 18);
                 bigCustomFont = fontAtlas.addFontFromMemoryTTF(fontData, 24);
+                biggerCustomFont = fontAtlas.addFontFromMemoryTTF(fontData, 32);
             }
         } catch (IOException ignored) {
             // do nothing, we already have font :3
@@ -175,6 +180,7 @@ public class ImguiLoader {
 
                 dosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 18);
                 bigDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 24);
+                biggerDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 32);
             }
         } catch (IOException ignored) {
             // do nothing, we already have font :3

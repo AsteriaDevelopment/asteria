@@ -32,11 +32,11 @@ public class RadiumMenu implements Renderable {
     public static void toggleVisibility() {
         if (ImguiLoader.isRendered(getInstance())) {
             ImguiLoader.queueRemove(getInstance());
-            for(Module m : Phosphor.moduleManager().getModules()) {
-                if(ImguiLoader.isRendered(m)) {
-                    m.toggleVisibility();
-                }
-            }
+            //for(Module m : Phosphor.moduleManager().getModules()) {
+            //    if(ImguiLoader.isRendered(m)) {
+            //        m.toggleVisibility();
+            //    }
+            //}
         } else {
             ImguiLoader.addRenderable(getInstance());
         }
