@@ -2,12 +2,14 @@ package net.caffeinemc.phosphor.module.modules.client;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiViewportFlags;
 import imgui.flag.ImGuiWindowFlags;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.gui.ImguiLoader;
 import net.caffeinemc.phosphor.gui.Renderable;
 import net.caffeinemc.phosphor.gui.Theme;
 import net.caffeinemc.phosphor.module.Module;
+import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +18,7 @@ import java.util.Comparator;
 public class ArrayListModule extends Module implements Renderable {
     public Comparator<Module> nameLengthComparator;
     public ArrayList<Module> modules;
+    public final BooleanSetting radiumText = new BooleanSetting("Radium Text", this, false);
 
     public ArrayListModule() {
         super("ArrayList", "Shows array list", Category.CLIENT);
@@ -41,14 +44,25 @@ public class ArrayListModule extends Module implements Renderable {
 
     @Override
     public void render() {
+        ImGui.setWindowPos(0, 0);
+
         int imGuiWindowFlags = 0;
         imGuiWindowFlags |= ImGuiWindowFlags.NoBackground;
         imGuiWindowFlags |= ImGuiWindowFlags.NoTitleBar;
-        imGuiWindowFlags |= ImGuiWindowFlags.NoMove;
+        if(!Phosphor.moduleManager().isModuleEnabled("Radium")) {
+            imGuiWindowFlags |= ImGuiWindowFlags.NoMove;
+        }
         imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
         imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
         ImGui.begin("ArrayList", imGuiWindowFlags);
-        ImGui.setWindowPos(0, 0);
+
+        if(radiumText.isEnabled()) {
+            ImGui.pushFont(ImguiLoader.getBiggerCustomFont());
+            ImGui.pushStyleColor(ImGuiCol.Text, 0.90f, 0.27f, 0.33f, 1f);
+            ImGui.text("Radium");
+            ImGui.popFont();
+            ImGui.popStyleColor();
+        }
 
         for (Module module : modules) {
             if (module.isEnabled())

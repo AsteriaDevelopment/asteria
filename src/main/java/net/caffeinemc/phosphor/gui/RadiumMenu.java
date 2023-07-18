@@ -2,6 +2,7 @@ package net.caffeinemc.phosphor.gui;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
+import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
 
 import java.util.ArrayList;
@@ -31,6 +32,11 @@ public class RadiumMenu implements Renderable {
     public static void toggleVisibility() {
         if (ImguiLoader.isRendered(getInstance())) {
             ImguiLoader.queueRemove(getInstance());
+            //for(Module m : Phosphor.moduleManager().getModules()) {
+            //    if(ImguiLoader.isRendered(m)) {
+            //        m.toggleVisibility();
+            //    }
+            //}
         } else {
             ImguiLoader.addRenderable(getInstance());
         }
@@ -128,8 +134,11 @@ public class RadiumMenu implements Renderable {
                 ImGui.getStyle().setTabRounding(4);
                 ImGui.getStyle().setWindowTitleAlign(0.5f, 0.5f);
 
-                if (ImguiLoader.getCustomFont() != null) {
-                    ImGui.pushFont(ImguiLoader.getCustomFont());
+                //if (ImguiLoader.getCustomFont() != null) {
+                //    ImGui.pushFont(ImguiLoader.getCustomFont());
+                //}
+                if (ImguiLoader.getDosisFont() != null) {
+                    ImGui.pushFont(ImguiLoader.getDosisFont());
                 }
             }
 
