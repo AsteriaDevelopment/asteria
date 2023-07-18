@@ -16,9 +16,11 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class ArrayListModule extends Module implements Renderable {
+    public final BooleanSetting radiumText = new BooleanSetting("Radium Text", this, false);
+
     public Comparator<Module> nameLengthComparator;
     public ArrayList<Module> modules;
-    public final BooleanSetting radiumText = new BooleanSetting("Radium Text", this, false);
+    private boolean firstFrame;
 
     public ArrayListModule() {
         super("ArrayList", "Shows array list", Category.CLIENT);
@@ -28,6 +30,8 @@ public class ArrayListModule extends Module implements Renderable {
                 return Integer.compare(o2.getName().length(), o1.getName().length());
             }
         };
+
+        firstFrame = true;
     }
 
     @Override
@@ -42,21 +46,23 @@ public class ArrayListModule extends Module implements Renderable {
         ImguiLoader.queueRemove(this);
     }
 
+
     @Override
     public void render() {
-        ImGui.setWindowPos(0, 0);
-
         int imGuiWindowFlags = 0;
         imGuiWindowFlags |= ImGuiWindowFlags.NoBackground;
         imGuiWindowFlags |= ImGuiWindowFlags.NoTitleBar;
-        if(!Phosphor.moduleManager().isModuleEnabled("Radium")) {
-            imGuiWindowFlags |= ImGuiWindowFlags.NoMove;
-        }
         imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
         imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
+        if (!Phosphor.moduleManager().isModuleEnabled("Radium")) imGuiWindowFlags |= ImGuiWindowFlags.NoMove;
         ImGui.begin("ArrayList", imGuiWindowFlags);
 
-        if(radiumText.isEnabled()) {
+        if (firstFrame) {
+            ImGui.setWindowPos(0, 0);
+            firstFrame = false;
+        }
+
+        if (radiumText.isEnabled()) {
             ImGui.pushFont(ImguiLoader.getBiggerCustomFont());
             ImGui.pushStyleColor(ImGuiCol.Text, 0.90f, 0.27f, 0.33f, 1f);
             ImGui.text("Radium");
