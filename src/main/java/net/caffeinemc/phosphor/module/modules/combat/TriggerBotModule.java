@@ -87,8 +87,13 @@ public class TriggerBotModule extends Module {
         if (livingTarget.isDead() || !livingTarget.isAlive() || livingTarget.isInvisible())
             return;
 
-        if (currentRange == 0)
-            currentRange = MathUtils.getRandomDouble(Math.min(minRange.getValue(), maxRange.getValue()), Math.max(minRange.getValue(), maxRange.getValue()));
+        if (currentRange == 0) {
+            if (minRange.getValue() == maxRange.getValue() || minRange.getValue() > maxRange.getValue()) {
+                currentRange = minRange.getValue();
+            } else {
+                currentRange = MathUtils.getRandomDouble(Math.min(minRange.getValue(), maxRange.getValue()), Math.max(minRange.getValue(), maxRange.getValue()));
+            }
+        }
 
         if (livingTarget.distanceTo(mc.player) > currentRange)
             return;
