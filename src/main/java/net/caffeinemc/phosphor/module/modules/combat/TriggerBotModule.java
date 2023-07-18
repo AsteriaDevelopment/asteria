@@ -4,23 +4,23 @@ import net.caffeinemc.phosphor.api.event.events.TickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.util.MathUtils;
 import net.caffeinemc.phosphor.api.util.PlayerUtils;
-import net.caffeinemc.phosphor.gui.RadiumMenu;
+import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
+import org.lwjgl.glfw.GLFW;
 
 public class TriggerBotModule extends Module {
+    public final BooleanSetting clickSimulation = new BooleanSetting("Click Simulation", this, true);
     public final NumberSetting minRange = new NumberSetting("Min Range", this, 2.5d, 2d, 4d, 0.1d);
     public final NumberSetting maxRange = new NumberSetting("Max Range", this, 3d, 2d, 4d, 0.1d);
     public final BooleanSetting permTrigger = new BooleanSetting("Permament Trigger", this, true);
@@ -51,7 +51,7 @@ public class TriggerBotModule extends Module {
         if (mc.player == null)
             return;
 
-        if (focusMode.isEnabled()) {
+        if (clickSimulation.isEnabled()) {
             if (focusedTarget != null) {
                 if (!focusedTarget.isAlive() ||
                         focusedTarget.isDead() ||
@@ -98,10 +98,12 @@ public class TriggerBotModule extends Module {
         if (livingTarget.distanceTo(mc.player) > currentRange)
             return;
 
-        if (focusMode.isEnabled()) {
+        if (clickSimulation.isEnabled()) {
             if (focusedTarget == null) focusedTarget = livingTarget;
             if (focusedTarget != livingTarget) return;
         }
+
+        if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_LEFT);
 
         mc.interactionManager.attackEntity(mc.player, target);
         mc.player.swingHand(Hand.MAIN_HAND);

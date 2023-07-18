@@ -6,7 +6,8 @@
   "mixins": [
     "ClientPlayerInteractionManagerAccessor",
     "EntityVelocityUpdateS2CPacketAccessor",
-    "MinecraftClientAccessor"
+    "MinecraftClientAccessor",
+    "MouseAccessor"
   ],
   "client": [
     "ClientConnectionMixin",
