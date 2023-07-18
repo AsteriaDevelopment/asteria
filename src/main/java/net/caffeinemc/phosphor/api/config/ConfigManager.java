@@ -3,6 +3,7 @@ package net.caffeinemc.phosphor.api.config;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.caffeinemc.phosphor.api.font.JColor;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.api.util.PlayerUtils;
 import net.caffeinemc.phosphor.module.Module;
@@ -58,6 +59,8 @@ public class ConfigManager {
                         modeSetting.setMode(settingJson.getAsString());
                     } else if (setting instanceof NumberSetting numberSetting) {
                         numberSetting.setValue(settingJson.getAsDouble());
+                    } else if (setting instanceof ColorSetting colorSetting) {
+                        colorSetting.setColor(new JColor(settingJson.getAsInt()));
                     }
                 }
             }
@@ -88,6 +91,8 @@ public class ConfigManager {
                         moduleConfig.addProperty(setting.getName(), modeSetting.getMode());
                     } else if (setting instanceof NumberSetting numberSetting) {
                         moduleConfig.addProperty(setting.getName(), numberSetting.getValue());
+                    } else if (setting instanceof ColorSetting colorSetting) {
+                        moduleConfig.addProperty(setting.getName(), colorSetting.getColor().getRGB());
                     }
                 }
 
