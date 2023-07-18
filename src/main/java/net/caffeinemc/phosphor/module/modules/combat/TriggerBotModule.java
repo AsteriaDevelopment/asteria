@@ -88,10 +88,10 @@ public class TriggerBotModule extends Module {
             return;
 
         if (currentRange == 0) {
-            if (minRange.getValue() == maxRange.getValue() || minRange.getValue() > maxRange.getValue()) {
+            if (minRange.getValue() >= maxRange.getValue()) {
                 currentRange = minRange.getValue();
             } else {
-                currentRange = MathUtils.getRandomDouble(Math.min(minRange.getValue(), maxRange.getValue()), Math.max(minRange.getValue(), maxRange.getValue()));
+                currentRange = MathUtils.getRandomDouble(minRange.getValue(), maxRange.getValue());
             }
         }
 
