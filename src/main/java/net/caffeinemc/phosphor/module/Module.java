@@ -145,7 +145,6 @@ public abstract class Module {
 	public void cleanStrings() {
 		this.setName(null);
 		this.setDescription(null);
-		Category.clearStrings();
 
 		for (Setting setting : settings) {
 			setting.name = null;

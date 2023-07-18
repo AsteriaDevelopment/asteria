@@ -32,11 +32,6 @@ public class RadiumMenu implements Renderable {
     public static void toggleVisibility() {
         if (ImguiLoader.isRendered(getInstance())) {
             ImguiLoader.queueRemove(getInstance());
-            //for(Module m : Phosphor.moduleManager().getModules()) {
-            //    if(ImguiLoader.isRendered(m)) {
-            //        m.toggleVisibility();
-            //    }
-            //}
         } else {
             ImguiLoader.addRenderable(getInstance());
         }
@@ -47,13 +42,25 @@ public class RadiumMenu implements Renderable {
     }
 
     public static void stopClient() {
+        Phosphor.configManager().saveConfig();
+
         toggleVisibility();
         clientEnabled.set(false);
+
+        new Thread(() -> {
+            Module.Category.clearStrings();
+            for (Module module : Phosphor.moduleManager().modules) {
+                if (module.isEnabled())
+                    module.disable();
+
+                module.cleanStrings();
+            }
+        }).start();
     }
 
     @Override
     public String getName() {
-        return "Radium";
+        return Phosphor.name;
     }
 
     @Override

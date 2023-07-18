@@ -54,8 +54,8 @@ public class ArrayListModule extends Module implements Renderable {
         imGuiWindowFlags |= ImGuiWindowFlags.NoTitleBar;
         imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
         imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
-        if (!Phosphor.moduleManager().isModuleEnabled("Radium")) imGuiWindowFlags |= ImGuiWindowFlags.NoMove;
-        ImGui.begin("ArrayList", imGuiWindowFlags);
+        if (!Phosphor.moduleManager().isModuleEnabled(Phosphor.name)) imGuiWindowFlags |= ImGuiWindowFlags.NoMove;
+        ImGui.begin(this.getName(), imGuiWindowFlags);
 
         if (firstFrame) {
             ImGui.setWindowPos(0, 0);
