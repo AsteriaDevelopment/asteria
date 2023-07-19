@@ -8,31 +8,16 @@ import net.caffeinemc.phosphor.mixin.MouseAccessor;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static net.caffeinemc.phosphor.common.Phosphor.mc;
 
 public class MouseSimulation {
-    private boolean enabled;
-
     private final HashMap<Integer, Integer> mouseButtons = new HashMap<>();
-    private final ExecutorService clickExecutor = Executors.newFixedThreadPool(1000);
+    private boolean cancelLeft, cancelRight;
 
     public MouseSimulation() {
-        this.enabled = true;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void enable() {
-        this.enabled = true;
-    }
-
-    public void disable() {
-        this.enabled = false;
+        this.cancelLeft = false;
+        this.cancelRight = false;
     }
 
     public boolean isFakeMousePressed(int keyCode) {
@@ -46,7 +31,11 @@ public class MouseSimulation {
     public void mouseClick(int keyCode, int ticks) {
         if (!isFakeMousePressed(keyCode)) {
             mouseButtons.put(keyCode, ticks);
-            clickExecutor.submit(() -> getMouse().callOnMouseButton(mc.getWindow().getHandle(), keyCode, GLFW.GLFW_PRESS, 0));
+
+            if (!cancelRight) cancelRight = keyCode == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+            if (!cancelLeft) cancelLeft = keyCode == GLFW.GLFW_MOUSE_BUTTON_LEFT;
+
+            getMouse().callOnMouseButton(mc.getWindow().getHandle(), keyCode, GLFW.GLFW_PRESS, 0);
         }
     }
 
@@ -74,29 +63,32 @@ public class MouseSimulation {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    private void onPlayerTick(PlayerTickEvent event) {
+    private void onWorldRender(WorldRenderEvent event) {
         checkMouse(GLFW.GLFW_MOUSE_BUTTON_LEFT);
         checkMouse(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     private void onItemUse(ItemUseEvent.Pre event) {
-        if (isFakeMousePressed(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
-            event.cancel();
+        if (cancelRight) {
+            if (!event.isCancelled()) event.cancel();
+            cancelRight = mc.options.useKey.isPressed();
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     private void onAttack(AttackEvent.Pre event) {
-        if (isFakeMousePressed(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
-            event.cancel();
+        if (cancelLeft) {
+            if (!event.isCancelled()) event.cancel();
+            cancelLeft = mc.options.attackKey.isPressed();
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     private void onBlockBreak(BlockBreakEvent.Pre event) {
-        if (isFakeMousePressed(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
-            event.cancel();
+        if (cancelLeft) {
+            if (!event.isCancelled()) event.cancel();
+            cancelLeft = mc.options.attackKey.isPressed();
         }
     }
 }

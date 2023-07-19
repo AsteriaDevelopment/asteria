@@ -1,7 +1,6 @@
 package net.caffeinemc.phosphor.module.modules.combat;
 
 import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
-import net.caffeinemc.phosphor.api.event.events.TickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.util.BlockUtils;
 import net.caffeinemc.phosphor.api.util.InvUtils;
@@ -26,6 +25,7 @@ import net.minecraft.util.hit.HitResult;
 import org.lwjgl.glfw.GLFW;
 
 public class AutoHitCrystalModule extends Module {
+    private final BooleanSetting clickSimulation = new BooleanSetting("Click Simulation", this, true);
     private final BooleanSetting workWithTotem = new BooleanSetting("Work With Totem", this, true);
     private final NumberSetting placeDelay = new NumberSetting("Obsidian Place Delay", this, 0d, 0d, 10d, 1d);
     private final NumberSetting switchDelay = new NumberSetting("Switch Delay", this, 0d, 0d, 10d, 1d);
@@ -93,6 +93,8 @@ public class AutoHitCrystalModule extends Module {
                             return;
                         }
 
+                        if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+
                         ActionResult interactionResult = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, blockHit);
                         if (interactionResult.isAccepted() && interactionResult.shouldSwingHand()) {
                             mc.player.swingHand(Hand.MAIN_HAND);
@@ -123,7 +125,7 @@ public class AutoHitCrystalModule extends Module {
                 AutoCrystalModule autoCrystal = Phosphor.moduleManager().getModule(AutoCrystalModule.class);
 
                 if (!autoCrystal.isEnabled())
-                    autoCrystal.onTick(TickEvent.Pre.get());
+                    autoCrystal.onPlayerTick(event);
             }
         } else {
             reset();

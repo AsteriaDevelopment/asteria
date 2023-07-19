@@ -1,13 +1,11 @@
 package net.caffeinemc.phosphor.module.modules.combat;
 
-import net.caffeinemc.phosphor.api.event.events.TickEvent;
-import net.caffeinemc.phosphor.api.event.events.WorldTickEvent;
+import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
-import net.caffeinemc.phosphor.api.util.CrystalUtils;
 import net.caffeinemc.phosphor.api.util.KeyUtils;
+import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
-import net.caffeinemc.phosphor.module.setting.settings.ModeSetting;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -28,6 +26,7 @@ import static net.caffeinemc.phosphor.api.util.CrystalUtils.canPlaceCrystalServe
 import static net.caffeinemc.phosphor.api.util.CrystalUtils.isCrystalBroken;
 
 public class AutoCrystalModule extends Module {
+    private final BooleanSetting clickSimulation = new BooleanSetting("Click Simulation", this, true);
     public final BooleanSetting onRmb = new BooleanSetting("On RMB", this, true);
     public final NumberSetting placeDelay = new NumberSetting("Place Delay", this, 0, 0, 5, 1);
     public final NumberSetting breakDelay = new NumberSetting("Break Delay", this, 0, 0, 5, 1);
@@ -52,6 +51,8 @@ public class AutoCrystalModule extends Module {
             if (mc.player.getMainHandStack().isOf(Items.END_CRYSTAL)) {
                 if (mc.crosshairTarget instanceof BlockHitResult blockHit && blockHit.getType() == HitResult.Type.BLOCK) {
                     if (canPlaceCrystalServer(blockHit.getBlockPos())) {
+                        if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+
                         ActionResult result = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, blockHit);
                         if (result.isAccepted() && result.shouldSwingHand())
                             mc.player.swingHand(Hand.MAIN_HAND);
@@ -67,6 +68,8 @@ public class AutoCrystalModule extends Module {
                                 BlockState blockState = mc.world.getBlockState(blockHit.getBlockPos());
 
                                 if (blockState.isOf(Blocks.OBSIDIAN) || blockState.isOf(Blocks.BEDROCK)) {
+                                    if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+
                                     ActionResult result = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, blockHit);
                                     if (result.isAccepted() && result.shouldSwingHand())
                                         mc.player.swingHand(Hand.MAIN_HAND);
@@ -89,6 +92,8 @@ public class AutoCrystalModule extends Module {
                         if (isCrystalBroken(hit.getEntity()))
                             return;
 
+                        if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+
                         mc.interactionManager.attackEntity(mc.player, hit.getEntity());
                         mc.player.swingHand(Hand.MAIN_HAND);
 
@@ -100,7 +105,7 @@ public class AutoCrystalModule extends Module {
     }
 
     @EventHandler
-    public void onTick(TickEvent.Pre event) {
+    public void onPlayerTick(PlayerTickEvent event) {
         if (!KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_RIGHT) && onRmb.isEnabled())
             return;
 

@@ -46,14 +46,12 @@ public class MinecraftClientMixin {
 
     @Inject(method = "handleBlockBreaking", at = @At("HEAD"), cancellable = true)
     private void onPreBlockBreak(boolean breaking, CallbackInfo ci) {
-        if (breaking)
-            if (Phosphor.EVENTBUS.post(BlockBreakEvent.Pre.get()).isCancelled()) ci.cancel();
+        if (Phosphor.EVENTBUS.post(BlockBreakEvent.Pre.get()).isCancelled()) ci.cancel();
     }
 
     @Inject(method = "handleBlockBreaking", at = @At("TAIL"), cancellable = true)
     private void onPostBlockBreak(boolean breaking, CallbackInfo ci) {
-        if (breaking)
-            if (Phosphor.EVENTBUS.post(BlockBreakEvent.Post.get()).isCancelled()) ci.cancel();
+        if (Phosphor.EVENTBUS.post(BlockBreakEvent.Post.get()).isCancelled()) ci.cancel();
     }
 
     @Inject(method = "run", at = @At("HEAD"))
