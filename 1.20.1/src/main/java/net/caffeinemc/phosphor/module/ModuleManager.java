@@ -86,6 +86,7 @@ public class ModuleManager {
 		addModule(new AutoCrystalModule());
 		addModule(new AutoHitCrystalModule());
 		addModule(new AutoJumpResetModule());
+		addModule(new AutoPotModule());
 		addModule(new AutoTotemModule());
 		addModule(new AxeSpamModule());
 		addModule(new BlinkModule());
