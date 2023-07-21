@@ -162,6 +162,7 @@ public class RadiumMenu implements Renderable {
                 ImGui.getStyle().setFrameRounding(4);
                 ImGui.getStyle().setGrabRounding(4);
                 ImGui.getStyle().setPopupRounding(4);
+                ImGui.getStyle().setScrollbarSize(10);
                 ImGui.getStyle().setScrollbarRounding(4);
                 ImGui.getStyle().setTabRounding(4);
                 ImGui.getStyle().setWindowTitleAlign(0.5f, 0.5f);

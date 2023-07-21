@@ -17,7 +17,6 @@ import imgui.glfw.ImGuiImplGlfw;
 import lombok.Getter;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.FontLoader;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -44,6 +43,8 @@ public class ImguiLoader {
     @Getter
     private static ImFont biggerCustomFont;
 
+    @Getter
+    private static ImFont normalDosisFont;
     @Getter
     private static ImFont dosisFont;
     @Getter
@@ -136,7 +137,7 @@ public class ImguiLoader {
 
                     if (convertedResponse.get("status_overview").getAsString().equals("failed")) {
                         System.out.println("Your license key is invalid!" + "\n" +
-                                           "Create a ticket in our discord server to get one.");
+                                "Create a ticket in our discord server to get one.");
                         System.exit(0);
                     }
                 }
@@ -163,7 +164,7 @@ public class ImguiLoader {
         fontAtlas.addFontDefault();
         fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesCyrillic());
 
-        try (InputStream is = ImGui.class.getClassLoader().getResourceAsStream("assets/JetBrainsMono-Regular.ttf")) {
+        try (InputStream is = ImguiLoader.class.getClassLoader().getResourceAsStream("assets/JetBrainsMono-Regular.ttf")) {
             if (is != null) {
                 byte[] fontData = is.readAllBytes();
 
@@ -179,6 +180,7 @@ public class ImguiLoader {
             if (is != null) {
                 byte[] fontData = is.readAllBytes();
 
+                normalDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 20);
                 dosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 18);
                 bigDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 24);
                 biggerDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 32);
