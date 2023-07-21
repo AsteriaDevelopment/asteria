@@ -1,10 +1,9 @@
 package net.caffeinemc.phosphor.gui;
 
 import imgui.ImGui;
-import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
+import net.caffeinemc.phosphor.api.font.JColor;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
 
@@ -44,10 +43,12 @@ public class CategoryTab implements Renderable {
             ImGui.pushID(module.getName());
 
             if (module.isEnabled()) {
+                float[] color = JColor.getGuiColor().getFloatColor();
+
                 ImGui.pushStyleColor(ImGuiCol.Text, 0.80f, 0.84f, 0.96f, 1.00f);
-                ImGui.pushStyleColor(ImGuiCol.Button, 0.65f, 0.24f, 0.33f, 0.50f);
-                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.65f, 0.24f, 0.33f, 0.65f);
-                ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.65f, 0.24f, 0.33f, 0.8f);
+                ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], 0.50f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], 0.65f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], 0.8f);
             } else {
                 ImGui.pushStyleColor(ImGuiCol.Text, 0.42f, 0.44f, 0.53f, 1.00f);
                 ImGui.pushStyleColor(ImGuiCol.Button, 0.07f, 0.07f, 0.11f, 0.f);

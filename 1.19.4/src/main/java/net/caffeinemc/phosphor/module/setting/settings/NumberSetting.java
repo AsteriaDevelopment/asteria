@@ -23,7 +23,8 @@ public class NumberSetting extends Setting implements RenderableSetting {
 	    this.maximum = maximum;
 	    this.increment = increment;
 		this.decimal = !(Math.floor(increment) == increment);
-		parent.addSettings(this);
+
+		if (parent != null) parent.addSettings(this);
 	}
 	  
 	public double getValue() {
