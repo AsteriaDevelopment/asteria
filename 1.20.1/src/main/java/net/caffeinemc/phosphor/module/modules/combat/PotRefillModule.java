@@ -35,11 +35,6 @@ public class PotRefillModule extends Module {
     private void onPlayerTick(PlayerTickEvent event) {
         if (KeyUtils.isKeyPressed(activateKey.getKeyCode())) {
             if (mc.currentScreen instanceof InventoryScreen inventoryScreen) {
-                if (swapClock < swapDelay.getIValue()) {
-                    swapClock++;
-                    return;
-                }
-
                 Slot focusedSlot = ((HandledScreenAccessor) inventoryScreen).getFocusedSlot();
 
                 if (focusedSlot == null)
@@ -55,12 +50,18 @@ public class PotRefillModule extends Module {
                 if (emptySlot > 8) emptySlot = 8;
 
                 if (InvUtils.isThatSplash(6, 1, 1, focusedSlot.getStack()) && inventory.getStack(emptySlot).isEmpty()) {
+                    if (swapClock < swapDelay.getIValue()) {
+                        swapClock++;
+                        return;
+                    }
+
                     mc.interactionManager.clickSlot(
                             inventoryScreen.getScreenHandler().syncId,
                             focusedSlot.getIndex(),
                             emptySlot,
                             SlotActionType.SWAP,
                             mc.player);
+
                     swapClock = 0;
                 }
             }
