@@ -112,14 +112,6 @@ public class PlayerUtils {
         return mc.player.getItemCooldownManager().getCooldownProgress(mc.player.getStackInHand(hand).getItem(), mc.getTickDelta());
     }
 
-    public static double getReach() {
-        ReachModule reach = Phosphor.moduleManager().getModule(ReachModule.class);
-        if (reach != null && reach.isEnabled())
-            return reach.reach.getValue();
-
-        return mc.interactionManager.getCurrentGameMode().isCreative() ? 4D : 3D;
-    }
-
     public static void attackEntity(Entity entity) {
         mc.interactionManager.attackEntity(mc.player, entity);
         mc.player.swingHand(Hand.MAIN_HAND);
