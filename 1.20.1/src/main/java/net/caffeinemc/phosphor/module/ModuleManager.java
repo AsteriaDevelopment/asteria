@@ -91,6 +91,7 @@ public class ModuleManager {
 		addModule(new AxeSpamModule());
 		addModule(new BlinkModule());
 		addModule(new HitboxesModule());
+		addModule(new PotRefillModule());
 		addModule(new ReachModule());
 		addModule(new SilentAimModule());
 		addModule(new TriggerBotModule());
