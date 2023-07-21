@@ -1,0 +1,34 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.caffeinemc.phosphor.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ClientPlayerInteractionManagerAccessor",
+    "EntityVelocityUpdateS2CPacketAccessor",
+    "HandledScreenAccessor",
+    "MinecraftClientAccessor",
+    "MouseAccessor"
+  ],
+  "client": [
+    "ClientConnectionMixin",
+    "ClientPlayerEntityMixin",
+    "ClientPlayerInteractionManagerMixin",
+    "ClientWorldMixin",
+    "EndCrystalEntityMixin",
+    "EndCrystalItemMixin",
+    "EntityMixin",
+    "EntityRenderDispatcherMixin",
+    "HandledScreenMixin",
+    "InGameHudMixin",
+    "ItemStackMixin",
+    "KeyboardMixin",
+    "MinecraftClientMixin",
+    "MouseMixin",
+    "RenderSystemMixin",
+    "WindowMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
