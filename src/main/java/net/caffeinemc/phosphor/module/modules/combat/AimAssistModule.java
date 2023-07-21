@@ -4,6 +4,9 @@ import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.ModeSetting;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.SwordItem;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.caffeinemc.phosphor.api.event.events.MouseUpdateEvent;
@@ -22,14 +25,23 @@ public class AimAssistModule extends Module {
     public final NumberSetting distance = new NumberSetting("Distance", this, 6d, 3d, 10d, 0.1d);
     public final NumberSetting fov = new NumberSetting("FOV", this, 180d, 1d, 360d, 1d);
     public final BooleanSetting seeOnly = new BooleanSetting("See Only", this, true);
+    public final BooleanSetting weaponOnly = new BooleanSetting("Weapon Only", this, false);
 
     public AimAssistModule() {
         super("AimAssist", "Automatically Aims at players for you.", Module.Category.COMBAT);
     }
 
+    private boolean isHoldingWeapon() {
+        ItemStack heldItem = mc.player.getMainHandStack();
+
+        return heldItem.getItem() instanceof SwordItem || heldItem.getItem() instanceof AxeItem;
+    }
+
     @EventHandler
     public void onMouseUpdate(MouseUpdateEvent event) {
         if (mc.currentScreen == null) {
+            if(weaponOnly.isEnabled() && !isHoldingWeapon())
+                return;
             PlayerEntity targetPlayer = PlayerUtils.findNearestPlayer(mc.player, distance.getFValue(), seeOnly.isEnabled());
 
             if (targetPlayer == null)
