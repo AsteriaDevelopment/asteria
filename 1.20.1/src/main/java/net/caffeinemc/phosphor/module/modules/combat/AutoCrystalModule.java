@@ -29,6 +29,8 @@ import static net.caffeinemc.phosphor.api.util.CrystalUtils.isCrystalBroken;
 public class AutoCrystalModule extends Module {
     private final BooleanSetting clickSimulation = new BooleanSetting("Click Simulation", this, true);
     public final BooleanSetting onRmb = new BooleanSetting("On RMB", this, true);
+    public final BooleanSetting noCountGlitch = new BooleanSetting("No Count Glitch", this, true);
+    public final BooleanSetting noBounce = new BooleanSetting("No Bounce", this, true);
     public final NumberSetting placeDelay = new NumberSetting("Place Delay", this, 0, 0, 5, 1);
     public final NumberSetting breakDelay = new NumberSetting("Break Delay", this, 0, 0, 5, 1);
     public final BooleanSetting fastMode = new BooleanSetting("Fast Mode", this, true);
