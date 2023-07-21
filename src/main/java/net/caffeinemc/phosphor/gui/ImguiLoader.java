@@ -44,6 +44,8 @@ public class ImguiLoader {
     private static ImFont biggerCustomFont;
 
     @Getter
+    private static ImFont normalDosisFont;
+    @Getter
     private static ImFont dosisFont;
     @Getter
     private static ImFont bigDosisFont;
@@ -178,6 +180,7 @@ public class ImguiLoader {
             if (is != null) {
                 byte[] fontData = is.readAllBytes();
 
+                normalDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 20);
                 dosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 18);
                 bigDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 24);
                 biggerDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 32);
