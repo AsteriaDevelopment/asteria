@@ -54,6 +54,7 @@ public class ArrayListModule extends Module implements Renderable {
         imGuiWindowFlags |= ImGuiWindowFlags.NoTitleBar;
         imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
         imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoFocusOnAppearing;
         if (!Phosphor.moduleManager().isModuleEnabled(Phosphor.name)) imGuiWindowFlags |= ImGuiWindowFlags.NoMove;
         ImGui.begin(this.getName(), imGuiWindowFlags);
 
