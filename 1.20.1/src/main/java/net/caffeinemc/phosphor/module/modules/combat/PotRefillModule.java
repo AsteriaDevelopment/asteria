@@ -43,13 +43,14 @@ public class PotRefillModule extends Module {
                 PlayerInventory inventory = mc.player.getInventory();
 
                 int emptySlot = 0;
-                for (; emptySlot <= 8; emptySlot++) {
-                    if (inventory.getStack(emptySlot).isEmpty()) break;
+                for (int i = 0; i <= 8; i++) {
+                    if (inventory.getStack(i).isEmpty()) {
+                        emptySlot = i;
+                        break;
+                    }
                 }
 
-                if (emptySlot > 8) emptySlot = 8;
-
-                if (InvUtils.isThatSplash(6, 1, 1, focusedSlot.getStack()) && inventory.getStack(emptySlot).isEmpty()) {
+                if (InvUtils.isThatSplash(6, 1, 1, focusedSlot.getStack())) {
                     if (swapClock < swapDelay.getIValue()) {
                         swapClock++;
                         return;
