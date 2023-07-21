@@ -19,14 +19,14 @@ public abstract class ClientPlayerInteractionManagerMixin {
     private void onGetReachDistance(CallbackInfoReturnable<Float> cir) {
         ReachModule reachModule = Phosphor.moduleManager().getModule(ReachModule.class);
         if (RadiumMenu.isClientEnabled() && reachModule.isEnabled()) {
-            cir.setReturnValue(reachModule.reach.getFValue());
+            cir.setReturnValue(reachModule.blockReach.getFValue());
         }
     }
 
     @Inject(at = @At("HEAD"), method = "hasExtendedReach()Z", cancellable = true)
     private void hasExtendedReach(CallbackInfoReturnable<Boolean> cir) {
         if (RadiumMenu.isClientEnabled() && Phosphor.moduleManager().isModuleEnabled(ReachModule.class)) {
-            cir.setReturnValue(true);
+            cir.setReturnValue(false);
         }
     }
 
