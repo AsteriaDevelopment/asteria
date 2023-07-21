@@ -55,7 +55,6 @@ public class PotRefillModule extends Module {
                 if (emptySlot > 8) emptySlot = 8;
 
                 if (InvUtils.isThatSplash(6, 1, 1, focusedSlot.getStack()) && inventory.getStack(emptySlot).isEmpty()) {
-                    System.out.println(emptySlot);
                     mc.interactionManager.clickSlot(
                             inventoryScreen.getScreenHandler().syncId,
                             focusedSlot.getIndex(),
