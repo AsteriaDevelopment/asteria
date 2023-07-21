@@ -1,7 +1,9 @@
 package net.caffeinemc.phosphor.gui;
 
 import imgui.ImGui;
+import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
@@ -28,7 +30,10 @@ public class CategoryTab implements Renderable {
         int imGuiWindowFlags = 0;
         imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
         imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
+        ImGui.getStyle().setFramePadding(4, 6);
+        ImGui.getStyle().setButtonTextAlign(0, 0.5f);
         ImGui.begin(getName(), imGuiWindowFlags);
+
 
         if (firstFrame) {
             ImGui.setWindowPos(posX, posY);
@@ -39,16 +44,20 @@ public class CategoryTab implements Renderable {
             ImGui.pushID(module.getName());
 
             if (module.isEnabled()) {
-                ImGui.pushStyleColor(ImGuiCol.Button, 0.90f, 0.27f, 0.33f, 0.75f);
-                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.90f, 0.27f, 0.33f, 0.90f);
+                ImGui.pushStyleColor(ImGuiCol.Text, 0.80f, 0.84f, 0.96f, 1.00f);
+                ImGui.pushStyleColor(ImGuiCol.Button, 0.65f, 0.24f, 0.33f, 0.50f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.65f, 0.24f, 0.33f, 0.65f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.65f, 0.24f, 0.33f, 0.8f);
             } else {
-                ImGui.pushStyleColor(ImGuiCol.Button, 0.90f, 0.27f, 0.33f, 0.50f);
-                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.90f, 0.27f, 0.33f, 0.65f);
+                ImGui.pushStyleColor(ImGuiCol.Text, 0.42f, 0.44f, 0.53f, 1.00f);
+                ImGui.pushStyleColor(ImGuiCol.Button, 0.07f, 0.07f, 0.11f, 0.f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.09f, 0.09f, 0.15f, 0.65f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.1f, 0.1f, 0.16f, 0.8f);
             }
 
-            boolean isToggled = ImGui.button(module.getName(), 180f, 25f);
+            boolean isToggled = ImGui.button(module.getName(), 180f, 30f);
 
-            ImGui.popStyleColor(2);
+            ImGui.popStyleColor(4);
 
             if (isToggled) {
                 module.toggle();
@@ -64,9 +73,13 @@ public class CategoryTab implements Renderable {
 
             if (module.showOptions()) {
                 ImGui.indent(10f);
-
+                ImGui.pushFont(ImguiLoader.getDosisFont());
+                ImGui.getStyle().setFramePadding(4, 4);
+                ImGui.getStyle().setButtonTextAlign(0.5f, 0.5f);
                 module.renderSettings();
-
+                ImGui.getStyle().setButtonTextAlign(0f, 0f);
+                ImGui.getStyle().setFramePadding(4, 6);
+                ImGui.popFont();
                 ImGui.unindent(10f);
             }
 
