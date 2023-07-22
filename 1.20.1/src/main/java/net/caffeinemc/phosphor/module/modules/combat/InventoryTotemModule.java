@@ -21,6 +21,7 @@ public class InventoryTotemModule extends Module {
     private final NumberSetting swapDelay = new NumberSetting("Swap Delay", this, 0, 0, 10, 1);
     private final BooleanSetting offhand = new BooleanSetting("Offhand", this, true);
     private final NumberSetting totemSlot = new NumberSetting("Totem Slot", this, 1, 1, 9, 1);
+    private final BooleanSetting workOnKey = new BooleanSetting("Work On Key", this, false);
     public final KeybindSetting activateKey = new KeybindSetting("Activate Key", 0, this);
 
     public InventoryTotemModule() {
@@ -34,41 +35,47 @@ public class InventoryTotemModule extends Module {
         swapClock = 0;
     }
 
+    private boolean searchTotems() {
+        PlayerInventory inventory = mc.player.getInventory();
+        return !inventory.getStack(totemSlot.getIValue() - 1).isOf(Items.TOTEM_OF_UNDYING) || (!inventory.getStack(40).isOf(Items.TOTEM_OF_UNDYING) && offhand.isEnabled());
+    }
+
     @EventHandler
     private void onPlayerTick(PlayerTickEvent event) {
-        if (KeyUtils.isKeyPressed(activateKey.getKeyCode())) {
-            if (mc.currentScreen instanceof InventoryScreen inventoryScreen) {
-                Slot focusedSlot = ((HandledScreenAccessor) inventoryScreen).getFocusedSlot();
+        if (!KeyUtils.isKeyPressed(activateKey.getKeyCode()) && workOnKey.isEnabled())
+            return;
 
-                if (focusedSlot == null)
-                    return;
+        if (mc.currentScreen instanceof InventoryScreen inventoryScreen) {
+            Slot focusedSlot = ((HandledScreenAccessor) inventoryScreen).getFocusedSlot();
 
-                PlayerInventory inventory = mc.player.getInventory();
+            if (focusedSlot == null)
+                return;
 
-                int slot;
-                if (!inventory.getStack(totemSlot.getIValue() - 1).isOf(Items.TOTEM_OF_UNDYING)) {
-                    slot = totemSlot.getIValue() - 1;
-                } else if (!inventory.getStack(40).isOf(Items.TOTEM_OF_UNDYING) && offhand.isEnabled()) {
-                    slot = 40;
-                } else {
+            PlayerInventory inventory = mc.player.getInventory();
+
+            int slot;
+            if (!inventory.getStack(totemSlot.getIValue() - 1).isOf(Items.TOTEM_OF_UNDYING)) {
+                slot = totemSlot.getIValue() - 1;
+            } else if (!inventory.getStack(40).isOf(Items.TOTEM_OF_UNDYING) && offhand.isEnabled()) {
+                slot = 40;
+            } else {
+                return;
+            }
+
+            if (focusedSlot.getStack().isOf(Items.TOTEM_OF_UNDYING)) {
+                if (swapClock < swapDelay.getIValue()) {
+                    swapClock++;
                     return;
                 }
 
-                if (focusedSlot.getStack().isOf(Items.TOTEM_OF_UNDYING)) {
-                    if (swapClock < swapDelay.getIValue()) {
-                        swapClock++;
-                        return;
-                    }
+                mc.interactionManager.clickSlot(
+                        inventoryScreen.getScreenHandler().syncId,
+                        focusedSlot.getIndex(),
+                        slot,
+                        SlotActionType.SWAP,
+                        mc.player);
 
-                    mc.interactionManager.clickSlot(
-                            inventoryScreen.getScreenHandler().syncId,
-                            focusedSlot.getIndex(),
-                            slot,
-                            SlotActionType.SWAP,
-                            mc.player);
-
-                    swapClock = 0;
-                }
+                swapClock = 0;
             }
         }
     }
@@ -76,23 +83,27 @@ public class InventoryTotemModule extends Module {
     @EventHandler
     private void onSlotCheck(SlotCheckEvent event) {
         if (mode.is("Normal")) {
-            if (KeyUtils.isKeyPressed(activateKey.getKeyCode())) {
-                if (event.instance instanceof InventoryScreen inventoryScreen) {
-                    if (8 >= event.slot.getIndex() || event.slot.getIndex() >= 36)
-                        return;
+            if (!KeyUtils.isKeyPressed(activateKey.getKeyCode()) && workOnKey.isEnabled())
+                return;
 
-                    Slot focusedSlot = ((HandledScreenAccessor) inventoryScreen).getFocusedSlot();
+            if (event.instance instanceof InventoryScreen inventoryScreen) {
+                if (!searchTotems())
+                    return;
 
-                    if (focusedSlot == null || !focusedSlot.getStack().isOf(Items.TOTEM_OF_UNDYING)) {
-                        if (event.slot.getStack().isOf(Items.TOTEM_OF_UNDYING)) {
-                            event.setCancelOutput(true);
-                        } else {
-                            event.setCancelOutput(false);
-                        }
+                if (8 >= event.slot.getIndex() || event.slot.getIndex() >= 36)
+                    return;
+
+                Slot focusedSlot = ((HandledScreenAccessor) inventoryScreen).getFocusedSlot();
+
+                if (focusedSlot == null || !focusedSlot.getStack().isOf(Items.TOTEM_OF_UNDYING)) {
+                    if (event.slot.getStack().isOf(Items.TOTEM_OF_UNDYING)) {
+                        event.setCancelOutput(true);
                     } else {
-                        if (focusedSlot.getIndex() == event.slot.getIndex()) {
-                            event.setCancelOutput(true);
-                        }
+                        event.setCancelOutput(false);
+                    }
+                } else {
+                    if (focusedSlot.getIndex() == event.slot.getIndex()) {
+                        event.setCancelOutput(true);
                     }
                 }
             }
