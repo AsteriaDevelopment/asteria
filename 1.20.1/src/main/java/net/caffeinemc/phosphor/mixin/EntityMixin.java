@@ -1,7 +1,7 @@
 package net.caffeinemc.phosphor.mixin;
 
 import net.caffeinemc.phosphor.common.Phosphor;
-import net.caffeinemc.phosphor.gui.RadiumMenu;
+import net.caffeinemc.phosphor.gui.AsteriaMenu;
 import net.caffeinemc.phosphor.module.modules.combat.HitboxesModule;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -21,7 +21,7 @@ public class EntityMixin {
     )
     private void onGetTargetingMargin(CallbackInfoReturnable<Float> cir) {
         HitboxesModule hitboxes = Phosphor.moduleManager().getModule(HitboxesModule.class);
-        if (RadiumMenu.isClientEnabled() && hitboxes.isEnabled()) {
+        if (AsteriaMenu.isClientEnabled() && hitboxes.isEnabled()) {
             cir.setReturnValue(hitboxes.getHitboxSize((Entity) (Object) this));
         }
     }

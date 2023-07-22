@@ -5,16 +5,12 @@ import net.caffeinemc.phosphor.api.rotation.RotationManager;
 import net.caffeinemc.phosphor.api.util.CrystalUtils;
 import net.caffeinemc.phosphor.api.util.MouseSimulation;
 import net.caffeinemc.phosphor.module.ModuleManager;
-import net.caffeinemc.phosphor.module.modules.client.RadiumSettingsModule;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import net.caffeinemc.phosphor.api.event.events.WorldRenderEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventBus;
 import net.caffeinemc.phosphor.api.event.orbit.IEventBus;
-import net.caffeinemc.phosphor.gui.RadiumMenu;
 
 import java.lang.invoke.MethodHandles;
 

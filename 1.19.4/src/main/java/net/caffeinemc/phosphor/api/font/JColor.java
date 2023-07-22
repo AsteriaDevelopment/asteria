@@ -4,14 +4,14 @@ import java.awt.Color;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.caffeinemc.phosphor.common.Phosphor;
-import net.caffeinemc.phosphor.module.modules.client.RadiumSettingsModule;
+import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
 
 public class JColor extends Color {
 	
 	private static final long serialVersionUID = 1L;
 
 	public static JColor getGuiColor() {
-		RadiumSettingsModule radiumSettings = Phosphor.moduleManager().getModule(RadiumSettingsModule.class);
+		AsteriaSettingsModule radiumSettings = Phosphor.moduleManager().getModule(AsteriaSettingsModule.class);
 		return (radiumSettings != null) ? radiumSettings.color.getColor() : new JColor(0.90f, 0.27f, 0.33f);
 	}
 

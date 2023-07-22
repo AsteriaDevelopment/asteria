@@ -1,7 +1,7 @@
 package net.caffeinemc.phosphor.mixin;
 
 import net.caffeinemc.phosphor.common.Phosphor;
-import net.caffeinemc.phosphor.gui.RadiumMenu;
+import net.caffeinemc.phosphor.gui.AsteriaMenu;
 import net.caffeinemc.phosphor.module.modules.player.CrystalOptimizerModule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -20,7 +20,7 @@ public abstract class EndCrystalEntityMixin extends Entity {
 
     @Inject(at = @At("HEAD"), method = "damage")
     private void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (RadiumMenu.isClientEnabled() &&
+        if (AsteriaMenu.isClientEnabled() &&
                 source.getAttacker() == MinecraftClient.getInstance().player &&
                 Phosphor.moduleManager().isModuleEnabled(CrystalOptimizerModule.class)) {
             this.kill();

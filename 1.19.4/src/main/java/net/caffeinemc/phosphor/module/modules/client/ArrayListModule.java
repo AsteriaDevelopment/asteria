@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class ArrayListModule extends Module implements Renderable {
-    public final BooleanSetting radiumText = new BooleanSetting("Radium Text", this, false);
+    public final BooleanSetting radiumText = new BooleanSetting("Asteria Text", this, false);
 
     public Comparator<Module> nameLengthComparator;
     public ArrayList<Module> modules;
@@ -64,9 +64,9 @@ public class ArrayListModule extends Module implements Renderable {
         }
 
         if (radiumText.isEnabled()) {
-            ImGui.pushFont(ImguiLoader.getBiggerCustomFont());
+            ImGui.pushFont(ImguiLoader.getBiggerDosisFont());
             ImGui.pushStyleColor(ImGuiCol.Text, 0.90f, 0.27f, 0.33f, 1f);
-            ImGui.text("Radium");
+            ImGui.text("Asteria");
             ImGui.popFont();
             ImGui.popStyleColor();
         }

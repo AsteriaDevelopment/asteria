@@ -5,28 +5,20 @@ import imgui.flag.ImGuiCol;
 import net.caffeinemc.phosphor.api.font.JColor;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
-import org.apache.commons.lang3.RandomStringUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class RadiumMenu implements Renderable {
-    private static RadiumMenu instance;
+public class AsteriaMenu implements Renderable {
+    private static AsteriaMenu instance;
 
     private static final AtomicBoolean clientEnabled = new AtomicBoolean(true);
     private final List<CategoryTab> tabs = new ArrayList<>();
 
-    public static RadiumMenu getInstance() {
+    public static AsteriaMenu getInstance() {
         if (instance == null) {
-            instance = new RadiumMenu();
+            instance = new AsteriaMenu();
         }
         if (instance.tabs.isEmpty()) {
             float posX = 10f;
