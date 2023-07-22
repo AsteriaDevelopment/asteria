@@ -92,6 +92,6 @@ public class CategoryTab implements Renderable {
 
     @Override
     public Theme getTheme() {
-        return RadiumMenu.getInstance().getTheme();
+        return AsteriaMenu.getInstance().getTheme();
     }
 }

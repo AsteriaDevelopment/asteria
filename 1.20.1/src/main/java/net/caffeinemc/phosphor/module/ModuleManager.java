@@ -11,7 +11,7 @@ import org.lwjgl.glfw.GLFW;
 
 import net.caffeinemc.phosphor.api.event.events.KeyPressEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
-import net.caffeinemc.phosphor.gui.RadiumMenu;
+import net.caffeinemc.phosphor.gui.AsteriaMenu;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 
@@ -106,7 +106,7 @@ public class ModuleManager {
 		addModule(new VelocityModule());
 
 		// CLIENT
-		addModule(new RadiumSettingsModule());
+		addModule(new AsteriaSettingsModule());
 		addModule(new MiddleClickFriendModule());
 		addModule(new ArrayListModule());
 
@@ -117,7 +117,7 @@ public class ModuleManager {
 
 	@EventHandler
 	private void onKeyPress(KeyPressEvent event) {
-		if (!RadiumMenu.isClientEnabled())
+		if (!AsteriaMenu.isClientEnabled())
 			return;
 
 		if (event.action == GLFW.GLFW_RELEASE)

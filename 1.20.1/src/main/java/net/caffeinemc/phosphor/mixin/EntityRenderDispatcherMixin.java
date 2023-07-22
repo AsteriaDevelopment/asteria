@@ -1,7 +1,7 @@
 package net.caffeinemc.phosphor.mixin;
 
 import net.caffeinemc.phosphor.common.Phosphor;
-import net.caffeinemc.phosphor.gui.RadiumMenu;
+import net.caffeinemc.phosphor.gui.AsteriaMenu;
 import net.caffeinemc.phosphor.module.modules.combat.HitboxesModule;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.util.math.Box;
@@ -20,7 +20,7 @@ public class EntityRenderDispatcherMixin {
             )
     )
     private static Box onRenderHitboxEditBox(Box box) {
-        if (RadiumMenu.isClientEnabled()) {
+        if (AsteriaMenu.isClientEnabled()) {
             HitboxesModule hitboxes = Phosphor.moduleManager().getModule(HitboxesModule.class);
             if (hitboxes.isEnabled()) {
                 return box.expand(hitboxes.getRenderHitboxSize());

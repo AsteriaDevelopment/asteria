@@ -189,6 +189,7 @@ public class ImguiLoader {
             // do nothing, we already have font :3
         }
 
+
         fontConfig.setMergeMode(true); // When enabled, all fonts added with this config would be merged with the previously added font
         fontConfig.setPixelSnapH(true);
 
