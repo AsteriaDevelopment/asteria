@@ -15,7 +15,7 @@ import net.caffeinemc.phosphor.api.event.orbit.IEventBus;
 import java.lang.invoke.MethodHandles;
 
 public final class Phosphor {
-	public static String name = "Radium";
+	public static String name = "Asteria";
 	public static String packagePrefix = "net.caffeinemc.phosphor";
 
 	public static MinecraftClient mc = MinecraftClient.getInstance();
