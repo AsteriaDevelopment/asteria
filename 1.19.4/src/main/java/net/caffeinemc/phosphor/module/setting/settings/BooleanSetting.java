@@ -12,7 +12,7 @@ public class BooleanSetting extends Setting implements RenderableSetting {
 	    this.name = name;
 	    this.parent = parent;
 	    this.enabled = enabled;
-		parent.addSettings(this);
+		if (parent != null) parent.addSettings(this);
 	}
 	  
 	public boolean isEnabled() {

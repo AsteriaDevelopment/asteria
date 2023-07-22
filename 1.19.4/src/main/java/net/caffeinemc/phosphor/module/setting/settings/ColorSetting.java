@@ -13,9 +13,10 @@ import java.util.List;
 
 public class ColorSetting extends Setting implements RenderableSetting {
     private JColor color;
-    private ArrayList<NumberSetting> sliders = new ArrayList<>();
+    private ArrayList<RenderableSetting> renderableSettings = new ArrayList<>();
     private boolean alpha;
     private boolean showSliders;
+    private boolean rainbow;
 
     public ColorSetting(String name, Module parent, JColor color, boolean alpha) {
         this.name = name;
@@ -23,13 +24,15 @@ public class ColorSetting extends Setting implements RenderableSetting {
         this.color = color;
         this.alpha = alpha;
         this.showSliders = false;
+        this.rainbow = false;
 
-        sliders.addAll(List.of(
-                new ColorSliderSetting("Red", this.getName()+"/Red", color.getRed()),
-                new ColorSliderSetting("Green", this.getName()+"/Green", color.getGreen()),
-                new ColorSliderSetting("Blue", this.getName()+"/Blue", color.getBlue())));
+        renderableSettings.addAll(List.of(
+                new BooleanRainbowSetting("Rainbow", parent.getName()+"/"+this.getName()+"/Rainbow", rainbow),
+                new ColorSliderSetting("Red", parent.getName()+"/"+this.getName()+"/Red", color.getRed()),
+                new ColorSliderSetting("Green", parent.getName()+"/"+this.getName()+"/Green", color.getGreen()),
+                new ColorSliderSetting("Blue", parent.getName()+"/"+this.getName()+"/Blue", color.getBlue())));
 
-        if (alpha) sliders.add(new ColorSliderSetting("Alpha", this.getName()+"/Alpha", color.getAlpha()));
+        if (alpha) renderableSettings.add(new ColorSliderSetting("Alpha", parent.getName()+"/"+this.getName()+"/Alpha", color.getAlpha()));
 
         parent.addSettings(this);
     }
@@ -60,17 +63,54 @@ public class ColorSetting extends Setting implements RenderableSetting {
         }
     }
 
-    public JColor getColor() {
+    private class BooleanRainbowSetting extends BooleanSetting {
+        private String imGuiID;
+
+        public BooleanRainbowSetting(String name, String imGuiID, boolean enabled) {
+            super(name, null, enabled);
+            this.imGuiID = imGuiID;
+        }
+
+        @Override
+        public void render() {
+            ImGui.pushID(imGuiID);
+
+            ImGui.text(this.name);
+            if (ImGui.checkbox("", this.enabled)) {
+                toggle();
+            }
+
+            ImGui.popID();
+        }
+    }
+
+    public boolean isRainbow() {
+        return rainbow;
+    }
+
+    public JColor getValue() {
         return color;
     }
 
-    public void setColor(JColor color) {
-        this.color = color;
+    public JColor getColor() {
+        if (rainbow) return getRainbow(0, this.getValue().getAlpha());
+        return color;
+    }
 
-        sliders.get(0).setValue(color.getRed());
-        sliders.get(1).setValue(color.getGreen());
-        sliders.get(2).setValue(color.getBlue());
-        if (alpha) sliders.get(3).setValue(color.getAlpha());
+    public static JColor getRainbow(int incr, int alpha) {
+        JColor color =  JColor.fromHSB(((System.currentTimeMillis() + incr * 200) % (360 * 20)) / (360f * 20),0.5f,1f);
+        return new JColor(color.getRed(), color.getBlue(), color.getGreen(), alpha);
+    }
+
+    public void setColor(JColor color, boolean rainbow) {
+        this.color = color;
+        this.rainbow = rainbow;
+
+        ((BooleanSetting) renderableSettings.get(0)).setEnabled(rainbow);
+        ((ColorSliderSetting) renderableSettings.get(1)).setValue(color.getRed());
+        ((ColorSliderSetting) renderableSettings.get(2)).setValue(color.getGreen());
+        ((ColorSliderSetting) renderableSettings.get(3)).setValue(color.getBlue());
+        if (alpha) ((ColorSliderSetting) renderableSettings.get(4)).setValue(color.getAlpha());
     }
 
     @Override
@@ -86,16 +126,27 @@ public class ColorSetting extends Setting implements RenderableSetting {
         if (showSliders) {
             ImGui.indent(10f);
 
-            for (NumberSetting numberSetting : sliders) {
-                numberSetting.render();
+            for (RenderableSetting renderableSetting : renderableSettings) {
+                renderableSetting.render();
             }
 
             ImGui.unindent(10f);
 
             if (alpha) {
-                this.setColor(new JColor(sliders.get(0).getIValue(), sliders.get(1).getIValue(), sliders.get(2).getIValue(), sliders.get(3).getIValue()));
+                this.setColor(new JColor(
+                        ((ColorSliderSetting) renderableSettings.get(1)).getIValue(),
+                        ((ColorSliderSetting) renderableSettings.get(2)).getIValue(),
+                        ((ColorSliderSetting) renderableSettings.get(3)).getIValue(),
+                        ((ColorSliderSetting) renderableSettings.get(4)).getIValue()
+                        ),
+                        ((BooleanSetting) renderableSettings.get(0)).isEnabled());
             } else {
-                this.setColor(new JColor(sliders.get(0).getIValue(), sliders.get(1).getIValue(), sliders.get(2).getIValue()));
+                this.setColor(new JColor(
+                        ((ColorSliderSetting) renderableSettings.get(1)).getIValue(),
+                        ((ColorSliderSetting) renderableSettings.get(2)).getIValue(),
+                        ((ColorSliderSetting) renderableSettings.get(3)).getIValue()
+                        ),
+                        ((BooleanSetting) renderableSettings.get(0)).isEnabled());
             }
 
             ImGui.spacing();
