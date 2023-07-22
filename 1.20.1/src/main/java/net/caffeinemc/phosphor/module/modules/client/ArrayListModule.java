@@ -2,8 +2,8 @@ package net.caffeinemc.phosphor.module.modules.client;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiViewportFlags;
 import imgui.flag.ImGuiWindowFlags;
+import net.caffeinemc.phosphor.api.font.JColor;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.gui.ImguiLoader;
 import net.caffeinemc.phosphor.gui.Renderable;
@@ -46,7 +46,6 @@ public class ArrayListModule extends Module implements Renderable {
         ImguiLoader.queueRemove(this);
     }
 
-
     @Override
     public void render() {
         int imGuiWindowFlags = 0;
@@ -64,8 +63,10 @@ public class ArrayListModule extends Module implements Renderable {
         }
 
         if (radiumText.isEnabled()) {
-            ImGui.pushFont(ImguiLoader.getBiggerCustomFont());
-            ImGui.pushStyleColor(ImGuiCol.Text, 0.90f, 0.27f, 0.33f, 1f);
+            float[] color = JColor.getGuiColor().getFloatColor();
+
+            ImGui.pushFont(ImguiLoader.getBiggerDosisFont());
+            ImGui.pushStyleColor(ImGuiCol.Text, color[0], color[1], color[2], 1f);
             ImGui.text("Asteria");
             ImGui.popFont();
             ImGui.popStyleColor();

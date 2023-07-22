@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.caffeinemc.phosphor.api.font.JColor;
-import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.api.util.PlayerUtils;
+import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.Setting;
 import net.caffeinemc.phosphor.module.setting.settings.*;
@@ -48,7 +48,7 @@ public class ConfigManager {
 
                 for (Setting setting : module.settings) {
                     JsonElement settingJson = moduleConfig.get(setting.name);
-                    if (settingJson == null || !settingJson.isJsonPrimitive())
+                    if (settingJson == null)
                         continue;
 
                     if (setting instanceof BooleanSetting booleanSetting) {
@@ -60,7 +60,11 @@ public class ConfigManager {
                     } else if (setting instanceof NumberSetting numberSetting) {
                         numberSetting.setValue(settingJson.getAsDouble());
                     } else if (setting instanceof ColorSetting colorSetting) {
-                        colorSetting.setColor(new JColor(settingJson.getAsInt()));
+                        if (!settingJson.isJsonObject())
+                            continue;
+
+                        JsonObject colorJson = settingJson.getAsJsonObject();
+                        colorSetting.setColor(new JColor(colorJson.get("color").getAsInt()), colorJson.get("rainbow").getAsBoolean());
                     }
                 }
             }
@@ -92,7 +96,10 @@ public class ConfigManager {
                     } else if (setting instanceof NumberSetting numberSetting) {
                         moduleConfig.addProperty(setting.getName(), numberSetting.getValue());
                     } else if (setting instanceof ColorSetting colorSetting) {
-                        moduleConfig.addProperty(setting.getName(), colorSetting.getColor().getRGB());
+                        JsonObject colorJson = new JsonObject();
+                        colorJson.addProperty("color", colorSetting.getValue().getRGB());
+                        colorJson.addProperty("rainbow", colorSetting.isRainbow());
+                        moduleConfig.add(setting.getName(), colorJson);
                     }
                 }
 
