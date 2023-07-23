@@ -41,7 +41,7 @@ public abstract class Module {
 	}
 
 	public enum Category {
-		COMBAT("Combat"), RENDER("Render"), PLAYER("Player"), MISCELLANEOUS("Miscellaneous"), CLIENT("Client");
+		COMBAT("Combat"), RENDER("Render"), PLAYER("Player"), MISCELLANEOUS("Misc"), CLIENT("Client");
 		public String name;
 
 		Category(String name) {
