@@ -51,7 +51,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
     @Override
     protected boolean clipAtLedge() {
         BridgeAssistModule bridgeAssistModule = Phosphor.moduleManager().getModule(BridgeAssistModule.class);
-        if (bridgeAssistModule.isEnabled() && getMainHandStack().getItem() instanceof BlockItem) {
+        if (bridgeAssistModule.isEnabled() && bridgeAssistModule.checkHands()) {
             if (!isSneaking()) setSneaking(true);
         }
 

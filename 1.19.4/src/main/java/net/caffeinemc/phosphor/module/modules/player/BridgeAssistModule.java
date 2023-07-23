@@ -18,18 +18,22 @@ public class BridgeAssistModule extends Module {
         super("BridgeAssist", "Automatically shifts on edge of block when you hold block in hand.", Category.PLAYER);
     }
 
-    private int delay;
+    private boolean wasActivated;
 
     @Override
     public void onEnable() {
-        delay = 5;
+        wasActivated = false;
+    }
+
+    public boolean checkHands() {
+        return mc.player.getMainHandStack().getItem() instanceof BlockItem || mc.player.getOffHandStack().getItem() instanceof BlockItem;
     }
 
     @EventHandler
-    private void onPostTick(TickEvent.Post event) {
+    private void onPreTick(TickEvent.Pre event) {
         if (mc.player == null) return;
 
-        if (!(mc.player.getMainHandStack().getItem() instanceof BlockItem)) return;
+        if (!checkHands()) return;
 
         if (!mc.player.isOnGround()) return;
 
@@ -39,22 +43,15 @@ public class BridgeAssistModule extends Module {
         Stream<VoxelShape> blockCollisions = Streams.stream(mc.world.getBlockCollisions(mc.player, adjustedBox));
 
         if (blockCollisions.findAny().isPresent()) {
-            if (mc.options.sneakKey.isPressed()) {
-                if (delay > 0) {
-                    delay--;
-                    return;
-                }
-
-                mc.player.input.sneaking = false;
+            if (mc.options.sneakKey.isPressed() && wasActivated) {
                 mc.options.sneakKey.setPressed(false);
-
-                delay = 5;
+                wasActivated = false;
             }
         } else {
             if (!mc.options.sneakKey.isPressed()) {
                 if (mc.options.sprintKey.isPressed()) mc.options.sprintKey.setPressed(false);
                 mc.options.sneakKey.setPressed(true);
-                mc.player.input.sneaking = true;
+                wasActivated = true;
             }
         }
     }

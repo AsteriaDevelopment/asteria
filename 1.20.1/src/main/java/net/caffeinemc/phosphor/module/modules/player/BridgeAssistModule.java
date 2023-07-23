@@ -25,11 +25,15 @@ public class BridgeAssistModule extends Module {
         wasActivated = false;
     }
 
+    public boolean checkHands() {
+        return mc.player.getMainHandStack().getItem() instanceof BlockItem || mc.player.getOffHandStack().getItem() instanceof BlockItem;
+    }
+
     @EventHandler
     private void onPreTick(TickEvent.Pre event) {
         if (mc.player == null) return;
 
-        if (!(mc.player.getMainHandStack().getItem() instanceof BlockItem)) return;
+        if (!checkHands()) return;
 
         if (!mc.player.isOnGround()) return;
 
