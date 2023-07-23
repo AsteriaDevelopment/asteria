@@ -1,8 +1,14 @@
 package net.caffeinemc.phosphor.mixin;
 
+import com.mojang.authlib.GameProfile;
 import net.caffeinemc.phosphor.api.event.events.SendMovementPacketEvent;
+import net.caffeinemc.phosphor.module.modules.player.BridgeAssistModule;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.BlockItem;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -10,7 +16,13 @@ import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
 
 @Mixin(ClientPlayerEntity.class)
-public class ClientPlayerEntityMixin {
+public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
+    @Shadow public abstract boolean isSneaking();
+
+    public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
+        super(world, profile);
+    }
+
     @Inject(method = "tick", at = @At("HEAD"))
     private void onPlayerTick(CallbackInfo ci) {
         Phosphor.EVENTBUS.post(PlayerTickEvent.get());
@@ -34,5 +46,15 @@ public class ClientPlayerEntityMixin {
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V", ordinal = 1, shift = At.Shift.AFTER))
     private void onTickHasVehicleAfterSendPackets(CallbackInfo info) {
         Phosphor.EVENTBUS.post(SendMovementPacketEvent.Post.get());
+    }
+
+    @Override
+    protected boolean clipAtLedge() {
+        BridgeAssistModule bridgeAssistModule = Phosphor.moduleManager().getModule(BridgeAssistModule.class);
+        if (bridgeAssistModule.isEnabled() && getMainHandStack().getItem() instanceof BlockItem) {
+            if (!isSneaking()) setSneaking(true);
+        }
+
+        return super.clipAtLedge();
     }
 }
