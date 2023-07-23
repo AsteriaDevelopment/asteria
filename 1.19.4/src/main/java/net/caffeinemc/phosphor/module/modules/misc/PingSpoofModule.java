@@ -15,7 +15,7 @@ public class PingSpoofModule extends Module {
     public final NumberSetting ping = new NumberSetting("Ping", this, 200, 0, 200, 1);
 
     public PingSpoofModule() {
-        super("PingSpoof", "Spoofing player's ping", Category.MISCELLANEOUS);
+        super("PingSpoof", "Spoofing player's ping", Category.MISC);
     }
 
     private final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1000);

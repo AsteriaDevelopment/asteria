@@ -41,7 +41,7 @@ public abstract class Module {
 	}
 
 	public enum Category {
-		COMBAT("\uf6de  Combat"), RENDER("\uf5cb  Render"), PLAYER("\uf007  Player"), MISCELLANEOUS("\uf0ca  Misc"), CLIENT("\uf5fc  Client");
+		COMBAT("\uf6de  Combat"), RENDER("\uf5cb  Render"), PLAYER("\uf007  Player"), MISC("\uf0ca  Misc"), CLIENT("\uf5fc  Client");
 		public String name;
 
 		Category(String name) {
@@ -56,7 +56,7 @@ public abstract class Module {
 			COMBAT.setName(null);
 			RENDER.setName(null);
 			PLAYER.setName(null);
-			MISCELLANEOUS.setName(null);
+			MISC.setName(null);
 			CLIENT.setName(null);
 		}
 	}

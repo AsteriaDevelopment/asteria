@@ -3,6 +3,7 @@ package net.caffeinemc.phosphor.mixin;
 import net.caffeinemc.phosphor.api.event.events.SlotCheckEvent;
 import net.caffeinemc.phosphor.api.util.KeyUtils;
 import net.caffeinemc.phosphor.common.Phosphor;
+import net.caffeinemc.phosphor.module.modules.combat.InventoryTotemModule;
 import net.caffeinemc.phosphor.module.modules.combat.PotRefillModule;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.Slot;
@@ -34,6 +35,17 @@ public abstract class HandledScreenMixin {
         PotRefillModule potRefill = Phosphor.moduleManager().getModule(PotRefillModule.class);
         if (potRefill != null && potRefill.isEnabled() && potRefill.mode.is("Normal")) {
             if (KeyUtils.isKeyPressed(potRefill.activateKey.getKeyCode())) {
+                args.set(2, 0d);
+                args.set(3, 0d);
+            }
+        }
+
+        InventoryTotemModule inventoryTotem = Phosphor.moduleManager().getModule(InventoryTotemModule.class);
+        if (inventoryTotem != null && inventoryTotem.isEnabled() && inventoryTotem.mode.is("Normal")) {
+            if (!KeyUtils.isKeyPressed(inventoryTotem.activateKey.getKeyCode()) && inventoryTotem.workOnKey.isEnabled())
+                return;
+
+            if (inventoryTotem.searchTotems()) {
                 args.set(2, 0d);
                 args.set(3, 0d);
             }

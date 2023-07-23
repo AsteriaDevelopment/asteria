@@ -10,6 +10,8 @@ import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import lombok.Getter;
+import net.caffeinemc.phosphor.common.Phosphor;
+import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.main.Main;
@@ -68,6 +70,9 @@ public class ImguiLoader {
     public static void onFrameRender() {
         imGuiGlfw.newFrame();
         ImGui.newFrame();
+
+        AsteriaSettingsModule asteria = Phosphor.moduleManager().getModule(AsteriaSettingsModule.class);
+        if (asteria != null) asteria.updateMode();
 
         // User render code
         for (Renderable renderable : renderstack) {

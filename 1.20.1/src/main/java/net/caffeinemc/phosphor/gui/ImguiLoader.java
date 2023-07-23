@@ -10,9 +10,11 @@ import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import lombok.Getter;
+import net.caffeinemc.phosphor.common.Phosphor;
+import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.main.Main;
+
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -68,6 +70,9 @@ public class ImguiLoader {
     public static void onFrameRender() {
         imGuiGlfw.newFrame();
         ImGui.newFrame();
+
+        AsteriaSettingsModule asteria = Phosphor.moduleManager().getModule(AsteriaSettingsModule.class);
+        if (asteria != null) asteria.updateMode();
 
         // User render code
         for (Renderable renderable : renderstack) {
@@ -223,6 +228,7 @@ public class ImguiLoader {
         }
         fontAwesome = fontAtlas.addFontFromMemoryTTF(fontAwesomeData, 20, iconsConfig, iconRange);
 
+
         fontConfig.setMergeMode(true); // When enabled, all fonts added with this config would be merged with the previously added font
         dosisFont = fontAtlas.addFontFromMemoryTTF(dosisFontData, 18);
         fontAwesome = fontAtlas.addFontFromMemoryTTF(fontAwesomeData, 18, iconsConfig, iconRange);
@@ -274,12 +280,4 @@ public class ImguiLoader {
     }
 
     private ImguiLoader() {}
-
-    private static byte[] loadFromResources(String name) {
-        try {
-            return Files.readAllBytes(Paths.get(Main.class.getResource(name).toURI()));
-        } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

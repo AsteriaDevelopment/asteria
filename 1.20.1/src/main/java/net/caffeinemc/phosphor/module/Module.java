@@ -1,15 +1,15 @@
 package net.caffeinemc.phosphor.module;
 
+import net.caffeinemc.phosphor.common.Phosphor;
+import net.caffeinemc.phosphor.module.setting.RenderableSetting;
+import net.caffeinemc.phosphor.module.setting.Setting;
+import net.caffeinemc.phosphor.module.setting.settings.KeybindSetting;
+import net.minecraft.client.MinecraftClient;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-
-import net.caffeinemc.phosphor.module.setting.RenderableSetting;
-import net.caffeinemc.phosphor.module.setting.Setting;
-import net.caffeinemc.phosphor.module.setting.settings.KeybindSetting;
-import net.caffeinemc.phosphor.common.Phosphor;
-import net.minecraft.client.MinecraftClient;
 
 public abstract class Module {
 	protected MinecraftClient mc = MinecraftClient.getInstance();
@@ -56,7 +56,7 @@ public abstract class Module {
 			COMBAT.setName(null);
 			RENDER.setName(null);
 			PLAYER.setName(null);
-			MISCELLANEOUS.setName(null);
+			MISC.setName(null);
 			CLIENT.setName(null);
 		}
 	}
