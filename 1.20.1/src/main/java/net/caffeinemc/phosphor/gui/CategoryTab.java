@@ -31,8 +31,9 @@ public class CategoryTab implements Renderable {
         imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
         ImGui.getStyle().setFramePadding(4, 6);
         ImGui.getStyle().setButtonTextAlign(0, 0.5f);
+        //ImGui.pushFont(ImguiLoader.getNormalFontAwesome());
         ImGui.begin(getName(), imGuiWindowFlags);
-
+        //ImGui.popFont();
 
         if (firstFrame) {
             ImGui.setWindowPos(posX, posY);

@@ -41,7 +41,7 @@ public abstract class Module {
 	}
 
 	public enum Category {
-		COMBAT("Combat"), RENDER("Render"), PLAYER("Player"), MISCELLANEOUS("Miscellaneous"), CLIENT("Client");
+		COMBAT("\uf6de  Combat"), RENDER("\uf5cb  Render"), PLAYER("\uf007  Player"), MISCELLANEOUS("\uf0ca  Misc"), CLIENT("\uf5fc  Client");
 		public String name;
 
 		Category(String name) {
@@ -65,7 +65,7 @@ public abstract class Module {
 		this.settings.addAll(Arrays.asList(settings));
 		this.settings.sort(Comparator.comparingInt(s -> s == keybind ? 1 : 0));
 	}
-	
+
 	public String getName() {
 		return this.name;
 	}
@@ -77,23 +77,23 @@ public abstract class Module {
 	public Category getCategory() {
 		return this.category;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public int getKey() {
 		return keybind.code;
 	}
-	
+
 	public void setKey(int key) {
 		this.keybind.code = key;
-	} 
-	
+	}
+
 	public void toggle() {
 		if (isEnabled()) {
 			disable();
@@ -101,11 +101,11 @@ public abstract class Module {
 			enable();
 		}
 	}
-	
+
 	public boolean isEnabled() {
 		return enabled;
 	}
-	
+
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 
@@ -123,7 +123,7 @@ public abstract class Module {
 	public void toggleShowOptions() {
 		this.showOptions = !this.showOptions;
 	}
-	
+
 	public void enable() {
 		onEnable();
 		setEnabled(true);
@@ -133,9 +133,9 @@ public abstract class Module {
 		onDisable();
 		setEnabled(false);
 	}
-	
+
 	public void onEnable() {}
-	
+
 	public void onDisable() {}
 
 	public boolean nullCheck() {

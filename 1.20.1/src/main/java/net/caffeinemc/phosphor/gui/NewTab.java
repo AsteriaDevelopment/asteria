@@ -71,7 +71,7 @@ public class NewTab implements Renderable {
         ImGui.text("");
 
         for (Module.Category category : Module.Category.values()) {
-            ImGui.pushID(category.name());
+            ImGui.pushID(category.name);
 
             if (selectedCategory == category) {
                 ImGui.pushStyleColor(ImGuiCol.Text, 0.80f, 0.84f, 0.96f, 1.00f);
@@ -86,7 +86,7 @@ public class NewTab implements Renderable {
             }
 
             ImGui.pushFont(ImguiLoader.getBigDosisFont());
-            boolean isToggled = ImGui.button(category.name(), 180f, 60f);
+            boolean isToggled = ImGui.button(category.name, 180f, 60f);
             ImGui.popFont();
             ImGui.popStyleColor(4);
 
