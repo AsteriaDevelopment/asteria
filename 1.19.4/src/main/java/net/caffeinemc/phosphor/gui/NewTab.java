@@ -70,7 +70,7 @@ public class NewTab implements Renderable {
         ImGui.text("");
 
         for (Module.Category category : Module.Category.values()) {
-            ImGui.pushID(category.name());
+            ImGui.pushID(category.name);
 
             if (selectedCategory == category) {
                 float[] dColor = JColor.getGuiColor().jDarker().getFloatColor();
@@ -87,7 +87,7 @@ public class NewTab implements Renderable {
             }
 
             ImGui.pushFont(ImguiLoader.getBigDosisFont());
-            ImGui.button(category.name(), 180f, 60f);
+            ImGui.button(category.name, 180f, 60f);
             ImGui.popFont();
             ImGui.popStyleColor(4);
 

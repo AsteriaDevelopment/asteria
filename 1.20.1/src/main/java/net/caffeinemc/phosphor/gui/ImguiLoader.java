@@ -15,11 +15,15 @@ import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 
+
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,6 +52,14 @@ public class ImguiLoader {
     private static ImFont bigDosisFont;
     @Getter
     private static ImFont biggerDosisFont;
+    @Getter
+    private static ImFont fontAwesome;
+    @Getter
+    private static ImFont normalFontAwesome;
+    @Getter
+    private static ImFont bigFontAwesome;
+    @Getter
+    private static ImFont biggerFontAwesome;
 
     public static void onGlfwInit(long handle) {
         initializeImGui();
@@ -158,11 +170,36 @@ public class ImguiLoader {
         //io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);   // Enable Multi-Viewport / Platform Windows
         //io.setConfigViewportsNoTaskBarIcon(true);
 
+        final ImFontGlyphRangesBuilder rangesBuilder = new ImFontGlyphRangesBuilder(); // Glyphs ranges provide
+
+        final short iconRangeMin = (short) 0xe005;
+        final short iconRangeMax = (short) 0xf8ff;
+        final short[] iconRange = new short[]{iconRangeMin, iconRangeMax, 0};
+
+        rangesBuilder.addRanges(iconRange);
+
+        final short[] glyphRanges = rangesBuilder.buildRanges();
+
+        ImFontConfig iconsConfig = new ImFontConfig();
+
+        iconsConfig.setMergeMode(true);
+        iconsConfig.setPixelSnapH(true);
+        iconsConfig.setOversampleH(3);
+        iconsConfig.setOversampleV(3);
+
         final ImFontAtlas fontAtlas = io.getFonts();
         final ImFontConfig fontConfig = new ImFontConfig(); // Natively allocated object, should be explicitly destroyed
 
         fontAtlas.addFontDefault();
         fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesCyrillic());
+        byte[] fontAwesomeData = null;
+        try (InputStream is = ImguiLoader.class.getClassLoader().getResourceAsStream("assets/FontAwesome6-Solid.otf")) {
+            if (is != null) {
+                fontAwesomeData = is.readAllBytes();
+            }
+        } catch (IOException ignored) {
+            // do nothing, we already have font :3
+        }
 
         try (InputStream is = ImguiLoader.class.getClassLoader().getResourceAsStream("assets/JetBrainsMono-Regular.ttf")) {
             if (is != null) {
@@ -176,24 +213,34 @@ public class ImguiLoader {
             // do nothing, we already have font :3
         }
 
+        byte[] dosisFontData = null;
         try (InputStream is = ImguiLoader.class.getClassLoader().getResourceAsStream("assets/Dosis-Medium.ttf")) {
             if (is != null) {
-                byte[] fontData = is.readAllBytes();
+                dosisFontData = is.readAllBytes();
 
-                normalDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 20);
-                dosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 18);
-                bigDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 24);
-                biggerDosisFont = fontAtlas.addFontFromMemoryTTF(fontData, 32);
+                normalDosisFont = fontAtlas.addFontFromMemoryTTF(dosisFontData, 20);
+                bigDosisFont = fontAtlas.addFontFromMemoryTTF(dosisFontData, 24);
+                biggerDosisFont = fontAtlas.addFontFromMemoryTTF(dosisFontData, 32);
+                dosisFont = fontAtlas.addFontFromMemoryTTF(dosisFontData, 18);
             }
         } catch (IOException ignored) {
             // do nothing, we already have font :3
         }
+        fontAwesome = fontAtlas.addFontFromMemoryTTF(fontAwesomeData, 20, iconsConfig, iconRange);
 
 
         fontConfig.setMergeMode(true); // When enabled, all fonts added with this config would be merged with the previously added font
-        fontConfig.setPixelSnapH(true);
-
+        dosisFont = fontAtlas.addFontFromMemoryTTF(dosisFontData, 18);
+        fontAwesome = fontAtlas.addFontFromMemoryTTF(fontAwesomeData, 18, iconsConfig, iconRange);
+        bigDosisFont = fontAtlas.addFontFromMemoryTTF(dosisFontData, 24);
+        bigFontAwesome = fontAtlas.addFontFromMemoryTTF(fontAwesomeData, 24, iconsConfig, iconRange);
+        biggerDosisFont = fontAtlas.addFontFromMemoryTTF(dosisFontData, 32);
+        biggerFontAwesome = fontAtlas.addFontFromMemoryTTF(fontAwesomeData, 32, iconsConfig, iconRange);
+        normalDosisFont = fontAtlas.addFontFromMemoryTTF(dosisFontData, 20);
+        normalFontAwesome = fontAtlas.addFontFromMemoryTTF(fontAwesomeData, 20, iconsConfig, iconRange);
         fontConfig.destroy();
+        fontAtlas.build();
+
 
         if (io.hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
             final ImGuiStyle style = ImGui.getStyle();

@@ -169,9 +169,10 @@ public class AsteriaMenu implements Renderable {
                 //if (ImguiLoader.getCustomFont() != null) {
                 //    ImGui.pushFont(ImguiLoader.getCustomFont());
                 //}
-                if (ImguiLoader.getDosisFont() != null) {
-                    ImGui.pushFont(ImguiLoader.getNormalDosisFont());
+                if (ImguiLoader.getNormalFontAwesome() != null) {
+                    ImGui.pushFont(ImguiLoader.getNormalFontAwesome());
                 }
+
             }
 
             @Override
