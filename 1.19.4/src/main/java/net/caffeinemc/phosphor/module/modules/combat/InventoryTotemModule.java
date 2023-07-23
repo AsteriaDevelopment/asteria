@@ -21,7 +21,7 @@ public class InventoryTotemModule extends Module {
     private final NumberSetting swapDelay = new NumberSetting("Swap Delay", this, 0, 0, 10, 1);
     private final BooleanSetting offhand = new BooleanSetting("Offhand", this, true);
     private final NumberSetting totemSlot = new NumberSetting("Totem Slot", this, 1, 1, 9, 1);
-    private final BooleanSetting workOnKey = new BooleanSetting("Work On Key", this, false);
+    public final BooleanSetting workOnKey = new BooleanSetting("Work On Key", this, false);
     public final KeybindSetting activateKey = new KeybindSetting("Activate Key", 0, this);
 
     public InventoryTotemModule() {
@@ -35,7 +35,7 @@ public class InventoryTotemModule extends Module {
         swapClock = 0;
     }
 
-    private boolean searchTotems() {
+    public boolean searchTotems() {
         PlayerInventory inventory = mc.player.getInventory();
         return !inventory.getStack(totemSlot.getIValue() - 1).isOf(Items.TOTEM_OF_UNDYING) || (!inventory.getStack(40).isOf(Items.TOTEM_OF_UNDYING) && offhand.isEnabled());
     }
