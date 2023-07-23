@@ -38,8 +38,6 @@ public class AsteriaNewMenu implements Renderable {
 
     @Override
     public void render() {
-        if(Phosphor.moduleManager().getModule(AsteriaSettingsModule.class) != null)
-            Phosphor.moduleManager().getModule(AsteriaSettingsModule.class).updateMode();
         NewTab.getInstance().render();
 
         int imGuiWindowFlags = 0;
@@ -60,7 +58,7 @@ public class AsteriaNewMenu implements Renderable {
 
         //float posX = (float) (MinecraftClient.getInstance().getWindow().getWidth() / 2 - 330);
         //float posY = (float) (MinecraftClient.getInstance().getWindow().getHeight() / 2 - 250);
-        float posX = NewTab.getInstance().getPos().x+160;
+        float posX = NewTab.getInstance().getPos().x + 160;
         float posY = NewTab.getInstance().getPos().y;
         ImGui.setWindowPos(posX, posY);
 
@@ -69,14 +67,12 @@ public class AsteriaNewMenu implements Renderable {
 
             if (module.isEnabled()) {
                 float[] color = JColor.getGuiColor().getFloatColor();
+                float[] dColor = JColor.getGuiColor().jDarker().getFloatColor();
 
                 ImGui.pushStyleColor(ImGuiCol.Text, 0.80f, 0.84f, 0.96f, 1.00f);
-                //ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], 0.50f);
-                //ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], 0.65f);
-                //ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], 0.8f);
-                ImGui.pushStyleColor(ImGuiCol.Button, 0.09f, 0.09f, 0.15f, 0.6f);
-                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.09f, 0.09f, 0.15f, 0.75f);
-                ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.1f, 0.1f, 0.16f, 0.9f);
+                ImGui.pushStyleColor(ImGuiCol.Button, dColor[0], dColor[1], dColor[2], 0.50f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], 0.65f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], 0.75f);
             } else {
                 ImGui.pushStyleColor(ImGuiCol.Text, 0.42f, 0.44f, 0.53f, 1.00f);
                 ImGui.pushStyleColor(ImGuiCol.Button, 0.09f, 0.09f, 0.15f, 0.5f);
@@ -129,8 +125,8 @@ public class AsteriaNewMenu implements Renderable {
                 float[][] colors = ImGui.getStyle().getColors();
 
                 float[] color = JColor.getGuiColor().getFloatColor();
-                float[] bColor = JColor.getGuiColor().getFloatColor();
-                float[] dColor = JColor.getGuiColor().getFloatColor();
+                float[] bColor = JColor.getGuiColor().jBrighter().getFloatColor();
+                float[] dColor = JColor.getGuiColor().jDarker().getFloatColor();
 
                 colors[ImGuiCol.Text]                   = new float[]{0.80f, 0.84f, 0.96f, 1.00f};
                 colors[ImGuiCol.TextDisabled]           = new float[]{0.42f, 0.44f, 0.53f, 1.00f};

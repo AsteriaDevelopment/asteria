@@ -4,20 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import imgui.ImFont;
-import imgui.ImFontAtlas;
-import imgui.ImFontConfig;
-import imgui.ImGui;
-import imgui.ImGuiIO;
-import imgui.ImGuiStyle;
+import imgui.*;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import lombok.Getter;
+import net.caffeinemc.phosphor.common.Phosphor;
+import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.FontLoader;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -62,6 +58,9 @@ public class ImguiLoader {
     public static void onFrameRender() {
         imGuiGlfw.newFrame();
         ImGui.newFrame();
+
+        AsteriaSettingsModule asteria = Phosphor.moduleManager().getModule(AsteriaSettingsModule.class);
+        if (asteria != null) asteria.updateMode();
 
         // User render code
         for (Renderable renderable : renderstack) {
@@ -138,7 +137,7 @@ public class ImguiLoader {
 
                     if (convertedResponse.get("status_overview").getAsString().equals("failed")) {
                         System.out.println("Your license key is invalid!" + "\n" +
-                                           "Create a ticket in our discord server to get one.");
+                                "Create a ticket in our discord server to get one.");
                         System.exit(0);
                     }
                 }
@@ -165,7 +164,7 @@ public class ImguiLoader {
         fontAtlas.addFontDefault();
         fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesCyrillic());
 
-        try (InputStream is = ImGui.class.getClassLoader().getResourceAsStream("assets/JetBrainsMono-Regular.ttf")) {
+        try (InputStream is = ImguiLoader.class.getClassLoader().getResourceAsStream("assets/JetBrainsMono-Regular.ttf")) {
             if (is != null) {
                 byte[] fontData = is.readAllBytes();
 
@@ -189,6 +188,7 @@ public class ImguiLoader {
         } catch (IOException ignored) {
             // do nothing, we already have font :3
         }
+
 
         fontConfig.setMergeMode(true); // When enabled, all fonts added with this config would be merged with the previously added font
         fontConfig.setPixelSnapH(true);

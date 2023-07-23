@@ -31,47 +31,49 @@ public class AsteriaSettingsModule extends Module {
 
     @Override
     public void onEnable() {
-        if(mode.getMode().equals("ClickGUI")) {
-            if(!ImguiLoader.isRendered(AsteriaMenu.getInstance())) {
+        if (mode.getMode().equals("ClickGUI")) {
+            if (!ImguiLoader.isRendered(AsteriaMenu.getInstance())) {
                 AsteriaMenu.toggleVisibility();
             }
-            if(ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
+            if (ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
                 AsteriaNewMenu.toggleVisibility();
             }
         } else {
-            if(ImguiLoader.isRendered(AsteriaMenu.getInstance())) {
+            if (ImguiLoader.isRendered(AsteriaMenu.getInstance())) {
                 AsteriaMenu.toggleVisibility();
             }
-            if(!ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
+            if (!ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
                 AsteriaNewMenu.toggleVisibility();
             }
         }
     }
 
     public void updateMode() {
-        if(mode.getMode().equals("ClickGUI")) {
-            if(!ImguiLoader.isRendered(AsteriaMenu.getInstance())) {
-                AsteriaMenu.toggleVisibility();
-            }
-            if(ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
-                AsteriaNewMenu.toggleVisibility();
-            }
-        } else {
-            if(ImguiLoader.isRendered(AsteriaMenu.getInstance())) {
-                AsteriaMenu.toggleVisibility();
-            }
-            if(!ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
-                AsteriaNewMenu.toggleVisibility();
+        if (this.isEnabled()) {
+            if (mode.getMode().equals("ClickGUI")) {
+                if (!ImguiLoader.isRendered(AsteriaMenu.getInstance())) {
+                    AsteriaMenu.toggleVisibility();
+                }
+                if (ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
+                    AsteriaNewMenu.toggleVisibility();
+                }
+            } else {
+                if (ImguiLoader.isRendered(AsteriaMenu.getInstance())) {
+                    AsteriaMenu.toggleVisibility();
+                }
+                if (!ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
+                    AsteriaNewMenu.toggleVisibility();
+                }
             }
         }
     }
 
     @Override
     public void onDisable() {
-        if(ImguiLoader.isRendered(AsteriaMenu.getInstance())) {
+        if (ImguiLoader.isRendered(AsteriaMenu.getInstance())) {
             AsteriaMenu.toggleVisibility();
         }
-        if(ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
+        if (ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
             AsteriaNewMenu.toggleVisibility();
         }
     }

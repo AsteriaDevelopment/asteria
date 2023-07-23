@@ -64,11 +64,11 @@ public class JColor extends Color {
 	}
 
 	public JColor jDarker() {
-		return (JColor) this.darker();
+		return new JColor(this.darker());
 	}
 
 	public JColor jBrighter() {
-		return (JColor) this.brighter();
+		return new JColor(this.brighter());
 	}
 
 	public float[] getFloatColorWAlpha() {

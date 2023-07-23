@@ -84,8 +84,6 @@ public class AsteriaMenu implements Renderable {
 
     @Override
     public void render() {
-        if(Phosphor.moduleManager().getModule(AsteriaSettingsModule.class) != null)
-            Phosphor.moduleManager().getModule(AsteriaSettingsModule.class).updateMode();
         for (CategoryTab categoryTab : tabs) {
             categoryTab.render();
         }
@@ -99,8 +97,8 @@ public class AsteriaMenu implements Renderable {
                 float[][] colors = ImGui.getStyle().getColors();
 
                 float[] color = JColor.getGuiColor().getFloatColor();
-                float[] bColor = JColor.getGuiColor().getFloatColor();
-                float[] dColor = JColor.getGuiColor().getFloatColor();
+                float[] bColor = JColor.getGuiColor().jBrighter().getFloatColor();
+                float[] dColor = JColor.getGuiColor().jDarker().getFloatColor();
 
                 colors[ImGuiCol.Text]                   = new float[]{0.80f, 0.84f, 0.96f, 1.00f};
                 colors[ImGuiCol.TextDisabled]           = new float[]{0.42f, 0.44f, 0.53f, 1.00f};

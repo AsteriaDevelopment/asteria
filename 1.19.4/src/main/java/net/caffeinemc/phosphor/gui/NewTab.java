@@ -5,7 +5,6 @@ import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiWindowFlags;
 import net.caffeinemc.phosphor.api.font.JColor;
-import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
 import net.minecraft.client.MinecraftClient;
 
@@ -36,7 +35,6 @@ public class NewTab implements Renderable {
         int imGuiWindowFlags = 0;
         imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
         imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
-        //imGuiWindowFlags |= ImGuiWindowFlags.NoMove;
         imGuiWindowFlags |= ImGuiWindowFlags.NoDecoration;
         imGuiWindowFlags |= ImGuiWindowFlags.NoBringToFrontOnFocus;
         imGuiWindowFlags |= ImGuiWindowFlags.NoFocusOnAppearing;
@@ -59,8 +57,9 @@ public class NewTab implements Renderable {
         }
         pos = ImGui.getWindowPos();
 
-        ImGui.pushFont(ImguiLoader.getBiggerDosisFont());
         float[] color = JColor.getGuiColor().getFloatColor();
+
+        ImGui.pushFont(ImguiLoader.getBiggerDosisFont());
         ImGui.pushStyleColor(ImGuiCol.Text, color[0], color[1], color[2], 1.00f);
         ImGui.text("Asteria");
         ImGui.popFont();
@@ -74,19 +73,21 @@ public class NewTab implements Renderable {
             ImGui.pushID(category.name());
 
             if (selectedCategory == category) {
+                float[] dColor = JColor.getGuiColor().jDarker().getFloatColor();
+
                 ImGui.pushStyleColor(ImGuiCol.Text, 0.80f, 0.84f, 0.96f, 1.00f);
-                ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], 0.50f);
+                ImGui.pushStyleColor(ImGuiCol.Button, dColor[0], dColor[1], dColor[2], 0.5f);
                 ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], 0.65f);
-                ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], 0.8f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], 0.7f);
             } else {
                 ImGui.pushStyleColor(ImGuiCol.Text, 0.42f, 0.44f, 0.53f, 1.00f);
-                ImGui.pushStyleColor(ImGuiCol.Button, 0.07f, 0.07f, 0.11f, 0.f);
+                ImGui.pushStyleColor(ImGuiCol.Button, 0.09f, 0.09f, 0.15f, 0.4f);
                 ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.09f, 0.09f, 0.15f, 0.65f);
                 ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.1f, 0.1f, 0.16f, 0.8f);
             }
 
             ImGui.pushFont(ImguiLoader.getBigDosisFont());
-            boolean isToggled = ImGui.button(category.name(), 180f, 60f);
+            ImGui.button(category.name(), 180f, 60f);
             ImGui.popFont();
             ImGui.popStyleColor(4);
 
@@ -109,8 +110,8 @@ public class NewTab implements Renderable {
                 float[][] colors = ImGui.getStyle().getColors();
 
                 float[] color = JColor.getGuiColor().getFloatColor();
-                float[] bColor = JColor.getGuiColor().getFloatColor();
-                float[] dColor = JColor.getGuiColor().getFloatColor();
+                float[] bColor = JColor.getGuiColor().jBrighter().getFloatColor();
+                float[] dColor = JColor.getGuiColor().jDarker().getFloatColor();
 
                 colors[ImGuiCol.Text]                   = new float[]{0.80f, 0.84f, 0.96f, 1.00f};
                 colors[ImGuiCol.TextDisabled]           = new float[]{0.42f, 0.44f, 0.53f, 1.00f};
