@@ -1,23 +1,26 @@
 package net.caffeinemc.phosphor.module;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.caffeinemc.phosphor.module.modules.misc.PingSpoofModule;
-import net.caffeinemc.phosphor.module.modules.misc.FakePlayerModule;
-import net.minecraft.client.gui.screen.ChatScreen;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-
 import net.caffeinemc.phosphor.api.event.events.KeyPressEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.gui.AsteriaMenu;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
-
-import net.caffeinemc.phosphor.module.modules.client.*;
+import net.caffeinemc.phosphor.module.modules.client.ArrayListModule;
+import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
+import net.caffeinemc.phosphor.module.modules.client.MiddleClickFriendModule;
 import net.caffeinemc.phosphor.module.modules.combat.*;
-import net.caffeinemc.phosphor.module.modules.player.*;
+import net.caffeinemc.phosphor.module.modules.misc.FakePlayerModule;
+import net.caffeinemc.phosphor.module.modules.misc.PingSpoofModule;
+import net.caffeinemc.phosphor.module.modules.player.BridgeAssistModule;
+import net.caffeinemc.phosphor.module.modules.player.CrystalOptimizerModule;
+import net.caffeinemc.phosphor.module.modules.player.FastPlaceModule;
+import net.caffeinemc.phosphor.module.modules.player.VelocityModule;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.util.InputUtil;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class ModuleManager {
@@ -101,6 +104,7 @@ public class ModuleManager {
 
 
 		// PLAYER
+		addModule(new BridgeAssistModule());
 		addModule(new CrystalOptimizerModule());
 		addModule(new FastPlaceModule());
 		addModule(new VelocityModule());

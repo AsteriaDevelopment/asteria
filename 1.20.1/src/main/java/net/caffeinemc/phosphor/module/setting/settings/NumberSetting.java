@@ -83,7 +83,7 @@ public class NumberSetting extends Setting implements RenderableSetting {
 			ImDouble val = new ImDouble(this.value);
 
 			ImGui.pushItemWidth(170f);
-			changed = ImGui.sliderScalar("", ImGuiDataType.Double, val, minimum, maximum, "%.2f");
+			changed = ImGui.sliderScalar("", ImGuiDataType.Double, val, minimum, maximum, "%.3f");
 			ImGui.popItemWidth();
 
 			if (changed)

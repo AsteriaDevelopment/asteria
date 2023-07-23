@@ -101,6 +101,7 @@ public class ModuleManager {
 
 
 		// PLAYER
+		addModule(new BridgeAssistModule());
 		addModule(new CrystalOptimizerModule());
 		addModule(new FastPlaceModule());
 		addModule(new VelocityModule());
