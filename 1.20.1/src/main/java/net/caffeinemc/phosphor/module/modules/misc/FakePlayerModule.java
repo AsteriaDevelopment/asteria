@@ -5,7 +5,7 @@ import net.caffeinemc.phosphor.module.Module;
 
 public class FakePlayerModule extends Module {
     public FakePlayerModule() {
-        super("FakePlayer", "Spawns fake player", Category.MISCELLANEOUS);
+        super("FakePlayer", "Spawns fake player", Category.MISC);
     }
 
     private FakePlayerEntity fakePlayer;
