@@ -92,6 +92,7 @@ public class ModuleManager {
 		addModule(new BlinkModule());
 		addModule(new HitboxesModule());
 		addModule(new InventoryTotemModule());
+		addModule(new PotRefillModule());
 		addModule(new ReachModule());
 		addModule(new SilentAimModule());
 		addModule(new TriggerBotModule());
