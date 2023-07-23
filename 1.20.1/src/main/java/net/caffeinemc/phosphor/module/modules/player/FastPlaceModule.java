@@ -51,7 +51,7 @@ public class FastPlaceModule extends Module {
                 Item mainHandItem = mainHandStack.getItem();
                 Item offHandItem = mc.player.getOffHandStack().getItem();
 
-                if (mainHandItem instanceof BlockItem && offHandItem instanceof BlockItem) {
+                if (mainHandItem instanceof BlockItem || offHandItem instanceof BlockItem) {
                     if (!blocks.isEnabled())
                         return;
                 } else {
