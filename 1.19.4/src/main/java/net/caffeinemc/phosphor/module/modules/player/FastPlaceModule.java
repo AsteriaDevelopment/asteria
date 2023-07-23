@@ -47,9 +47,11 @@ public class FastPlaceModule extends Module {
 
             if (MathUtils.getRandomInt(1, 100) <= useChance.getIValue()) {
                 ItemStack mainHandStack = mc.player.getMainHandStack();
+                ItemStack offHandStack = mc.player.getOffHandStack();
                 Item mainHandItem = mainHandStack.getItem();
+                Item offHandItem = mc.player.getOffHandStack().getItem();
 
-                if (mainHandItem instanceof BlockItem) {
+                if (mainHandItem instanceof BlockItem && offHandItem instanceof BlockItem) {
                     if (!blocks.isEnabled())
                         return;
                 } else {
@@ -60,10 +62,14 @@ public class FastPlaceModule extends Module {
                 if (mainHandItem.getFoodComponent() != null)
                     return;
 
-                if (mainHandStack.isOf(Items.RESPAWN_ANCHOR) || mainHandStack.isOf(Items.GLOWSTONE))
+                if (offHandItem.getFoodComponent() != null)
                     return;
 
-                if (mainHandItem instanceof RangedWeaponItem)
+                if ((mainHandStack.isOf(Items.RESPAWN_ANCHOR) || mainHandStack.isOf(Items.GLOWSTONE)) ||
+                        (offHandStack.isOf(Items.RESPAWN_ANCHOR) || offHandStack.isOf(Items.GLOWSTONE)))
+                    return;
+
+                if (mainHandItem instanceof RangedWeaponItem || offHandItem instanceof RangedWeaponItem)
                     return;
 
                 ((MinecraftClientAccessor) mc).callDoItemUse();
