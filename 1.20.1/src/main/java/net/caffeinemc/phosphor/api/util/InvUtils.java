@@ -19,6 +19,22 @@ public class InvUtils {
         ((ClientPlayerInteractionManagerAccessor) mc.interactionManager).callSyncSelectedSlot();
     }
 
+    public static int getItemSlot(Predicate<Item> item) {
+        PlayerInventory inv = mc.player.getInventory();
+        for (int i = 0; i < 9; ++i) {
+            ItemStack itemStack = inv.getStack(i);
+            if (!item.test(itemStack.getItem()))
+                continue;
+            return i;
+        }
+
+        return -1;
+    }
+
+    public static int getItemSlot(Item item) {
+        return getItemSlot((Item i) -> i == item);
+    }
+
     public static boolean selectItemFromHotbar(Predicate<Item> item) {
         PlayerInventory inv = mc.player.getInventory();
         for (int i = 0; i < 9; ++i) {

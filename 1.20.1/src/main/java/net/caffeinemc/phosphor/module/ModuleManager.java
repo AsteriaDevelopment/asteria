@@ -97,6 +97,7 @@ public class ModuleManager {
 		addModule(new ReachModule());
 		addModule(new SilentAimModule());
 		addModule(new TriggerBotModule());
+		addModule(new WebMacroModule());
 
 		// RENDER
 
