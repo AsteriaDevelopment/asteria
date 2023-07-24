@@ -7,6 +7,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.BlockItem;
+import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -50,8 +51,9 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
     @Override
     protected boolean clipAtLedge() {
-        BridgeAssistModule bridgeAssistModule = Phosphor.moduleManager().getModule(BridgeAssistModule.class);
-        if (bridgeAssistModule.isEnabled() && bridgeAssistModule.checkHands()) {
+        BridgeAssistModule bridgeAssist = Phosphor.moduleManager().getModule(BridgeAssistModule.class);
+        if (bridgeAssist.isEnabled() && bridgeAssist.checkHands() && !isOnGround() &&
+                MathHelper.wrapDegrees(getPitch()) >= bridgeAssist.minAngle.getFValue()) {
             if (!isSneaking()) setSneaking(true);
         }
 
