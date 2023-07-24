@@ -93,6 +93,7 @@ public class ModuleManager {
 		addModule(new AutoTotemModule());
 		addModule(new AxeSpamModule());
 		addModule(new BlinkModule());
+		addModule(new ChestStealerModule());
 		addModule(new HitboxesModule());
 		addModule(new InventoryTotemModule());
 		addModule(new PotRefillModule());
