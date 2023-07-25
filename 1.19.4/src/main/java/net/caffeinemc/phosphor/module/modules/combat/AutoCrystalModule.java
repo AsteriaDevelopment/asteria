@@ -30,8 +30,8 @@ public class AutoCrystalModule extends Module {
     public final BooleanSetting onRmb = new BooleanSetting("On RMB", this, true);
     public final BooleanSetting noCountGlitch = new BooleanSetting("No Count Glitch", this, true);
     public final BooleanSetting noBounce = new BooleanSetting("No Bounce", this, true);
-    public final NumberSetting placeDelay = new NumberSetting("Place Delay", this, 0, 0, 5, 1);
-    public final NumberSetting breakDelay = new NumberSetting("Break Delay", this, 0, 0, 5, 1);
+    public final NumberSetting placeDelay = new NumberSetting("Place Delay", this, 0, 0, 10, 1);
+    public final NumberSetting breakDelay = new NumberSetting("Break Delay", this, 0, 0, 10, 1);
     public final BooleanSetting fastMode = new BooleanSetting("Fast Mode", this, true);
 
     public AutoCrystalModule() {
@@ -61,7 +61,7 @@ public class AutoCrystalModule extends Module {
 
                         reset();
                     }
-                } else if (mc.crosshairTarget instanceof EntityHitResult entityHit && entityHit.getType() == HitResult.Type.ENTITY) {
+                } else if (mc.crosshairTarget instanceof EntityHitResult entityHit) {
                     if (fastMode.isEnabled()) {
                         if (entityHit.getEntity() instanceof EndCrystalEntity crystal) {
                             if (isCrystalBroken(crystal)) {
@@ -121,10 +121,10 @@ public class AutoCrystalModule extends Module {
             return;
 
         if (nullCheck()) {
-            ++tickTimer;
-
             placeCrystal();
             breakCrystal();
+
+            ++tickTimer;
         } else {
             tickTimer = 0;
         }

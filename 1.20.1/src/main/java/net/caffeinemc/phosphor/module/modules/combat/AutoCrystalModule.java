@@ -18,11 +18,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.BlockStateRaycastContext;
 import net.minecraft.world.RaycastContext;
 import org.lwjgl.glfw.GLFW;
 
@@ -34,8 +30,8 @@ public class AutoCrystalModule extends Module {
     public final BooleanSetting onRmb = new BooleanSetting("On RMB", this, true);
     public final BooleanSetting noCountGlitch = new BooleanSetting("No Count Glitch", this, true);
     public final BooleanSetting noBounce = new BooleanSetting("No Bounce", this, true);
-    public final NumberSetting placeDelay = new NumberSetting("Place Delay", this, 0, 0, 5, 1);
-    public final NumberSetting breakDelay = new NumberSetting("Break Delay", this, 0, 0, 5, 1);
+    public final NumberSetting placeDelay = new NumberSetting("Place Delay", this, 0, 0, 10, 1);
+    public final NumberSetting breakDelay = new NumberSetting("Break Delay", this, 0, 0, 10, 1);
     public final BooleanSetting fastMode = new BooleanSetting("Fast Mode", this, true);
 
     public AutoCrystalModule() {
@@ -65,7 +61,7 @@ public class AutoCrystalModule extends Module {
 
                         reset();
                     }
-                } else if (mc.crosshairTarget instanceof EntityHitResult entityHit && entityHit.getType() == HitResult.Type.ENTITY) {
+                } else if (mc.crosshairTarget instanceof EntityHitResult entityHit) {
                     if (fastMode.isEnabled()) {
                         if (entityHit.getEntity() instanceof EndCrystalEntity crystal) {
                             if (isCrystalBroken(crystal)) {
@@ -125,10 +121,10 @@ public class AutoCrystalModule extends Module {
             return;
 
         if (nullCheck()) {
-            ++tickTimer;
-
             placeCrystal();
             breakCrystal();
+
+            ++tickTimer;
         } else {
             tickTimer = 0;
         }
