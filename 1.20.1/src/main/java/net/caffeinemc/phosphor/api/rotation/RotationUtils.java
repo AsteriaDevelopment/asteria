@@ -1,6 +1,7 @@
 package net.caffeinemc.phosphor.api.rotation;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -58,5 +59,21 @@ public class RotationUtils {
         double diffPitch = MathHelper.wrapDegrees(currentPitch - rotation.pitch());
 
         return Math.sqrt(diffYaw * diffYaw + diffPitch * diffPitch);
+    }
+
+    public static Vec3d getPlayerLookVec(float yaw, float pitch) {
+        float f = 0.017453292F;
+        float pi = (float)Math.PI;
+
+        float f1 = MathHelper.cos(-yaw * f - pi);
+        float f2 = MathHelper.sin(-yaw * f - pi);
+        float f3 = -MathHelper.cos(-pitch * f);
+        float f4 = MathHelper.sin(-pitch * f);
+
+        return new Vec3d(f2 * f3, f4, f1 * f3).normalize();
+    }
+
+    public static Vec3d getPlayerLookVec(PlayerEntity player) {
+        return getPlayerLookVec(player.getYaw(), player.getPitch());
     }
 }

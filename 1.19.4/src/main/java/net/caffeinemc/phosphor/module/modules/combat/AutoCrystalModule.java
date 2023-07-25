@@ -2,6 +2,7 @@ package net.caffeinemc.phosphor.module.modules.combat;
 
 import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
+import net.caffeinemc.phosphor.api.rotation.RotationUtils;
 import net.caffeinemc.phosphor.api.util.KeyUtils;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
@@ -17,10 +18,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.RaycastContext;
 import org.lwjgl.glfw.GLFW;
 
 import static net.caffeinemc.phosphor.api.util.CrystalUtils.canPlaceCrystalServer;
@@ -66,8 +65,14 @@ public class AutoCrystalModule extends Module {
                     if (fastMode.isEnabled()) {
                         if (entityHit.getEntity() instanceof EndCrystalEntity crystal) {
                             if (isCrystalBroken(crystal)) {
-                                Vec3d blockPosition = crystal.getPos().add(0, -1, 0);
-                                BlockHitResult blockHit = new BlockHitResult(blockPosition, Direction.UP, new BlockPos(new Vec3i((int) blockPosition.x, (int) blockPosition.y, (int) blockPosition.z)), false);
+                                Vec3d eyePos = mc.player.getEyePos();
+                                BlockHitResult blockHit = mc.world.raycast(
+                                        new RaycastContext(
+                                                eyePos,
+                                                eyePos.add(RotationUtils.getPlayerLookVec(mc.player).add(0, -1, 0)),
+                                                RaycastContext.ShapeType.OUTLINE,
+                                                RaycastContext.FluidHandling.NONE,
+                                                mc.player));
                                 BlockState blockState = mc.world.getBlockState(blockHit.getBlockPos());
 
                                 if (blockState.isOf(Blocks.OBSIDIAN) || blockState.isOf(Blocks.BEDROCK)) {
