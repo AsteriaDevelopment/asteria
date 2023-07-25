@@ -46,6 +46,7 @@ public class AsteriaSettingsModule extends Module {
                 AsteriaNewMenu.toggleVisibility();
             }
         }
+        mc.mouse.unlockCursor();
     }
 
     public void updateMode() {
@@ -76,5 +77,6 @@ public class AsteriaSettingsModule extends Module {
         if (ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
             AsteriaNewMenu.toggleVisibility();
         }
+        if (mc.currentScreen == null) mc.mouse.lockCursor();
     }
 }
