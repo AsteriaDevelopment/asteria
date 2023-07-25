@@ -6,6 +6,7 @@ plugins {
 
 version = '0.8.1'
 group = project.maven_group
+evaluationDependsOn(':shared')
 
 loom {
     accessWidenerPath = file("src/main/resources/phosphor.accesswidener")
@@ -39,15 +40,22 @@ dependencies {
     shadowImpl "io.github.spair:imgui-java-natives-windows-ft:${project.imguiVersion}"
     shadowImpl "io.github.spair:imgui-java-natives-linux-ft:${project.imguiVersion}"
     shadowImpl "io.github.spair:imgui-java-natives-macos-ft:${project.imguiVersion}"
+
+    compileOnly project(":shared")
 }
 
 processResources {
+    from project(":shared").sourceSets.main.resources
     inputs.property "version", project.version
     filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
+}
+
+compileJava {
+    source project(':shared').sourceSets.main.allSource
 }
 
 def targetJavaVersion = 17
