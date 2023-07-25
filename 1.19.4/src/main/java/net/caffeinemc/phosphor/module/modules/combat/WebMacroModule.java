@@ -117,7 +117,7 @@ public class WebMacroModule extends Module {
                         setPrevSlot();
                     }
                 }
-                if (BlockUtils.isBlock(Blocks.COBWEB, blockHit.getBlockPos())) {
+                if (BlockUtils.isBlock(Blocks.COBWEB, blockHit.getBlockPos()) && placedWeb) {
                     if (placeTNT.isEnabled()) {
                         int tntSlot = getTNTSlot();
 
@@ -129,7 +129,6 @@ public class WebMacroModule extends Module {
                                 return;
                             }
 
-                            prevSlot = mc.player.getInventory().selectedSlot;
                             InvUtils.setInvSlot(tntSlot);
 
                             selectedTnt = true;
@@ -148,10 +147,10 @@ public class WebMacroModule extends Module {
                                 mc.player.swingHand(Hand.MAIN_HAND);
                             }
 
-                            placedWeb = true;
+                            placedTnt = true;
                             placeClock = 0;
                         }
-                        if (placedWeb && goToPrevSlot.isEnabled() && mc.player.getInventory().selectedSlot == tntSlot) {
+                        if (placedTnt && goToPrevSlot.isEnabled() && mc.player.getInventory().selectedSlot == tntSlot) {
                             setPrevSlot();
                         }
                     }
