@@ -6,6 +6,7 @@ import net.caffeinemc.phosphor.gui.AsteriaMenu;
 import net.caffeinemc.phosphor.gui.AsteriaNewMenu;
 import net.caffeinemc.phosphor.gui.ImguiLoader;
 import net.caffeinemc.phosphor.module.Module;
+import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.ButtonSetting;
 import net.caffeinemc.phosphor.module.setting.settings.ColorSetting;
 import net.caffeinemc.phosphor.module.setting.settings.ModeSetting;
@@ -13,6 +14,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class AsteriaSettingsModule extends Module {
     public final ColorSetting color = new ColorSetting("Color", this, new JColor(0.90f, 0.27f, 0.33f), false);
+    public final BooleanSetting clickSounds = new BooleanSetting("Simulate Click Sounds", this, false);
 
     public final ButtonSetting destruct = new ButtonSetting("Destruct", this, () -> {
         AsteriaMenu.stopClient();
