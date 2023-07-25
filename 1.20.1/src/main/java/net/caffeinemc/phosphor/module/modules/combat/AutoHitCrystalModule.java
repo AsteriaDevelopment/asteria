@@ -56,6 +56,8 @@ public class AutoHitCrystalModule extends Module {
 
     @EventHandler
     private void onPlayerTick(PlayerTickEvent event) {
+        if (mc.currentScreen != null) return;
+
         if (KeyUtils.isKeyPressed(activateKey.getKeyCode())) {
             ItemStack mainHand = mc.player.getMainHandStack();
 

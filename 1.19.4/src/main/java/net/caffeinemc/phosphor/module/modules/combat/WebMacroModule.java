@@ -78,6 +78,8 @@ public class WebMacroModule extends Module {
 
     @EventHandler
     private void onPlayerTick(PlayerTickEvent event) {
+        if (mc.currentScreen != null) return;
+
         if (KeyUtils.isKeyPressed(activateKey.getKeyCode())) {
             if (mc.crosshairTarget instanceof BlockHitResult blockHit) {
                 if (!BlockUtils.isBlock(Blocks.COBWEB, blockHit.getBlockPos())) {

@@ -47,6 +47,8 @@ public class BridgeAssistModule extends Module {
     private void onPreTick(TickEvent.Pre event) {
         if (mc.player == null) return;
 
+        if (mc.currentScreen != null) return;
+
         if (!checkHands()) {
             reset();
             return;

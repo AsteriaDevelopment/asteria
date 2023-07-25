@@ -121,6 +121,9 @@ public class AutoCrystalModule extends Module {
         if (!KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_RIGHT) && onRmb.isEnabled())
             return;
 
+        if (mc.currentScreen != null)
+            return;
+
         if (nullCheck()) {
             ++tickTimer;
 

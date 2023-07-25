@@ -46,13 +46,11 @@ public class MiddleClickFriendModule extends Module {
 
     @EventHandler
     private void onPlayerTick(PlayerTickEvent event) {
-        if (KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_MIDDLE)) {
-            if (mc.crosshairTarget.getType() == HitResult.Type.ENTITY) {
-                EntityHitResult entityHit = (EntityHitResult) mc.crosshairTarget;
+        if (mc.currentScreen != null) return;
 
-                if (entityHit.getEntity() instanceof PlayerEntity player) {
-                    toggleFriend(player);
-                }
+        if (KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_MIDDLE) && mc.crosshairTarget instanceof EntityHitResult entityHit) {
+            if (entityHit.getEntity() instanceof PlayerEntity player) {
+                toggleFriend(player);
             }
         }
     }

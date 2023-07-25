@@ -45,7 +45,7 @@ public class AutoAnchorModule extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (mc.world == null || mc.player == null)
+        if (mc.world == null || mc.player == null || mc.currentScreen != null)
             return;
 
         if (hasAnchored) {
