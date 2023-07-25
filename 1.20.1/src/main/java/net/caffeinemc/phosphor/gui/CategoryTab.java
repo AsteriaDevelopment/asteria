@@ -9,14 +9,21 @@ import net.caffeinemc.phosphor.module.Module;
 
 public class CategoryTab implements Renderable {
     public Module.Category category;
-    private boolean firstFrame;
+    private boolean firstFrame, isWindowFocused;
     private float posX, posY;
+    public float scrollY;
 
     public CategoryTab(Module.Category category, float posX, float posY) {
         this.category = category;
         this.posX = posX;
         this.posY = posY;
+        this.scrollY = 0;
         this.firstFrame = true;
+        this.isWindowFocused = false;
+    }
+
+    public boolean isWindowFocused() {
+        return isWindowFocused;
     }
 
     @Override
@@ -34,6 +41,12 @@ public class CategoryTab implements Renderable {
         //ImGui.pushFont(ImguiLoader.getNormalFontAwesome());
         ImGui.begin(getName(), imGuiWindowFlags);
         //ImGui.popFont();
+
+        isWindowFocused = ImGui.isWindowHovered() || ImGui.isWindowFocused();
+
+        if (scrollY > ImGui.getScrollMaxY()) scrollY = ImGui.getScrollMaxY();
+        else if (scrollY < 0) scrollY = 0;
+        ImGui.setScrollY(scrollY);
 
         if (firstFrame) {
             ImGui.setWindowPos(posX, posY);

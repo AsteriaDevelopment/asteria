@@ -5,7 +5,6 @@ import imgui.flag.ImGuiCol;
 import net.caffeinemc.phosphor.api.font.JColor;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
-import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ public class AsteriaMenu implements Renderable {
     private static AsteriaMenu instance;
 
     private static final AtomicBoolean clientEnabled = new AtomicBoolean(true);
-    private final List<CategoryTab> tabs = new ArrayList<>();
+    public final List<CategoryTab> tabs = new ArrayList<>();
 
     public static AsteriaMenu getInstance() {
         if (instance == null) {

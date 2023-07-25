@@ -94,6 +94,7 @@ public class NewTab implements Renderable {
             if (ImGui.isItemHovered()) {
                 if (ImGui.isMouseClicked(1) || ImGui.isMouseClicked(0)) {
                     selectedCategory = category;
+                    AsteriaNewMenu.getInstance().scrollY = 0;
                 }
             }
             ImGui.popID();

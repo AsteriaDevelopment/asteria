@@ -6,12 +6,6 @@ import imgui.flag.ImGuiWindowFlags;
 import net.caffeinemc.phosphor.api.font.JColor;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
-import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
-import net.minecraft.client.MinecraftClient;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AsteriaNewMenu implements Renderable {
     private static AsteriaNewMenu instance;
@@ -22,6 +16,8 @@ public class AsteriaNewMenu implements Renderable {
         }
         return instance;
     }
+
+    public float scrollY = 0;
 
     public static void toggleVisibility() {
         if (ImguiLoader.isRendered(getInstance())) {
@@ -61,6 +57,13 @@ public class AsteriaNewMenu implements Renderable {
         float posX = NewTab.getInstance().getPos().x + 160;
         float posY = NewTab.getInstance().getPos().y;
         ImGui.setWindowPos(posX, posY);
+
+        if (scrollY > ImGui.getScrollMaxY()) {
+            scrollY = ImGui.getScrollMaxY();
+        } else if (scrollY < 0) {
+            scrollY = 0;
+        }
+        ImGui.setScrollY(scrollY);
 
         for (Module module : Phosphor.moduleManager().getModulesByCategory(NewTab.getInstance().selectedCategory)) {
             ImGui.pushID(module.getName());

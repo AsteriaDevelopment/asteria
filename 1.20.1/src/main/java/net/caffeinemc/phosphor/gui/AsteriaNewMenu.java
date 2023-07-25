@@ -17,6 +17,8 @@ public class AsteriaNewMenu implements Renderable {
         return instance;
     }
 
+    public float scrollY = 0;
+
     public static void toggleVisibility() {
         if (ImguiLoader.isRendered(getInstance())) {
             ImguiLoader.queueRemove(getInstance());
@@ -55,6 +57,13 @@ public class AsteriaNewMenu implements Renderable {
         float posX = NewTab.getInstance().getPos().x + 160;
         float posY = NewTab.getInstance().getPos().y;
         ImGui.setWindowPos(posX, posY);
+
+        if (scrollY > ImGui.getScrollMaxY()) {
+            scrollY = ImGui.getScrollMaxY();
+        } else if (scrollY < 0) {
+            scrollY = 0;
+        }
+        ImGui.setScrollY(scrollY);
 
         for (Module module : Phosphor.moduleManager().getModulesByCategory(NewTab.getInstance().selectedCategory)) {
             ImGui.pushID(module.getName());

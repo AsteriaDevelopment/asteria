@@ -14,7 +14,7 @@ public class AsteriaMenu implements Renderable {
     private static AsteriaMenu instance;
 
     private static final AtomicBoolean clientEnabled = new AtomicBoolean(true);
-    private final List<CategoryTab> tabs = new ArrayList<>();
+    public final List<CategoryTab> tabs = new ArrayList<>();
 
     public static AsteriaMenu getInstance() {
         if (instance == null) {

@@ -1,6 +1,11 @@
 package net.caffeinemc.phosphor.mixin;
 
+import imgui.ImGui;
 import net.caffeinemc.phosphor.common.Phosphor;
+import net.caffeinemc.phosphor.gui.AsteriaMenu;
+import net.caffeinemc.phosphor.gui.AsteriaNewMenu;
+import net.caffeinemc.phosphor.gui.CategoryTab;
+import net.caffeinemc.phosphor.gui.ImguiLoader;
 import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
@@ -33,6 +38,22 @@ public class MouseMixin {
         AsteriaSettingsModule asteria = Phosphor.moduleManager().getModule(AsteriaSettingsModule.class);
         if (asteria != null && asteria.isEnabled()) {
             ci.cancel();
+        }
+    }
+
+    @Inject(method = "onMouseScroll", at = @At("HEAD"))
+    private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
+        AsteriaSettingsModule asteria = Phosphor.moduleManager().getModule(AsteriaSettingsModule.class);
+        if (asteria != null && asteria.isEnabled()) {
+            double scrollY = vertical * 30;
+
+            if (ImguiLoader.isRendered(AsteriaNewMenu.getInstance())) {
+                AsteriaNewMenu.getInstance().scrollY -= scrollY;
+            } else if (ImguiLoader.isRendered(AsteriaMenu.getInstance())) {
+                for (CategoryTab categoryTab : AsteriaMenu.getInstance().tabs) {
+                    if (categoryTab.isWindowFocused()) categoryTab.scrollY -= scrollY;
+                }
+            }
         }
     }
 }
