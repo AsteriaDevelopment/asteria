@@ -8,7 +8,6 @@ import net.caffeinemc.phosphor.mixin.ClientPlayerInteractionManagerAccessor;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -28,26 +27,25 @@ public class AutoAnchorModule extends Module {
         super("AutoAnchor", "Automatically achors", Category.COMBAT);
     }
 
-    private static boolean hasAnchored;
+    private static boolean hasAnchored, hasGlowstoned;
     private static int switchClock, placeClock, cooldownClock;
 
-    @Override
-    public void onEnable() {
+    private void reset() {
         hasAnchored = false;
+        hasGlowstoned = false;
         switchClock = 0;
         placeClock = 0;
         cooldownClock = 0;
     }
 
+    @Override
+    public void onEnable() {
+        reset();
+    }
+
     @EventHandler
     private void onTick(TickEvent.Pre event) {
         if (mc.world == null || mc.player == null)
-            return;
-
-        if (GLFW.glfwGetMouseButton(mc.getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) != GLFW.GLFW_PRESS)
-            return;
-
-        if (mc.player.isUsingItem())
             return;
 
         if (hasAnchored) {
@@ -56,9 +54,16 @@ public class AutoAnchorModule extends Module {
                 return;
             }
 
-            cooldownClock = 0;
-            hasAnchored = false;
+            reset();
         }
+
+        if (GLFW.glfwGetMouseButton(mc.getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) != GLFW.GLFW_PRESS) {
+            reset();
+            return;
+        }
+
+        if (mc.player.isUsingItem())
+            return;
 
         if (mc.crosshairTarget instanceof BlockHitResult hit) {
             if (hit.getType() == HitResult.Type.MISS)
@@ -66,7 +71,7 @@ public class AutoAnchorModule extends Module {
 
             BlockPos pos = hit.getBlockPos();
 
-            if (BlockUtils.isAnchorUncharged(pos)) {
+            if (BlockUtils.isAnchorUncharged(pos) && !hasGlowstoned) {
                 if (!mc.player.isHolding(Items.GLOWSTONE)) {
                     if (switchClock < switchDelay.getIValue()) {
                         switchClock++;
@@ -88,8 +93,10 @@ public class AutoAnchorModule extends Module {
                     mc.player.swingHand(Hand.MAIN_HAND);
                 }
 
+                hasGlowstoned = true;
                 placeClock = 0;
-            } else if (BlockUtils.isAnchorCharged(pos) && !chargeOnly.isEnabled()) {
+            }
+            if (BlockUtils.isAnchorCharged(pos) && hasGlowstoned && !chargeOnly.isEnabled()) {
                 if (mc.player.getInventory().selectedSlot != itemSwap.getIValue() - 1) {
                     if (switchClock < switchDelay.getIValue()) {
                         switchClock++;
