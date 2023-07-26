@@ -49,19 +49,19 @@ public class AutoDoubleHandModule extends Module {
     }
 
     private boolean arePlayersAimingAtCrystal(EndCrystalEntity crystal) {
-        return mc.world.getPlayers().parallelStream()
-                .filter(player -> player != mc.player)
-                .anyMatch(player -> {
-                    Vec3d start = player.getEyePos();
-                    Vec3d end = start.add(RotationUtils.getPlayerLookVec(player));
-                    Box box = new Box(start, end);
-                    List<EndCrystalEntity> crystalsInBox = mc.world.getEntitiesByClass(EndCrystalEntity.class, box, endCrystal -> crystal == endCrystal);
+        for (PlayerEntity player : mc.world.getPlayers()) {
+            Vec3d start = player.getEyePos();
+            Vec3d end = start.add(RotationUtils.getPlayerLookVec(player));
+            Box box = new Box(start, end);
+            List<EndCrystalEntity> crystalsInBox = mc.world.getEntitiesByClass(EndCrystalEntity.class, box, endCrystal -> crystal == endCrystal);
 
-                    return crystalsInBox != null && !crystalsInBox.isEmpty();
-                });
+            if (crystalsInBox != null || crystalsInBox.isEmpty())
+                return true;
+        }
+        return false;
     }
 
-    private boolean arePlayersAimingAtMe(PlayerEntity player) {
+    private boolean isPlayerAimingAtMe(PlayerEntity player) {
         Vec3d start = player.getEyePos();
         Vec3d end = start.add(RotationUtils.getPlayerLookVec(player));
         Box box = new Box(start, end);
@@ -71,15 +71,15 @@ public class AutoDoubleHandModule extends Module {
     }
 
     private boolean arePlayersAimingAtBlock(BlockPos blockPos) {
-        return mc.world.getPlayers().parallelStream()
-                .filter(player -> player != mc.player)
-                .anyMatch(player -> {
-                    Vec3d start = player.getEyePos();
-                    Vec3d end = start.add(RotationUtils.getPlayerLookVec(player));
-                    BlockHitResult blockHitResult = mc.world.raycast(new RaycastContext(start, end, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player));
+        for (PlayerEntity player : mc.world.getPlayers()) {
+            Vec3d start = player.getEyePos();
+            Vec3d end = start.add(RotationUtils.getPlayerLookVec(player));
+            BlockHitResult blockHitResult = mc.world.raycast(new RaycastContext(start, end, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player));
 
-                    return blockHitResult != null && blockHitResult.getType() == HitResult.Type.BLOCK && blockHitResult.getBlockPos().equals(blockPos);
-                });
+            if (blockHitResult != null && blockHitResult.getType() == HitResult.Type.BLOCK && blockHitResult.getBlockPos().equals(blockPos))
+                return true;
+        }
+        return false;
     }
 
     @EventHandler
@@ -118,7 +118,7 @@ public class AutoDoubleHandModule extends Module {
                 List<PlayerEntity> players = PlayerUtils.findNearestEntities(PlayerEntity.class, mc.player, 5, false);
 
                 for (PlayerEntity player : players) {
-                    if (!arePlayersAimingAtMe(player)) continue;
+                    if (!isPlayerAimingAtMe(player)) continue;
 
                     double damage = DamageUtils.getSwordDamage(player, player.getAttackCooldownProgress(0f) >= 1f);
                     if (willDie(damage)) {
