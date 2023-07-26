@@ -2,18 +2,22 @@ package net.caffeinemc.phosphor.api.util;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.caffeinemc.phosphor.common.Phosphor;
-import net.caffeinemc.phosphor.module.modules.combat.ReachModule;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
+import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static net.caffeinemc.phosphor.common.Phosphor.mc;
 
+@SuppressWarnings("unchecked")
 public class PlayerUtils {
     public static JsonObject friends = new JsonObject();
 
@@ -44,7 +48,7 @@ public class PlayerUtils {
             if (!player.getName().equals(toPlayer.getName()) &&
                     player != toPlayer &&
                     distance <= range &&
-                    toPlayer.canSee(player) == seeOnly) {
+                    (!seeOnly || toPlayer.canSee(player))) {
                 if (distance < minRange) {
                     minRange = distance;
                     minPlayer = player;
@@ -66,7 +70,7 @@ public class PlayerUtils {
 
                 float distance = entity.distanceTo(toPlayer);
 
-                if (entity != toPlayer && distance <= range && toPlayer.canSee(entity) == seeOnly) {
+                if (entity != toPlayer && distance <= range && (!seeOnly || toPlayer.canSee(entity))) {
                     if (distance < minRange) {
                         minRange = distance;
                         minEntity = livingEntity;
@@ -76,6 +80,24 @@ public class PlayerUtils {
         }
 
         return minEntity;
+    }
+
+    public static <T extends Entity> List<T> findNearestEntities(Class<T> findEntity, PlayerEntity toPlayer, float range, boolean seeOnly) {
+        List<T> entities = new ArrayList<>();
+
+        for (Entity entity : mc.world.getEntities()) {
+            if (!findEntity.isAssignableFrom(entity.getClass())) continue;
+
+            if (entity instanceof PlayerEntity player && isFriend(player)) continue;
+
+            float distance = entity.distanceTo(toPlayer);
+
+            if (entity != toPlayer && distance <= range && (!seeOnly || toPlayer.canSee(entity))) {
+                entities.add((T) entity);
+            }
+        }
+
+        return entities;
     }
 
     @Nullable
@@ -115,5 +137,12 @@ public class PlayerUtils {
     public static void attackEntity(Entity entity) {
         mc.interactionManager.attackEntity(mc.player, entity);
         mc.player.swingHand(Hand.MAIN_HAND);
+    }
+
+    public static GameMode getGameMode(PlayerEntity player) {
+        if (player == null) return null;
+        PlayerListEntry playerListEntry = mc.getNetworkHandler().getPlayerListEntry(player.getUuid());
+        if (playerListEntry == null) return null;
+        return playerListEntry.getGameMode();
     }
 }
