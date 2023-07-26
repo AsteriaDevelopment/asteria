@@ -40,7 +40,7 @@ public class MouseMixin {
         }
     }
 
-    @Inject(method = "onMouseScroll", at = @At("HEAD"))
+    @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
     private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
         AsteriaSettingsModule asteria = Phosphor.moduleManager().getModule(AsteriaSettingsModule.class);
         if (asteria != null && asteria.isEnabled()) {
@@ -53,6 +53,8 @@ public class MouseMixin {
                     if (categoryTab.isWindowFocused()) categoryTab.scrollY -= scrollY;
                 }
             }
+
+            ci.cancel();
         }
     }
 }
