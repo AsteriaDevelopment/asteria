@@ -1,5 +1,7 @@
 package net.caffeinemc.phosphor.module.modules.client;
 
+import net.caffeinemc.phosphor.api.event.events.KeyPressEvent;
+import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.font.JColor;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.gui.AsteriaMenu;
@@ -80,5 +82,10 @@ public class AsteriaSettingsModule extends Module {
             AsteriaNewMenu.toggleVisibility();
         }
         if (mc.currentScreen == null) mc.mouse.lockCursor();
+    }
+
+    @EventHandler
+    private void onKeyPress(KeyPressEvent event) {
+        if (event.action == GLFW.GLFW_PRESS && event.key == GLFW.GLFW_KEY_ESCAPE) disable();
     }
 }
