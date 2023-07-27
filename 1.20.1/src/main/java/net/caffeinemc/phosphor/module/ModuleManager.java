@@ -97,6 +97,7 @@ public class ModuleManager {
 		addModule(new PotRefillModule());
 		addModule(new ReachModule());
 		addModule(new SilentAimModule());
+		addModule(new SnowballThrowModule());
 		addModule(new TriggerBotModule());
 		addModule(new WebMacroModule());
 
