@@ -1,8 +1,8 @@
 package net.caffeinemc.phosphor.module.modules.combat;
 
-import net.caffeinemc.phosphor.api.event.events.TickEvent;
+import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
-import net.caffeinemc.phosphor.mixin.ClientPlayerInteractionManagerAccessor;
+import net.caffeinemc.phosphor.api.event.orbit.EventPriority;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
 import net.minecraft.entity.player.PlayerInventory;
@@ -24,9 +24,9 @@ public class AutoTotemModule extends Module {
     private boolean swapped;
     private int clock;
 
-    @EventHandler
-    public void onTick(TickEvent.Pre event) {
-        if (!nullCheck())
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerTick(PlayerTickEvent event) {
+        if (mc.currentScreen != null)
             return;
 
         PlayerInventory inventory = mc.player.getInventory();
@@ -54,7 +54,6 @@ public class AutoTotemModule extends Module {
             return;
         }
 
-        ((ClientPlayerInteractionManagerAccessor) mc.interactionManager).callSyncSelectedSlot();
         mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN));
         swapped = true;
     }
