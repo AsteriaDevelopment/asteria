@@ -16,4 +16,10 @@ public interface MinecraftClientAccessor {
 
     @Accessor
     Mouse getMouse();
+
+    @Accessor
+    int getItemUseCooldown();
+
+    @Accessor
+    void setItemUseCooldown(int itemUseCooldown);
 }

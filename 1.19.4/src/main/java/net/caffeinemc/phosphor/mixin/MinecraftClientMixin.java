@@ -1,6 +1,9 @@
 package net.caffeinemc.phosphor.mixin;
 
+import net.caffeinemc.phosphor.api.event.events.AttackEvent;
 import net.caffeinemc.phosphor.api.event.events.BlockBreakEvent;
+import net.caffeinemc.phosphor.api.event.events.ItemUseEvent;
+import net.caffeinemc.phosphor.api.event.events.TickEvent;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
@@ -8,9 +11,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import net.caffeinemc.phosphor.api.event.events.AttackEvent;
-import net.caffeinemc.phosphor.api.event.events.ItemUseEvent;
-import net.caffeinemc.phosphor.api.event.events.TickEvent;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
@@ -34,7 +34,11 @@ public class MinecraftClientMixin {
         if (Phosphor.EVENTBUS.post(AttackEvent.Post.get()).isCancelled()) cir.setReturnValue(false);
     }
 
-    @Inject(method = "doItemUse", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "doItemUse",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/client/network/ClientPlayerEntity;isRiding()Z",
+                    shift = At.Shift.AFTER),
+            cancellable = true)
     private void onPreItemUse(CallbackInfo ci) {
         if (Phosphor.EVENTBUS.post(ItemUseEvent.Pre.get()).isCancelled()) ci.cancel();
     }

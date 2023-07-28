@@ -34,7 +34,11 @@ public class MinecraftClientMixin {
         if (Phosphor.EVENTBUS.post(AttackEvent.Post.get()).isCancelled()) cir.setReturnValue(false);
     }
 
-    @Inject(method = "doItemUse", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "doItemUse",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/client/network/ClientPlayerEntity;isRiding()Z",
+                    shift = At.Shift.AFTER),
+            cancellable = true)
     private void onPreItemUse(CallbackInfo ci) {
         if (Phosphor.EVENTBUS.post(ItemUseEvent.Pre.get()).isCancelled()) ci.cancel();
     }
