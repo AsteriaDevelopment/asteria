@@ -14,6 +14,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class FastPlaceModule extends Module {
     private final BooleanSetting doPlaceInGui = new BooleanSetting("Place in GUI", this, false);
+    private final BooleanSetting xpOnly = new BooleanSetting("Only XP", this, false);
     private final BooleanSetting blocks = new BooleanSetting("Blocks", this, true);
     private final BooleanSetting items = new BooleanSetting("Items", this, true);
     private final NumberSetting delay = new NumberSetting("Delay", this, 0d, 0d, 10d, 1d);
@@ -50,6 +51,9 @@ public class FastPlaceModule extends Module {
                 ItemStack offHandStack = mc.player.getOffHandStack();
                 Item mainHandItem = mainHandStack.getItem();
                 Item offHandItem = mc.player.getOffHandStack().getItem();
+
+                if (!(mainHandStack.isOf(Items.EXPERIENCE_BOTTLE) || offHandStack.isOf(Items.EXPERIENCE_BOTTLE)) && xpOnly.isEnabled())
+                    return;
 
                 if (mainHandItem instanceof BlockItem || offHandItem instanceof BlockItem) {
                     if (!blocks.isEnabled())
