@@ -1,16 +1,18 @@
 package net.caffeinemc.phosphor.api.event.events;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.minecraft.client.util.math.MatrixStack;
 
 @SuppressWarnings("all")
 public class WorldRenderEvent {
 
 	private static final WorldRenderEvent INSTANCE = new WorldRenderEvent();
 
-	public WorldRenderContext context;
+	public MatrixStack matrices;
+	public float tickDelta;
 
-	public static WorldRenderEvent get(WorldRenderContext context) {
-		INSTANCE.context = context;
+	public static WorldRenderEvent get(MatrixStack matrices, float tickDelta) {
+		INSTANCE.matrices = matrices;
+		INSTANCE.tickDelta = tickDelta;
 		return INSTANCE;
 	}
 }

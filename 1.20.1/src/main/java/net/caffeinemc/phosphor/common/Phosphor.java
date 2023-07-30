@@ -6,10 +6,8 @@ import net.caffeinemc.phosphor.api.util.CrystalUtils;
 import net.caffeinemc.phosphor.api.util.DamageUtils;
 import net.caffeinemc.phosphor.api.util.MouseSimulation;
 import net.caffeinemc.phosphor.module.ModuleManager;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 
-import net.caffeinemc.phosphor.api.event.events.WorldRenderEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventBus;
 import net.caffeinemc.phosphor.api.event.orbit.IEventBus;
 
@@ -62,7 +60,6 @@ public final class Phosphor {
 		EVENTBUS.subscribe(rotationManager);
 		EVENTBUS.subscribe(mouseSimulation);
 		EVENTBUS.subscribe(DamageUtils.class);
-		WorldRenderEvents.END.register((context) -> { EVENTBUS.post(WorldRenderEvent.get(context)); });
 
 		this.configManager.loadConfig();
 	}
