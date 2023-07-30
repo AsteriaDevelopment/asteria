@@ -5,6 +5,8 @@ import imgui.flag.ImGuiCol;
 import net.caffeinemc.phosphor.api.font.JColor;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
+import net.caffeinemc.phosphor.module.modules.client.ArrayListModule;
+import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +47,12 @@ public class AsteriaMenu implements Renderable {
     public static void stopClient() {
         Phosphor.configManager().saveConfig();
 
-        toggleVisibility();
+        AsteriaSettingsModule asteria = Phosphor.moduleManager().getModule(AsteriaSettingsModule.class);
+        if (asteria.isEnabled()) asteria.disable();
+
+        ArrayListModule arrayListModule = Phosphor.moduleManager().getModule(ArrayListModule.class);
+        if (arrayListModule.isEnabled()) arrayListModule.disable();
+
         clientEnabled.set(false);
 
         new Thread(() -> {
