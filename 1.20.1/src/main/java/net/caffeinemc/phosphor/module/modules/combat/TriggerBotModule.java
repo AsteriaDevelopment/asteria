@@ -1,6 +1,6 @@
 package net.caffeinemc.phosphor.module.modules.combat;
 
-import net.caffeinemc.phosphor.api.event.events.TickEvent;
+import net.caffeinemc.phosphor.api.event.events.MouseUpdateEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.util.MathUtils;
 import net.caffeinemc.phosphor.api.util.PlayerUtils;
@@ -47,7 +47,7 @@ public class TriggerBotModule extends Module {
     }
 
     @EventHandler
-    private void onTick(TickEvent.Pre event) {
+    private void onMouseUpdate(MouseUpdateEvent event) {
         if (mc.player == null)
             return;
 
@@ -88,11 +88,8 @@ public class TriggerBotModule extends Module {
             return;
 
         if (currentRange == 0) {
-            if (minRange.getValue() >= maxRange.getValue()) {
-                currentRange = minRange.getValue();
-            } else {
-                currentRange = MathUtils.getRandomDouble(minRange.getValue(), maxRange.getValue());
-            }
+            currentRange = (minRange.getValue() >= maxRange.getValue()) ? minRange.getValue() : MathUtils.getRandomDouble(minRange.getValue(), maxRange.getValue());
+            currentRange *= currentRange;
         }
 
         if (livingTarget.getBoundingBox().squaredMagnitude(mc.player.getPos()) > currentRange)
