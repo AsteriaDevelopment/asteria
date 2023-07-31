@@ -51,7 +51,7 @@ public class TriggerBotModule extends Module {
         if (mc.player == null)
             return;
 
-        if (clickSimulation.isEnabled()) {
+        if (focusMode.isEnabled()) {
             if (focusedTarget != null) {
                 if (!focusedTarget.isAlive() ||
                         focusedTarget.isDead() ||
@@ -98,7 +98,7 @@ public class TriggerBotModule extends Module {
         if (livingTarget.distanceTo(mc.player) > currentRange)
             return;
 
-        if (clickSimulation.isEnabled()) {
+        if (focusMode.isEnabled()) {
             if (focusedTarget == null) focusedTarget = livingTarget;
             if (focusedTarget != livingTarget) return;
         }
