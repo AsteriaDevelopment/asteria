@@ -95,7 +95,7 @@ public class TriggerBotModule extends Module {
             }
         }
 
-        if (livingTarget.distanceTo(mc.player) > currentRange)
+        if (livingTarget.getBoundingBox().squaredMagnitude(mc.player.getPos()) > currentRange)
             return;
 
         if (focusMode.isEnabled()) {
