@@ -1,10 +1,12 @@
 package net.caffeinemc.phosphor.module.modules.combat;
 
 import net.caffeinemc.phosphor.api.event.events.MouseUpdateEvent;
+import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.util.MathUtils;
 import net.caffeinemc.phosphor.api.util.PlayerUtils;
 import net.caffeinemc.phosphor.common.Phosphor;
+import net.caffeinemc.phosphor.mixin.MinecraftClientAccessor;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
@@ -15,7 +17,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
 import org.lwjgl.glfw.GLFW;
 
@@ -38,12 +39,15 @@ public class TriggerBotModule extends Module {
         return heldItem.getItem() instanceof SwordItem || heldItem.getItem() instanceof AxeItem;
     }
 
+    private boolean attackOnPlayerTick;
     private double currentRange;
     private LivingEntity focusedTarget;
 
     @Override
     public void onEnable() {
+        attackOnPlayerTick = false;
         currentRange = 0;
+        focusedTarget = null;
     }
 
     @EventHandler
@@ -89,10 +93,9 @@ public class TriggerBotModule extends Module {
 
         if (currentRange == 0) {
             currentRange = (minRange.getValue() >= maxRange.getValue()) ? minRange.getValue() : MathUtils.getRandomDouble(minRange.getValue(), maxRange.getValue());
-            currentRange *= currentRange;
         }
 
-        if (livingTarget.getBoundingBox().squaredMagnitude(mc.player.getPos()) > currentRange)
+        if (mc.player.distanceTo(livingTarget) > currentRange)
             return;
 
         if (focusMode.isEnabled()) {
@@ -100,11 +103,19 @@ public class TriggerBotModule extends Module {
             if (focusedTarget != livingTarget) return;
         }
 
-        if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_LEFT);
-
-        mc.interactionManager.attackEntity(mc.player, target);
-        mc.player.swingHand(Hand.MAIN_HAND);
+        attackOnPlayerTick = true;
 
         currentRange = 0;
+    }
+
+    @EventHandler
+    private void onPlayerTick(PlayerTickEvent event) {
+        if (attackOnPlayerTick) {
+            if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+
+            ((MinecraftClientAccessor) mc).callDoAttack();
+
+            attackOnPlayerTick = false;
+        }
     }
 }
