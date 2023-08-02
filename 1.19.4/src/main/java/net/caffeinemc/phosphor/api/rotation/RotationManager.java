@@ -5,7 +5,6 @@ import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.event.orbit.EventPriority;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
-import net.minecraft.util.hit.HitResult;
 
 import static net.caffeinemc.phosphor.common.Phosphor.mc;
 
@@ -44,9 +43,6 @@ public class RotationManager {
 
     public void setRotation(RotationUtils.Rotation rotation) {
         currentRotation = rotation;
-        if (currentRotation != null) {
-            setServerRotation(currentRotation);
-        }
     }
 
     public void setRotation(double yaw, double pitch) {
@@ -135,6 +131,22 @@ public class RotationManager {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onItemUse(ItemUseEvent.Post event) {
+        if (!isEnabled() && wasDisabled) {
+            enable();
+            wasDisabled = false;
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    private void onBlockBreak(BlockBreakEvent.Pre event) {
+        if (!event.isCancelled() && isEnabled()) {
+            disable();
+            wasDisabled = true;
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    private void onBlockBreak(BlockBreakEvent.Post event) {
         if (!isEnabled() && wasDisabled) {
             enable();
             wasDisabled = false;

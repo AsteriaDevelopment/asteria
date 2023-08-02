@@ -1,9 +1,6 @@
 package net.caffeinemc.phosphor.module.modules.combat;
 
-import net.caffeinemc.phosphor.api.event.events.AttackEvent;
-import net.caffeinemc.phosphor.api.event.events.BlockBreakEvent;
-import net.caffeinemc.phosphor.api.event.events.HudRenderEvent;
-import net.caffeinemc.phosphor.api.event.events.MouseUpdateEvent;
+import net.caffeinemc.phosphor.api.event.events.*;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.event.orbit.EventPriority;
 import net.caffeinemc.phosphor.api.util.MathUtils;
@@ -11,6 +8,7 @@ import net.caffeinemc.phosphor.api.util.PlayerUtils;
 import net.caffeinemc.phosphor.api.util.RenderUtils;
 import net.caffeinemc.phosphor.api.rotation.RotationUtils;
 import net.caffeinemc.phosphor.common.Phosphor;
+import net.caffeinemc.phosphor.mixin.MinecraftClientAccessor;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
@@ -18,7 +16,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.SwordItem;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -63,6 +63,7 @@ public class SilentAimModule extends Module {
 
             if (!(mainHandItem instanceof AxeItem || mainHandItem instanceof SwordItem) && onlyWeapon.isEnabled()) {
                 Phosphor.rotationManager().disable();
+                canAttack = false;
                 return;
             }
 
@@ -70,6 +71,7 @@ public class SilentAimModule extends Module {
 
             if (targetPlayer == null || targetPlayer.isDead() || targetPlayer.isInvisible()) {
                 Phosphor.rotationManager().disable();
+                canAttack = false;
                 return;
             }
 
@@ -92,26 +94,34 @@ public class SilentAimModule extends Module {
                 return;
             }
 
-            canAttack = true;
+            RotationUtils.Rotation serverRotation = Phosphor.rotationManager().getServerRotation();
+
+            HitResult hitResult = RotationUtils.getHitResult(mc.player, (float) serverRotation.yaw(), (float) serverRotation.pitch());
+
+            canAttack = hitResult instanceof EntityHitResult;
 
             float randomiseYaw = (float) MathUtils.getRandomDouble(0, 0.2);
             float randomisePitch = (float) MathUtils.getRandomDouble(0, 0.2);
 
-            float yawStrength = (float) (MathUtils.getRandomDouble(minYawSpeed.getValue(), maxYawSpeed.getValue()) / 50) + randomiseYaw;
-            float pitchStrength = (float) (MathUtils.getRandomDouble(minPitchSpeed.getValue(), maxPitchSpeed.getValue()) / 50) + randomisePitch;
+            float yawStrength = (float) (MathUtils.getRandomDouble(minYawSpeed.getValue(), maxYawSpeed.getValue()) / 50);
+            float pitchStrength = (float) (MathUtils.getRandomDouble(minPitchSpeed.getValue(), maxPitchSpeed.getValue()) / 50);
 
-            RotationUtils.Rotation serverRotation = Phosphor.rotationManager().getServerRotation();
+            float yaw = MathHelper.lerpAngleDegrees(yawStrength, (float) serverRotation.yaw(), (float) targetRot.yaw()) + randomiseYaw;
+            float pitch = MathHelper.lerpAngleDegrees(pitchStrength, (float) serverRotation.pitch(), (float) targetRot.pitch()) + randomisePitch;
 
-            float yaw = MathHelper.lerpAngleDegrees(yawStrength, (float) serverRotation.yaw(), (float) targetRot.yaw());
-            float pitch = MathHelper.lerpAngleDegrees(pitchStrength, (float) serverRotation.pitch(), (float) targetRot.pitch());
+            if (!Phosphor.rotationManager().isEnabled()) Phosphor.rotationManager().enable();
 
-            if (!Phosphor.rotationManager().isEnabled())
-                Phosphor.rotationManager().enable();
+            Phosphor.rotationManager().setRotation(new RotationUtils.Rotation(yaw, pitch));
+        }
+    }
 
-            Phosphor.rotationManager().setRotation(new RotationUtils.Rotation(yaw, pitch, () -> {
-                if (doAttack) PlayerUtils.attackEntity(targetPlayer);
-                doAttack = false;
-            }));
+    @EventHandler
+    private void onPlayerTick(PlayerTickEvent event) {
+        if (doAttack && targetPlayer != null) {
+            mc.interactionManager.attackEntity(mc.player, targetPlayer);
+            mc.player.swingHand(Hand.MAIN_HAND);
+
+            doAttack = false;
         }
     }
 

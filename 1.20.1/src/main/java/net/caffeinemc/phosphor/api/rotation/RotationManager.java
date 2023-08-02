@@ -44,9 +44,6 @@ public class RotationManager {
 
     public void setRotation(RotationUtils.Rotation rotation) {
         currentRotation = rotation;
-        if (currentRotation != null) {
-            setServerRotation(currentRotation);
-        }
     }
 
     public void setRotation(double yaw, double pitch) {
@@ -135,6 +132,22 @@ public class RotationManager {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onItemUse(ItemUseEvent.Post event) {
+        if (!isEnabled() && wasDisabled) {
+            enable();
+            wasDisabled = false;
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    private void onBlockBreak(BlockBreakEvent.Pre event) {
+        if (!event.isCancelled() && isEnabled()) {
+            disable();
+            wasDisabled = true;
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    private void onBlockBreak(BlockBreakEvent.Post event) {
         if (!isEnabled() && wasDisabled) {
             enable();
             wasDisabled = false;

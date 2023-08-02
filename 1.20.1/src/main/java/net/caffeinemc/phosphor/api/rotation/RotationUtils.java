@@ -3,8 +3,17 @@ package net.caffeinemc.phosphor.api.rotation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
+
+import java.util.Collections;
+import java.util.List;
 
 import static net.caffeinemc.phosphor.common.Phosphor.mc;
 
@@ -75,5 +84,32 @@ public class RotationUtils {
 
     public static Vec3d getPlayerLookVec(PlayerEntity player) {
         return getPlayerLookVec(player.getYaw(), player.getPitch());
+    }
+
+    public static HitResult getHitResult(PlayerEntity player, float yaw, float pitch) {
+        Vec3d start = player.getEyePos();
+        Vec3d end = start.add(getPlayerLookVec(yaw, pitch));
+        Box box = new Box(start, end);
+        List<Entity> entitiesInBox = mc.world.getEntitiesByClass(Entity.class, box, (entity) -> true);
+
+        if (entitiesInBox == null || entitiesInBox.isEmpty()) {
+            return mc.world.raycast(new RaycastContext(start, end, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, player));
+        } else {
+            Entity closestEntity = null;
+
+            for (Entity entity : entitiesInBox) {
+                if (closestEntity == null)
+                    closestEntity = entity;
+
+                if (closestEntity.distanceTo(player) > entity.distanceTo(player))
+                    closestEntity = entity;
+            }
+
+            return new EntityHitResult(closestEntity);
+        }
+    }
+
+    public static HitResult getHitResult(PlayerEntity player) {
+        return getHitResult(player, player.getYaw(), player.getPitch());
     }
 }

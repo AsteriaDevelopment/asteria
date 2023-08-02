@@ -65,6 +65,9 @@ public class PlayerUtils {
 
         for (Entity entity : mc.world.getEntities()) {
             if (entity instanceof LivingEntity livingEntity) {
+                if (livingEntity.isDead())
+                    continue;
+
                 if (entity instanceof PlayerEntity player && isFriend(player))
                     continue;
 
