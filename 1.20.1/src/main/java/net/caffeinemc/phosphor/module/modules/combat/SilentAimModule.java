@@ -8,7 +8,6 @@ import net.caffeinemc.phosphor.api.util.PlayerUtils;
 import net.caffeinemc.phosphor.api.util.RenderUtils;
 import net.caffeinemc.phosphor.api.rotation.RotationUtils;
 import net.caffeinemc.phosphor.common.Phosphor;
-import net.caffeinemc.phosphor.mixin.MinecraftClientAccessor;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
@@ -128,7 +127,7 @@ public class SilentAimModule extends Module {
     @EventHandler
     private void onHudRender(HudRenderEvent event) {
         if (fovCircle.isEnabled()) {
-            RenderUtils.Render2D.renderCircle(event.context.getMatrices(), new Color(255, 255, 255, 80), mc.getWindow().getScaledWidth() / 2, mc.getWindow().getScaledHeight() / 2, fov.getFValue() * 2, 60);
+            RenderUtils.R2D.renderCircle(event.context.getMatrices(), new Color(255, 255, 255, 80), mc.getWindow().getScaledWidth() / 2, mc.getWindow().getScaledHeight() / 2, fov.getFValue() * 2, 60);
         }
     }
 
