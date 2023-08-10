@@ -9,6 +9,7 @@ import net.caffeinemc.phosphor.module.modules.client.MiddleClickFriendModule;
 import net.caffeinemc.phosphor.module.modules.combat.*;
 import net.caffeinemc.phosphor.module.modules.misc.FakePlayerModule;
 import net.caffeinemc.phosphor.module.modules.misc.PingSpoofModule;
+import net.caffeinemc.phosphor.module.modules.misc.TeamsModule;
 import net.caffeinemc.phosphor.module.modules.player.BridgeAssistModule;
 import net.caffeinemc.phosphor.module.modules.player.CrystalOptimizerModule;
 import net.caffeinemc.phosphor.module.modules.player.FastPlaceModule;
@@ -121,6 +122,7 @@ public class ModuleManager {
 		// MISC
 		addModule(new PingSpoofModule());
 		addModule(new FakePlayerModule());
+		addModule(new TeamsModule());
 	}
 
 	@EventHandler
