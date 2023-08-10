@@ -2,6 +2,8 @@ package net.caffeinemc.phosphor.api.util;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.caffeinemc.phosphor.common.Phosphor;
+import net.caffeinemc.phosphor.module.modules.misc.Teams;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -22,7 +24,7 @@ public class PlayerUtils {
     public static JsonObject friends = new JsonObject();
 
     public static boolean isFriend(PlayerEntity player) {
-        return friends.get(player.getUuidAsString()) != null;
+        return friends.get(player.getUuidAsString()) != null || Phosphor.moduleManager().getModule(Teams.class).teammates.contains(player);
     }
 
     public static void addFriend(PlayerEntity player) {
