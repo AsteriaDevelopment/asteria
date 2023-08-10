@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.caffeinemc.phosphor.module.modules.misc.PingSpoofModule;
 import net.caffeinemc.phosphor.module.modules.misc.FakePlayerModule;
-import net.caffeinemc.phosphor.module.modules.misc.Teams;
+import net.caffeinemc.phosphor.module.modules.misc.TeamsModule;
 import net.minecraft.client.gui.screen.ChatScreen;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -119,7 +119,7 @@ public class ModuleManager {
 		// MISC
 		addModule(new PingSpoofModule());
 		addModule(new FakePlayerModule());
-		addModule(new Teams());
+		addModule(new TeamsModule());
 	}
 
 	@EventHandler

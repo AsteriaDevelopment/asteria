@@ -10,8 +10,8 @@ import net.minecraft.text.TextColor;
 
 import java.util.HashSet;
 
-public class Teams extends Module {
-    public Teams() {
+public class TeamsModule extends Module {
+    public TeamsModule() {
         super("Teams", "Doesn't allow combat features to attack teammates", Category.MISC);
     }
 
