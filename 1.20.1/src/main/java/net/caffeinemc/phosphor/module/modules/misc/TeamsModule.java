@@ -53,6 +53,8 @@ public class TeamsModule extends Module {
 
                         return false;
                     }));
+                } else {
+                    teammates.remove(player);
                 }
 
                 return false;
