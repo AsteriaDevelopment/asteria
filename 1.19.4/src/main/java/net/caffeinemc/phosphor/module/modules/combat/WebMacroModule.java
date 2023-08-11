@@ -16,6 +16,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Direction;
 import org.lwjgl.glfw.GLFW;
 
@@ -23,6 +24,7 @@ public class WebMacroModule extends Module {
     private final BooleanSetting clickSimulation = new BooleanSetting("Click Simulation", this, true);
     private final BooleanSetting goToPrevSlot = new BooleanSetting("Go To Prev Slot", this, true);
     private final BooleanSetting placeTNT = new BooleanSetting("Place TNT/Creeper on Web", this, false);
+    private final BooleanSetting placeLava = new BooleanSetting("Place Lava on Web", this, false);
     private final NumberSetting placeDelay = new NumberSetting("Place Delay", this, 0d, 0d, 10d, 1d);
     private final NumberSetting switchDelay = new NumberSetting("Switch Delay", this, 0d, 0d, 10d, 1d);
     private final KeybindSetting activateKey = new KeybindSetting("Activate Key", 0, this);
@@ -35,6 +37,7 @@ public class WebMacroModule extends Module {
     private int placeClock, switchClock;
     private boolean selectedWeb, placedWeb;
     private boolean selectedTnt, placedTnt;
+    private boolean selectedLava, placedLava;
 
     public void reset() {
         prevSlot = 0;
@@ -47,6 +50,9 @@ public class WebMacroModule extends Module {
 
         selectedTnt = false;
         placedTnt = false;
+
+        selectedLava = false;
+        placedLava = false;
     }
 
     @Override
@@ -81,7 +87,7 @@ public class WebMacroModule extends Module {
         if (mc.currentScreen != null) return;
 
         if (KeyUtils.isKeyPressed(activateKey.getKeyCode())) {
-            if (mc.crosshairTarget instanceof BlockHitResult blockHit) {
+            if (mc.crosshairTarget instanceof BlockHitResult blockHit && blockHit.getType() != HitResult.Type.MISS) {
                 if (!BlockUtils.isBlock(Blocks.COBWEB, blockHit.getBlockPos())) {
                     int webSlot = InvUtils.getItemSlot(Items.COBWEB);
 
@@ -153,6 +159,44 @@ public class WebMacroModule extends Module {
                             placeClock = 0;
                         }
                         if (placedTnt && goToPrevSlot.isEnabled() && mc.player.getInventory().selectedSlot == tntSlot) {
+                            setPrevSlot();
+                        }
+                    }
+                    if (placeLava.isEnabled() && !placedTnt) {
+                        if (blockHit.getSide() != Direction.UP) return;
+
+                        int lavaSlot = InvUtils.getItemSlot(Items.LAVA_BUCKET);
+
+                        if (!mc.player.getMainHandStack().isOf(Items.LAVA_BUCKET)) {
+                            if (lavaSlot == -1) return;
+
+                            if (switchClock < switchDelay.getIValue()) {
+                                switchClock++;
+                                return;
+                            }
+
+                            InvUtils.setInvSlot(lavaSlot);
+
+                            selectedLava = true;
+                            switchClock = 0;
+                        }
+                        if (mc.player.getMainHandStack().isOf(Items.LAVA_BUCKET)) {
+                            if (placeClock < placeDelay.getIValue()) {
+                                placeClock++;
+                                return;
+                            }
+
+                            if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+
+                            ActionResult interactionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+                            if (interactionResult.isAccepted() && interactionResult.shouldSwingHand()) {
+                                mc.player.swingHand(Hand.MAIN_HAND);
+                            }
+
+                            placedLava = true;
+                            placeClock = 0;
+                        }
+                        if (placedLava && goToPrevSlot.isEnabled() && mc.player.getInventory().selectedSlot == lavaSlot) {
                             setPrevSlot();
                         }
                     }
