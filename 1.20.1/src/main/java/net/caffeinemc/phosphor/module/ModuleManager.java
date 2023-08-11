@@ -6,6 +6,7 @@ import java.util.List;
 import net.caffeinemc.phosphor.module.modules.misc.PingSpoofModule;
 import net.caffeinemc.phosphor.module.modules.misc.FakePlayerModule;
 import net.caffeinemc.phosphor.module.modules.misc.TeamsModule;
+import net.caffeinemc.phosphor.module.modules.render.NoShieldDelayModule;
 import net.minecraft.client.gui.screen.ChatScreen;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -103,7 +104,7 @@ public class ModuleManager {
 		addModule(new WebMacroModule());
 
 		// RENDER
-
+		addModule(new NoShieldDelayModule());
 
 		// PLAYER
 		addModule(new BridgeAssistModule());

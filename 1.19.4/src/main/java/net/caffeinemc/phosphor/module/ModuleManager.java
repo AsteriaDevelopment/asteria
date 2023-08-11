@@ -14,6 +14,7 @@ import net.caffeinemc.phosphor.module.modules.player.BridgeAssistModule;
 import net.caffeinemc.phosphor.module.modules.player.CrystalOptimizerModule;
 import net.caffeinemc.phosphor.module.modules.player.FastPlaceModule;
 import net.caffeinemc.phosphor.module.modules.player.VelocityModule;
+import net.caffeinemc.phosphor.module.modules.render.NoShieldDelayModule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.InputUtil;
@@ -106,7 +107,7 @@ public class ModuleManager {
 		addModule(new WebMacroModule());
 
 		// RENDER
-
+		addModule(new NoShieldDelayModule());
 
 		// PLAYER
 		addModule(new BridgeAssistModule());
