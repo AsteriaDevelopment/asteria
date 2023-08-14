@@ -3,18 +3,11 @@ package net.caffeinemc.phosphor.module;
 import net.caffeinemc.phosphor.api.event.events.KeyPressEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.gui.AsteriaMenu;
-import net.caffeinemc.phosphor.module.modules.client.ArrayListModule;
-import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
-import net.caffeinemc.phosphor.module.modules.client.MiddleClickFriendModule;
+import net.caffeinemc.phosphor.module.modules.client.*;
 import net.caffeinemc.phosphor.module.modules.combat.*;
-import net.caffeinemc.phosphor.module.modules.misc.FakePlayerModule;
-import net.caffeinemc.phosphor.module.modules.misc.PingSpoofModule;
-import net.caffeinemc.phosphor.module.modules.misc.TeamsModule;
-import net.caffeinemc.phosphor.module.modules.player.BridgeAssistModule;
-import net.caffeinemc.phosphor.module.modules.player.CrystalOptimizerModule;
-import net.caffeinemc.phosphor.module.modules.player.FastPlaceModule;
-import net.caffeinemc.phosphor.module.modules.player.VelocityModule;
-import net.caffeinemc.phosphor.module.modules.render.NoShieldDelayModule;
+import net.caffeinemc.phosphor.module.modules.misc.*;
+import net.caffeinemc.phosphor.module.modules.player.*;
+import net.caffeinemc.phosphor.module.modules.render.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.InputUtil;
@@ -116,9 +109,11 @@ public class ModuleManager {
 		addModule(new VelocityModule());
 
 		// CLIENT
-		addModule(new AsteriaSettingsModule());
-		addModule(new MiddleClickFriendModule());
 		addModule(new ArrayListModule());
+		addModule(new AsteriaSettingsModule());
+		addModule(new ConfigModule());
+		addModule(new MiddleClickFriendModule());
+		addModule(new SelfDestructModule());
 
 		// MISC
 		addModule(new PingSpoofModule());

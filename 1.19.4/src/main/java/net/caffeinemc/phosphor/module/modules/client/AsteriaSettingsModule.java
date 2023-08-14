@@ -15,20 +15,10 @@ import net.caffeinemc.phosphor.module.setting.settings.ModeSetting;
 import org.lwjgl.glfw.GLFW;
 
 public class AsteriaSettingsModule extends Module {
+    public final ModeSetting mode = new ModeSetting("Mode", this, "ClickGUI", "ClickGUI", "Menu");
     public final ColorSetting color = new ColorSetting("Color", this, new JColor(0.90f, 0.27f, 0.33f), false);
     public final BooleanSetting clickSounds = new BooleanSetting("Simulate Click Sounds", this, false);
 
-    public final ButtonSetting destruct = new ButtonSetting("Destruct", this, () -> {
-        AsteriaMenu.stopClient();
-    }, true);
-    public final ButtonSetting hide = new ButtonSetting("Hide", this, () -> {
-        AsteriaMenu.toggleVisibility();
-    });
-    public final ButtonSetting saveSettings = new ButtonSetting("Save Config", this, () -> {
-        Phosphor.configManager().saveConfig();
-    });
-
-    public final ModeSetting mode = new ModeSetting("Mode", this, "ClickGUI", "ClickGUI", "Menu");
     public AsteriaSettingsModule() {
         super("Asteria", "Asteria's settings", GLFW.GLFW_KEY_F8, Category.CLIENT);
     }

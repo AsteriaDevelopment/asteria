@@ -32,14 +32,6 @@ public class ModeSetting extends Setting implements RenderableSetting {
 	public boolean is(String mode) {
 	    return (this.index == Arrays.stream(this.modes).toList().indexOf(mode));
 	}
-	  
-	public void cycle() {
-	    if (this.index < this.modes.length - 1) {
-	      	this.index++;
-	    } else {
-	      	this.index = 0;
-	    }
-	}
 
 	@Override
 	public void render() {
@@ -50,7 +42,7 @@ public class ModeSetting extends Setting implements RenderableSetting {
 		ImInt currentItem = new ImInt(this.index);
 
 		ImGui.pushItemWidth(170f);
-		ImGui.listBox("", currentItem, modes);
+		ImGui.combo("", currentItem, modes);
 		ImGui.popItemWidth();
 
 		this.index = currentItem.get();
