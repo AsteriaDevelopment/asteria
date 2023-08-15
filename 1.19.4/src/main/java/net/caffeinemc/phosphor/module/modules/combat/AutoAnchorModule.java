@@ -1,5 +1,6 @@
 package net.caffeinemc.phosphor.module.modules.combat;
 
+import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
 import net.caffeinemc.phosphor.api.event.events.TickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.util.BlockUtils;
@@ -44,7 +45,7 @@ public class AutoAnchorModule extends Module {
     }
 
     @EventHandler
-    private void onTick(TickEvent.Pre event) {
+    private void onPlayerTick(PlayerTickEvent event) {
         if (mc.world == null || mc.player == null || mc.currentScreen != null)
             return;
 
