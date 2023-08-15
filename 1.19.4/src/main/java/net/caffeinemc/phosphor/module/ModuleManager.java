@@ -80,6 +80,7 @@ public class ModuleManager {
 	public void addModules() {
 		// COMBAT
 		addModule(new AimAssistModule());
+		addModule(new AirAnchorModule());
 		addModule(new AutoAnchorModule());
 		addModule(new AutoCrystalModule());
 		addModule(new AutoDoubleHandModule());
