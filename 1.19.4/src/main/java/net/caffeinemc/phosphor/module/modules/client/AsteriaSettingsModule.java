@@ -17,7 +17,6 @@ import org.lwjgl.glfw.GLFW;
 public class AsteriaSettingsModule extends Module {
     public final ModeSetting mode = new ModeSetting("Mode", this, "ClickGUI", "ClickGUI", "Menu");
     public final ColorSetting color = new ColorSetting("Color", this, new JColor(0.90f, 0.27f, 0.33f), false);
-    public final BooleanSetting clickSounds = new BooleanSetting("Simulate Click Sounds", this, false);
 
     public AsteriaSettingsModule() {
         super("Asteria", "Asteria's settings", GLFW.GLFW_KEY_F8, Category.CLIENT);

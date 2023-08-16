@@ -13,9 +13,6 @@ import java.util.concurrent.*;
 import static net.caffeinemc.phosphor.common.Phosphor.mc;
 
 public class MouseSimulation {
-    private final ExecutorService soundExecutor = new ThreadPoolExecutor(1000, 1000,
-            200L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<Runnable>());
     private final HashMap<Integer, Integer> mouseButtons = new HashMap<>();
     private boolean cancelLeft, cancelRight;
 
@@ -39,9 +36,6 @@ public class MouseSimulation {
             if (!cancelRight) cancelRight = keyCode == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
             if (!cancelLeft) cancelLeft = keyCode == GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
-            String wavName = keyCode == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? "right-up" : "left-up";
-            soundExecutor.submit(() -> SoundUtils.playSound("assets/"+wavName+".wav"));
-
             getMouse().callOnMouseButton(mc.getWindow().getHandle(), keyCode, GLFW.GLFW_PRESS, 0);
         }
     }
@@ -52,9 +46,6 @@ public class MouseSimulation {
 
     public void mouseRelease(int keyCode) {
         if (isFakeMousePressed(keyCode)) {
-            String wavName = keyCode == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? "right-down" : "left-down";
-            soundExecutor.submit(() -> SoundUtils.playSound("assets/"+wavName+".wav"));
-
             getMouse().callOnMouseButton(mc.getWindow().getHandle(), keyCode, GLFW.GLFW_RELEASE, 0);
             mouseButtons.remove(keyCode);
         }

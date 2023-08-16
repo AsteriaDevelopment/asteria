@@ -11,10 +11,6 @@ import net.caffeinemc.phosphor.mixin.MouseAccessor;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import static net.caffeinemc.phosphor.common.Phosphor.mc;
 
@@ -43,7 +39,6 @@ public class MouseSimulation {
             if (!cancelLeft) cancelLeft = keyCode == GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
             getMouse().callOnMouseButton(mc.getWindow().getHandle(), keyCode, GLFW.GLFW_PRESS, 0);
-            SoundUtils.playSound("assets/"+(keyCode == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? "right-up" : "left-up")+".wav");
         }
     }
 
@@ -55,7 +50,6 @@ public class MouseSimulation {
         if (isFakeMousePressed(keyCode)) {
             getMouse().callOnMouseButton(mc.getWindow().getHandle(), keyCode, GLFW.GLFW_RELEASE, 0);
             mouseButtons.remove(keyCode);
-            SoundUtils.playSound("assets/"+(keyCode == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? "right-down" : "left-down")+".wav");
         }
     }
     
@@ -81,7 +75,7 @@ public class MouseSimulation {
     private void onItemUse(ItemUseEvent.Pre event) {
         if (cancelRight) {
             if (!event.isCancelled()) event.cancel();
-            cancelRight = mc.options.useKey.isPressed() && !KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+            cancelRight = mc.options.useKey.isPressed();
         }
     }
 
@@ -89,7 +83,7 @@ public class MouseSimulation {
     private void onAttack(AttackEvent.Pre event) {
         if (cancelLeft) {
             if (!event.isCancelled()) event.cancel();
-            cancelLeft = mc.options.attackKey.isPressed() && !KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+            cancelLeft = mc.options.attackKey.isPressed();
         }
     }
 
@@ -97,7 +91,7 @@ public class MouseSimulation {
     private void onBlockBreak(BlockBreakEvent.Pre event) {
         if (cancelLeft) {
             if (!event.isCancelled()) event.cancel();
-            cancelLeft = mc.options.attackKey.isPressed() && !KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+            cancelLeft = mc.options.attackKey.isPressed();
         }
     }
 }
