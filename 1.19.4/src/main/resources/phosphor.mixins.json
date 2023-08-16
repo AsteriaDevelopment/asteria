@@ -29,7 +29,8 @@
     "MinecraftClientMixin",
     "MouseMixin",
     "RenderSystemMixin",
-    "WindowMixin"
+    "WindowMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
