@@ -6,7 +6,6 @@ import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.util.MathUtils;
 import net.caffeinemc.phosphor.api.util.PlayerUtils;
 import net.caffeinemc.phosphor.common.Phosphor;
-import net.caffeinemc.phosphor.mixin.MinecraftClientAccessor;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
@@ -17,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
 import org.lwjgl.glfw.GLFW;
 
@@ -113,7 +113,10 @@ public class TriggerBotModule extends Module {
         if (attackOnPlayerTick) {
             if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_LEFT);
 
-            ((MinecraftClientAccessor) mc).callDoAttack();
+            if (mc.crosshairTarget instanceof EntityHitResult entityHitResult) {
+                mc.interactionManager.attackEntity(mc.player, entityHitResult.getEntity());
+                mc.player.swingHand(Hand.MAIN_HAND);
+            }
 
             attackOnPlayerTick = false;
         }
