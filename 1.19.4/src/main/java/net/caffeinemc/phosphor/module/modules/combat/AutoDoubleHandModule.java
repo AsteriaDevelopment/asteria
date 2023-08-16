@@ -29,27 +29,31 @@ public class AutoDoubleHandModule extends Module {
     private final BooleanSetting predictSword = new BooleanSetting("Predict Sword", this, true);
     private final BooleanSetting doubleHandAfterPop = new BooleanSetting("DHand After Pop", this, true);
     private final NumberSetting delay = new NumberSetting("Delay", this, 0, 0, 10, 1);
+    private final NumberSetting cooldown = new NumberSetting("Cooldown", this, 10, 0, 10, 1);
 
     public AutoDoubleHandModule() {
         super("AutoDoubleHand", "Automatically does double hand", Category.COMBAT);
     }
 
     private boolean needToDHand;
-    private int clock;
+    private int cooldownClock, clock;
 
     @Override
     public void onEnable() {
         super.onEnable();
         needToDHand = false;
+        cooldownClock = 0;
         clock = 0;
     }
 
     private boolean willDie(double damage) {
-        return mc.player.getHealth() - damage < 0;
+        return mc.player.getHealth() - damage <= 0;
     }
 
     private boolean arePlayersAimingAtCrystal(EndCrystalEntity crystal) {
         for (PlayerEntity player : mc.world.getPlayers()) {
+            if (player == mc.player) continue;
+
             Vec3d start = player.getEyePos();
             Vec3d end = start.add(RotationUtils.getPlayerLookVec(player));
             Box box = new Box(start, end);
@@ -95,6 +99,11 @@ public class AutoDoubleHandModule extends Module {
     private void onPlayerTick(PlayerTickEvent event) {
         if (mc.currentScreen != null) return;
 
+        if (cooldownClock > 0) {
+            cooldownClock--;
+            return;
+        }
+
         if (!needToDHand) {
             if (predictCrystals.isEnabled()) {
                 List<EndCrystalEntity> crystals = PlayerUtils.findNearestEntities(EndCrystalEntity.class, mc.player, 10, false);
@@ -118,7 +127,7 @@ public class AutoDoubleHandModule extends Module {
                 List<PlayerEntity> players = PlayerUtils.findNearestEntities(PlayerEntity.class, mc.player, 5, false);
 
                 for (PlayerEntity player : players) {
-                    if (!isPlayerAimingAtMe(player)) continue;
+                    if (!isPlayerAimingAtMe(player) || player == mc.player) continue;
 
                     double damage = DamageUtils.getSwordDamage(player, player.getAttackCooldownProgress(0f) >= 1f);
                     if (willDie(damage)) {
@@ -140,6 +149,7 @@ public class AutoDoubleHandModule extends Module {
             }
 
             needToDHand = false;
+            cooldownClock = cooldown.getIValue();
             clock = 0;
         }
     }
