@@ -13,6 +13,8 @@ import static net.caffeinemc.phosphor.common.Phosphor.mc;
 
 public class MouseSimulation {
     private final HashMap<Integer, Integer> mouseButtons = new HashMap<>();
+    private boolean cancelLeft = false;
+    private boolean cancelRight = false;
 
     public boolean isFakeMousePressed(int keyCode) {
         return mouseButtons.containsKey(keyCode);
@@ -24,6 +26,9 @@ public class MouseSimulation {
 
     public void mouseClick(int keyCode, int frames) {
         if (!isFakeMousePressed(keyCode)) {
+            if (!cancelRight) cancelRight = keyCode == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+            if (!cancelLeft) cancelLeft = keyCode == GLFW.GLFW_MOUSE_BUTTON_LEFT;
+
             mouseButtons.put(keyCode, frames);
             getMouse().callOnMouseButton(mc.getWindow().getHandle(), keyCode, GLFW.GLFW_PRESS, 0);
         }
@@ -58,24 +63,27 @@ public class MouseSimulation {
         checkMouse(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     private void onItemUse(ItemUseEvent.Pre event) {
-        if (!KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
+        if (cancelRight) {
             event.cancel();
+            cancelRight = mc.options.useKey.isPressed() && !KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     private void onAttack(AttackEvent.Pre event) {
-        if (!KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
+        if (cancelLeft) {
             event.cancel();
+            cancelLeft = mc.options.attackKey.isPressed() && !KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT);
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     private void onBlockBreak(BlockBreakEvent.Pre event) {
-        if (!KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
+        if (cancelLeft) {
             event.cancel();
+            cancelLeft = mc.options.attackKey.isPressed() && !KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT);
         }
     }
 }
