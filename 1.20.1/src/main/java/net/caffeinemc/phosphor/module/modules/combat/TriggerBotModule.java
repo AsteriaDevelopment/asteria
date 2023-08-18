@@ -1,6 +1,5 @@
 package net.caffeinemc.phosphor.module.modules.combat;
 
-import net.caffeinemc.phosphor.api.event.events.MouseUpdateEvent;
 import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.util.MathUtils;
@@ -39,19 +38,17 @@ public class TriggerBotModule extends Module {
         return heldItem.getItem() instanceof SwordItem || heldItem.getItem() instanceof AxeItem;
     }
 
-    private boolean attackOnPlayerTick;
     private double currentRange;
     private LivingEntity focusedTarget;
 
     @Override
     public void onEnable() {
-        attackOnPlayerTick = false;
         currentRange = 0;
         focusedTarget = null;
     }
 
     @EventHandler
-    private void onMouseUpdate(MouseUpdateEvent event) {
+    private void onPlayerTick(PlayerTickEvent event) {
         if (mc.player == null)
             return;
 
@@ -103,22 +100,13 @@ public class TriggerBotModule extends Module {
             if (focusedTarget != livingTarget) return;
         }
 
-        attackOnPlayerTick = true;
+        if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+
+        if (mc.crosshairTarget instanceof EntityHitResult entityHitResult) {
+            mc.interactionManager.attackEntity(mc.player, entityHitResult.getEntity());
+            mc.player.swingHand(Hand.MAIN_HAND);
+        }
 
         currentRange = 0;
-    }
-
-    @EventHandler
-    private void onPlayerTick(PlayerTickEvent event) {
-        if (attackOnPlayerTick) {
-            if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_LEFT);
-
-            if (mc.crosshairTarget instanceof EntityHitResult entityHitResult) {
-                mc.interactionManager.attackEntity(mc.player, entityHitResult.getEntity());
-                mc.player.swingHand(Hand.MAIN_HAND);
-            }
-
-            attackOnPlayerTick = false;
-        }
     }
 }
