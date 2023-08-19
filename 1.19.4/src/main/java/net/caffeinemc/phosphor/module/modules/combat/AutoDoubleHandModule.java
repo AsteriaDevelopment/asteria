@@ -99,6 +99,8 @@ public class AutoDoubleHandModule extends Module {
     private void onPlayerTick(PlayerTickEvent event) {
         if (mc.currentScreen != null) return;
 
+        if (mc.player.isBlocking()) return;
+
         if (cooldownClock > 0) {
             cooldownClock--;
             return;
