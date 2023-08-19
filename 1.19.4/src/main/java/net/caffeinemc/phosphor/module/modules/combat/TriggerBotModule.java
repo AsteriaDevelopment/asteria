@@ -106,10 +106,6 @@ public class TriggerBotModule extends Module {
         int expectedCps = CPSCounter.getLeftCPS() + 1;
         double avgDiff = expectedCps - CPSCounter.getLeftCpsAverage();
 
-        System.out.println(expectedCps);
-        System.out.println(CPSCounter.getLeftCpsAverage());
-        System.out.println(avgDiff);
-
         if ((expectedCps <= minCPS.getIValue() && MathUtils.getRandomInt(0, 100) <= 70) || (maxCPS.getIValue() >= expectedCps && MathUtils.getRandomInt(0, 100) <= 50 && avgDiff < 1.8)) {
             if (clickSimulation.isEnabled()) {
                 Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_LEFT);
