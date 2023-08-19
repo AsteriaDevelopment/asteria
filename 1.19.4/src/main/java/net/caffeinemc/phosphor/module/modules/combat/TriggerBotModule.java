@@ -1,8 +1,8 @@
 package net.caffeinemc.phosphor.module.modules.combat;
 
-import net.caffeinemc.phosphor.api.event.events.MouseUpdateEvent;
-import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
+import net.caffeinemc.phosphor.api.event.events.HandleInputEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
+import net.caffeinemc.phosphor.api.util.CPSCounter;
 import net.caffeinemc.phosphor.api.util.MathUtils;
 import net.caffeinemc.phosphor.api.util.PlayerUtils;
 import net.caffeinemc.phosphor.common.Phosphor;
@@ -26,6 +26,8 @@ public class TriggerBotModule extends Module {
     public final NumberSetting maxRange = new NumberSetting("Max Range", this, 3d, 2d, 4d, 0.1d);
     public final BooleanSetting permTrigger = new BooleanSetting("Permament Trigger", this, true);
     public final BooleanSetting weaponOnly = new BooleanSetting("Weapon Only", this, true);
+    public final NumberSetting minCPS = new NumberSetting("Min CPS", this, 5d, 1d, 20d, 1d);
+    public final NumberSetting maxCPS = new NumberSetting("Max CPS", this, 10d, 1d, 20d, 1d);
     public final BooleanSetting focusMode = new BooleanSetting("Focus Mode", this, false);
     public final NumberSetting focusRange = new NumberSetting("Focus Range", this, 10d, 5d, 10d, 1d);
 
@@ -49,7 +51,7 @@ public class TriggerBotModule extends Module {
     }
 
     @EventHandler
-    private void onPlayerTick(PlayerTickEvent event) {
+    private void onPlayerTick(HandleInputEvent.Post event) {
         if (mc.player == null)
             return;
 
@@ -101,13 +103,24 @@ public class TriggerBotModule extends Module {
             if (focusedTarget != livingTarget) return;
         }
 
-        if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        int expectedCps = CPSCounter.getLeftCPS() + 1;
+        double avgDiff = expectedCps - CPSCounter.getLeftCpsAverage();
 
-        if (mc.crosshairTarget instanceof EntityHitResult entityHitResult) {
-            mc.interactionManager.attackEntity(mc.player, entityHitResult.getEntity());
+        System.out.println(expectedCps);
+        System.out.println(CPSCounter.getLeftCpsAverage());
+        System.out.println(avgDiff);
+
+        if ((expectedCps <= minCPS.getIValue() && MathUtils.getRandomInt(0, 100) <= 70) || (maxCPS.getIValue() >= expectedCps && MathUtils.getRandomInt(0, 100) <= 50 && avgDiff < 1.8)) {
+            if (clickSimulation.isEnabled()) {
+                Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+            } else {
+                CPSCounter.leftClick.add(System.currentTimeMillis());
+            }
+
+            mc.interactionManager.attackEntity(mc.player, livingTarget);
             mc.player.swingHand(Hand.MAIN_HAND);
-        }
 
-        currentRange = 0;
+            currentRange = 0;
+        }
     }
 }

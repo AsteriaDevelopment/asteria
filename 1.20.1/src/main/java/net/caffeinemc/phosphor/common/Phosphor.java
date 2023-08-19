@@ -2,6 +2,7 @@ package net.caffeinemc.phosphor.common;
 
 import net.caffeinemc.phosphor.api.config.ConfigManager;
 import net.caffeinemc.phosphor.api.rotation.RotationManager;
+import net.caffeinemc.phosphor.api.util.CPSCounter;
 import net.caffeinemc.phosphor.api.util.CrystalUtils;
 import net.caffeinemc.phosphor.api.util.DamageUtils;
 import net.caffeinemc.phosphor.api.util.MouseSimulation;
@@ -60,6 +61,7 @@ public final class Phosphor {
 		EVENTBUS.subscribe(rotationManager);
 		EVENTBUS.subscribe(mouseSimulation);
 		EVENTBUS.subscribe(DamageUtils.class);
+		EVENTBUS.subscribe(CPSCounter.class);
 
 		this.configManager.loadConfig();
 	}

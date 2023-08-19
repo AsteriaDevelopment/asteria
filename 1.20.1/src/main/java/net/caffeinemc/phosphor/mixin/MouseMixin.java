@@ -1,6 +1,7 @@
 package net.caffeinemc.phosphor.mixin;
 
 import imgui.ImGui;
+import net.caffeinemc.phosphor.api.event.events.MousePressEvent;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.gui.AsteriaMenu;
 import net.caffeinemc.phosphor.gui.AsteriaNewMenu;
@@ -39,6 +40,8 @@ public class MouseMixin {
         if (asteria != null && asteria.isEnabled()) {
             ci.cancel();
         }
+
+        Phosphor.EVENTBUS.post(MousePressEvent.get(button, action));
     }
 
     @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)

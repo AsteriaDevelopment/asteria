@@ -1,9 +1,6 @@
 package net.caffeinemc.phosphor.mixin;
 
-import net.caffeinemc.phosphor.api.event.events.AttackEvent;
-import net.caffeinemc.phosphor.api.event.events.BlockBreakEvent;
-import net.caffeinemc.phosphor.api.event.events.ItemUseEvent;
-import net.caffeinemc.phosphor.api.event.events.TickEvent;
+import net.caffeinemc.phosphor.api.event.events.*;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
@@ -56,6 +53,16 @@ public class MinecraftClientMixin {
     @Inject(method = "handleBlockBreaking", at = @At("TAIL"), cancellable = true)
     private void onPostBlockBreak(boolean breaking, CallbackInfo ci) {
         if (Phosphor.EVENTBUS.post(BlockBreakEvent.Post.get()).isCancelled()) ci.cancel();
+    }
+
+    @Inject(method = "handleInputEvents", at = @At("HEAD"))
+    private void onPreHandleInputEvents(CallbackInfo ci) {
+        Phosphor.EVENTBUS.post(HandleInputEvent.Pre.get());
+    }
+
+    @Inject(method = "handleInputEvents", at = @At("RETURN"))
+    private void onPostHandleInputEvents(CallbackInfo ci) {
+        Phosphor.EVENTBUS.post(HandleInputEvent.Post.get());
     }
 
     @Inject(method = "run", at = @At("HEAD"))

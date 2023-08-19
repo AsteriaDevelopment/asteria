@@ -13,6 +13,10 @@ public class MathUtils {
         return ThreadLocalRandom.current().nextDouble(from, to);
     }
 
+    public static double getAverage(double int1, double int2) {
+        return (int1 + int2) / 2;
+    }
+
     public static boolean getRandomBoolean() {
         return ThreadLocalRandom.current().nextBoolean();
     }
