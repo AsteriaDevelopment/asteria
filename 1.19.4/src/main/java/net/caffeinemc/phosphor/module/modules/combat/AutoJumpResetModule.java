@@ -2,11 +2,15 @@ package net.caffeinemc.phosphor.module.modules.combat;
 
 import net.caffeinemc.phosphor.api.event.events.WorldTickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
+import net.caffeinemc.phosphor.api.util.MathUtils;
 import net.caffeinemc.phosphor.module.Module;
+import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class AutoJumpResetModule extends Module {
+    private final NumberSetting jumpResetChance = new NumberSetting("Jump Reset Chance", this, 100, 0, 100, 1);
+
     public AutoJumpResetModule() {
         super("AutoJumpReset", "Automatically doing jump reset", Category.COMBAT);
     }
@@ -46,7 +50,7 @@ public class AutoJumpResetModule extends Module {
         if (mc.player.isTouchingWater()) {
             return;
         }
-        if (mc.player.hurtTime == mc.player.maxHurtTime - 1) {
+        if (mc.player.hurtTime == mc.player.maxHurtTime - 1 && MathUtils.getRandomInt(0, 100) <= jumpResetChance.getIValue()) {
             mc.player.jump();
         }
     }
