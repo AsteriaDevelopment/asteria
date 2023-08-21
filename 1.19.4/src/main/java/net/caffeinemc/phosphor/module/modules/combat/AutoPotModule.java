@@ -18,19 +18,21 @@ public class AutoPotModule extends Module {
     private final NumberSetting throwDelay = new NumberSetting("Throw Delay", this, 0, 0, 10, 1);
     private final ModeSetting mode = new ModeSetting("Mode", this, "Manual", "Dynamic", "Manual");
     private final BooleanSetting scroll = new BooleanSetting("Scroll", this, false);
+    private final BooleanSetting goToPrevSlot = new BooleanSetting("Previous Slot", this, true);
     private final KeybindSetting activateKey = new KeybindSetting("Activate Key", 0, this);
 
     public AutoPotModule() {
         super("AutoPot", "Automatically throws pots to heal you.", Category.COMBAT);
     }
 
-    private int switchClock, throwClock;
+    private int switchClock, throwClock, prevSlot;
     private boolean dynamicActivated;
 
     @Override
     public void onEnable() {
         switchClock = 0;
         throwClock = 0;
+        prevSlot = -1;
         dynamicActivated = false;
     }
 
@@ -63,6 +65,8 @@ public class AutoPotModule extends Module {
                         return;
                     }
 
+                    if (goToPrevSlot.isEnabled() && prevSlot == -1) prevSlot = mc.player.getInventory().selectedSlot;
+
                     int potSlot = InvUtils.findSplash(6, 1, 1);
 
                     if (potSlot != -1) {
@@ -76,6 +80,9 @@ public class AutoPotModule extends Module {
                     }
                 }
             }
+        } else if (prevSlot != -1) {
+            InvUtils.setInvSlot(prevSlot);
+            prevSlot = -1;
         }
     }
 }
