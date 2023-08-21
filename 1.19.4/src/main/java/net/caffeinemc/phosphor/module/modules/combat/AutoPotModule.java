@@ -48,18 +48,7 @@ public class AutoPotModule extends Module {
                     return;
                 }
 
-                if (InvUtils.isThatSplash(6, 1, 1, mc.player.getMainHandStack())) {
-                    if (throwClock < throwDelay.getValue()) {
-                        throwClock++;
-                        return;
-                    }
-
-                    ActionResult actionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
-                    if (actionResult.shouldSwingHand())
-                        mc.player.swingHand(Hand.MAIN_HAND);
-
-                    throwClock = 0;
-                } else {
+                if (!InvUtils.isThatSplash(6, 1, 1, mc.player.getMainHandStack())) {
                     if (switchClock < switchDelay.getValue()) {
                         switchClock++;
                         return;
@@ -78,6 +67,19 @@ public class AutoPotModule extends Module {
 
                         switchClock = 0;
                     }
+                }
+
+                if (InvUtils.isThatSplash(6, 1, 1, mc.player.getMainHandStack())) {
+                    if (throwClock < throwDelay.getValue()) {
+                        throwClock++;
+                        return;
+                    }
+
+                    ActionResult actionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+                    if (actionResult.shouldSwingHand())
+                        mc.player.swingHand(Hand.MAIN_HAND);
+
+                    throwClock = 0;
                 }
             }
         } else if (prevSlot != -1) {
