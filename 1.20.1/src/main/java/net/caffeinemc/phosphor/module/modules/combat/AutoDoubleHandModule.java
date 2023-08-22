@@ -10,6 +10,7 @@ import net.caffeinemc.phosphor.api.util.PlayerUtils;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
@@ -91,7 +92,7 @@ public class AutoDoubleHandModule extends Module {
         if (!doubleHandAfterPop.isEnabled()) return;
 
         if (event.packet instanceof EntityStatusS2CPacket packet) {
-            if (packet.getStatus() == 35 && packet.getEntity(mc.world) == mc.player) needToDHand = true;
+            if (packet.getStatus() == 35 && packet.getEntity(mc.world) instanceof ClientPlayerEntity) needToDHand = true;
         }
     }
 
@@ -106,7 +107,7 @@ public class AutoDoubleHandModule extends Module {
 
         if (!needToDHand) {
             if (predictCrystals.isEnabled()) {
-                List<EndCrystalEntity> crystals = PlayerUtils.findNearestEntities(EndCrystalEntity.class, mc.player, 10, false);
+                List<EndCrystalEntity> crystals = mc.world.getEntitiesByClass(EndCrystalEntity.class, mc.player.getBoundingBox().expand(10), (endCrystal) -> true);
 
                 for (EndCrystalEntity crystal : crystals) {
                     if (checkPlayersLook.isEnabled()) {
@@ -124,11 +125,9 @@ public class AutoDoubleHandModule extends Module {
 
         if (!needToDHand) {
             if (predictSword.isEnabled()) {
-                List<PlayerEntity> players = PlayerUtils.findNearestEntities(PlayerEntity.class, mc.player, 5, false);
+                List<PlayerEntity> players = mc.world.getEntitiesByClass(PlayerEntity.class, mc.player.getBoundingBox().expand(5), (player) -> isPlayerAimingAtMe(player) && !(player instanceof ClientPlayerEntity));
 
                 for (PlayerEntity player : players) {
-                    if (!isPlayerAimingAtMe(player) || player == mc.player) continue;
-
                     double damage = DamageUtils.getSwordDamage(player, player.getAttackCooldownProgress(0f) >= 1f);
                     if (willDie(damage)) {
                         needToDHand = true;
