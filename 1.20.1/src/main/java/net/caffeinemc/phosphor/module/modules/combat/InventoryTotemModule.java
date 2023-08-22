@@ -3,6 +3,7 @@ package net.caffeinemc.phosphor.module.modules.combat;
 import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
 import net.caffeinemc.phosphor.api.event.events.SlotCheckEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
+import net.caffeinemc.phosphor.api.util.InvUtils;
 import net.caffeinemc.phosphor.api.util.KeyUtils;
 import net.caffeinemc.phosphor.mixin.HandledScreenAccessor;
 import net.caffeinemc.phosphor.module.Module;
@@ -37,7 +38,7 @@ public class InventoryTotemModule extends Module {
 
     public boolean searchTotems() {
         PlayerInventory inventory = mc.player.getInventory();
-        return !inventory.getStack(totemSlot.getIValue() - 1).isOf(Items.TOTEM_OF_UNDYING) || (!inventory.getStack(40).isOf(Items.TOTEM_OF_UNDYING) && offhand.isEnabled());
+        return InvUtils.hasItemInInventory(Items.TOTEM_OF_UNDYING) && (!inventory.getStack(totemSlot.getIValue() - 1).isOf(Items.TOTEM_OF_UNDYING) || (!inventory.getStack(40).isOf(Items.TOTEM_OF_UNDYING) && offhand.isEnabled()));
     }
 
     @EventHandler

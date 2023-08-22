@@ -52,6 +52,22 @@ public class InvUtils {
         return selectItemFromHotbar((Item i) -> i == item);
     }
 
+    public static boolean hasItemInHotbar(Item item) {
+        PlayerInventory inventory = mc.player.getInventory();
+        for (int i = 0; i < 9; ++i) {
+            if (inventory.getStack(i).isOf(item)) return true;
+        }
+        return false;
+    }
+
+    public static boolean hasItemInInventory(Item item) {
+        PlayerInventory inventory = mc.player.getInventory();
+        for (int i = 9; i < 36; ++i) {
+            if (inventory.getStack(i).isOf(item)) return true;
+        }
+        return false;
+    }
+
     /**
      * Returns integer of a slot with splash potion of your specific potion effect
      *
