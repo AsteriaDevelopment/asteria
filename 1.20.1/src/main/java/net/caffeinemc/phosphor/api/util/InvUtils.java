@@ -74,8 +74,6 @@ public class InvUtils {
                 continue;
 
             String s = PotionUtil.getPotion(itemStack).getEffects().toString();
-            System.out.println(s);
-            System.out.println(potion.toString());
             if (s.contains(potion.toString())) {
                 return i;
             }
