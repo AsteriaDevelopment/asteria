@@ -1,74 +1,43 @@
 package net.caffeinemc.phosphor.module.modules.combat;
 
 import net.caffeinemc.phosphor.api.event.events.ItemUseEvent;
-import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.event.orbit.EventPriority;
 import net.caffeinemc.phosphor.api.util.BlockUtils;
-import net.caffeinemc.phosphor.api.util.KeyUtils;
 import net.caffeinemc.phosphor.module.Module;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
-import net.minecraft.util.ActionResult;
+import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.util.math.BlockPos;
 
 public class AirAnchorModule extends Module {
     public AirAnchorModule() {
         super("AirAnchor", "Makes MINDBLOWING Minecraft Crystal PVP Method easier!", Category.COMBAT);
     }
 
-    private BlockHitResult anchorHitResult;
+    private BlockPos currentBlockPos;
     private int count;
 
     @Override
     public void onEnable() {
-        anchorHitResult = null;
+        currentBlockPos = null;
         count = 0;
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    private void onPlayerTick(PlayerTickEvent event) {
-        int airPlaceLimit = 1;
-
-        if (KeyUtils.isKeyPressed(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
-            if (mc.player.getMainHandStack().isOf(Items.RESPAWN_ANCHOR)) {
-                if (mc.crosshairTarget instanceof BlockHitResult blockHitResult &&
-                        BlockUtils.isBlock(Blocks.RESPAWN_ANCHOR, blockHitResult.getBlockPos()) &&
-                        BlockUtils.isAnchorUncharged(blockHitResult.getBlockPos())) {
-                    mc.options.useKey.setPressed(false);
-                    return;
-                }
-
-                if (anchorHitResult != null) {
-                    if (count >= airPlaceLimit) return;
-
-                    ActionResult interactBlock = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, anchorHitResult);
-                    if (interactBlock.shouldSwingHand()) {
-                        mc.player.swingHand(Hand.MAIN_HAND);
-                    }
-
-                    count++;
-                    anchorHitResult = null;
-                }
-            }
-
-            if (!mc.options.useKey.isPressed()) {
-                mc.options.useKey.setPressed(true);
-            }
-        } else {
-            count = 0;
-        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onItemUse(ItemUseEvent.Pre event) {
         if (mc.player.getMainHandStack().isOf(Items.RESPAWN_ANCHOR)) {
-            if (mc.crosshairTarget instanceof BlockHitResult blockHitResult &&
-                    BlockUtils.isBlock(Blocks.RESPAWN_ANCHOR, blockHitResult.getBlockPos()) &&
-                    BlockUtils.isAnchorCharged(blockHitResult.getBlockPos())) {
-                anchorHitResult = blockHitResult;
+            if (mc.crosshairTarget instanceof BlockHitResult blockHitResult && BlockUtils.isAnchorCharged(blockHitResult.getBlockPos())) {
+                if (blockHitResult.getBlockPos().equals(currentBlockPos)) {
+                    if (count >= 1) return;
+                } else {
+                    currentBlockPos = blockHitResult.getBlockPos();
+                    count = 0;
+                }
+
+                mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult, 0));
+                count++;
             }
         }
     }
