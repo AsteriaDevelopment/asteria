@@ -26,7 +26,7 @@ public class ChestStealerModule extends Module {
     public final ModeSetting mode = new ModeSetting("Mode", this, "Normal", "Legit", "Normal");
     private final NumberSetting swapDelay = new NumberSetting("Swap Delay", this, 0, 0, 10, 1);
     public final BooleanSetting workOnKey = new BooleanSetting("Work On Key", this, false);
-    public final KeybindSetting activateKey = new KeybindSetting("Activate Key", 0, this);
+    public final KeybindSetting activateKey = new KeybindSetting("Activate Key", -1, this);
 
     public ChestStealerModule() {
         super("ChestStealer", "Automatically steals loot from chest", Category.COMBAT);

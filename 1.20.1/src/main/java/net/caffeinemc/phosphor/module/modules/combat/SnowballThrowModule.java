@@ -19,7 +19,7 @@ public class SnowballThrowModule extends Module {
     private final BooleanSetting clickSimulation = new BooleanSetting("Click Simulation", this, true);
     private final NumberSetting useDelay = new NumberSetting("Use Delay", this, 0d, 0d, 10d, 1d);
     private final NumberSetting switchDelay = new NumberSetting("Switch Delay", this, 0d, 0d, 10d, 1d);
-    private final KeybindSetting activateKey = new KeybindSetting("Activate Key", 0, this);
+    private final KeybindSetting activateKey = new KeybindSetting("Activate Key", -1, this);
 
     public SnowballThrowModule() {
         super("SnowballThrow", "Throws snowballs/eggs on key", Category.COMBAT);

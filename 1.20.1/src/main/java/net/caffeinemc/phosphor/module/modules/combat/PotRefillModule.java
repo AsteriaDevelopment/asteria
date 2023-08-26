@@ -18,7 +18,7 @@ import net.minecraft.screen.slot.SlotActionType;
 public class PotRefillModule extends Module {
     public final ModeSetting mode = new ModeSetting("Mode", this, "Normal", "Legit", "Normal");
     private final NumberSetting swapDelay = new NumberSetting("Swap Delay", this, 0, 0, 10, 1);
-    public final KeybindSetting activateKey = new KeybindSetting("Activate Key", 0, this);
+    public final KeybindSetting activateKey = new KeybindSetting("Activate Key", -1, this);
 
     public PotRefillModule() {
         super("PotRefill", "Automatically refills hotbar with pots", Category.COMBAT);

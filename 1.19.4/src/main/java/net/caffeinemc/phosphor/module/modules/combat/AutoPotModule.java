@@ -19,7 +19,7 @@ public class AutoPotModule extends Module {
     private final ModeSetting mode = new ModeSetting("Mode", this, "Manual", "Dynamic", "Manual");
     private final BooleanSetting scroll = new BooleanSetting("Scroll", this, false);
     private final BooleanSetting goToPrevSlot = new BooleanSetting("Previous Slot", this, true);
-    private final KeybindSetting activateKey = new KeybindSetting("Activate Key", 0, this);
+    private final KeybindSetting activateKey = new KeybindSetting("Activate Key", -1, this);
 
     public AutoPotModule() {
         super("AutoPot", "Automatically throws pots to heal you.", Category.COMBAT);

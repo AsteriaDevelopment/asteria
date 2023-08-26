@@ -23,7 +23,7 @@ public class InventoryTotemModule extends Module {
     private final BooleanSetting offhand = new BooleanSetting("Offhand", this, true);
     private final NumberSetting totemSlot = new NumberSetting("Totem Slot", this, 1, 1, 9, 1);
     public final BooleanSetting workOnKey = new BooleanSetting("Work On Key", this, false);
-    public final KeybindSetting activateKey = new KeybindSetting("Activate Key", 0, this);
+    public final KeybindSetting activateKey = new KeybindSetting("Activate Key", -1, this);
 
     public InventoryTotemModule() {
         super("InventoryTotem", "Automatically put totems in slots", Category.COMBAT);

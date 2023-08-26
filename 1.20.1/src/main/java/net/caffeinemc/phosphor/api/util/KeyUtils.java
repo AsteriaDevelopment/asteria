@@ -15,7 +15,7 @@ public class KeyUtils {
                 return "MMB";
             }
             case GLFW.GLFW_KEY_UNKNOWN -> {
-                return "Unknown";
+                return "None";
             }
             case GLFW.GLFW_KEY_ESCAPE -> {
                 return "Esc";

@@ -18,7 +18,7 @@ import java.util.List;
 
 public class BlinkModule extends Module {
     private BooleanSetting renderOriginal = new BooleanSetting("Render original", this, true);
-    private KeybindSetting cancelBlink = new KeybindSetting("Cancel bind", 0, this);
+    private KeybindSetting cancelBlink = new KeybindSetting("Cancel bind", -1, this);
 
     public BlinkModule() {
         super("Blink", "Does blink", Category.COMBAT);

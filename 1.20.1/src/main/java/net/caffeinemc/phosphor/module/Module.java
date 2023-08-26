@@ -16,7 +16,7 @@ public abstract class Module {
 
 	public String name, description;
 	public List<Setting> settings = new ArrayList<>();
-	public KeybindSetting keybind = new KeybindSetting("Keybind", 0, this);
+	public KeybindSetting keybind = new KeybindSetting("Keybind", -1, this);
 	private Category category;
 	private boolean enabled;
 	private boolean showOptions;

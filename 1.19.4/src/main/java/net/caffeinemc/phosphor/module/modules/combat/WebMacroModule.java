@@ -27,7 +27,7 @@ public class WebMacroModule extends Module {
     private final BooleanSetting placeLava = new BooleanSetting("Place Lava on Web", this, false);
     private final NumberSetting placeDelay = new NumberSetting("Place Delay", this, 0d, 0d, 10d, 1d);
     private final NumberSetting switchDelay = new NumberSetting("Switch Delay", this, 0d, 0d, 10d, 1d);
-    private final KeybindSetting activateKey = new KeybindSetting("Activate Key", 0, this);
+    private final KeybindSetting activateKey = new KeybindSetting("Activate Key", -1, this);
 
     public WebMacroModule() {
         super("WebMacro", "Automatically places web.", 0, Category.COMBAT);
