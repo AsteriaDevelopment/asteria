@@ -94,9 +94,10 @@ public class TriggerBotModule extends Module {
 
         if (currentRange == 0) {
             currentRange = (minRange.getValue() >= maxRange.getValue()) ? minRange.getValue() : MathUtils.getRandomDouble(minRange.getValue(), maxRange.getValue());
+            currentRange *= currentRange;
         }
 
-        if (mc.player.distanceTo(livingTarget) > currentRange)
+        if (mc.player.squaredDistanceTo(livingTarget) > currentRange)
             return;
 
         if (focusMode.isEnabled()) {
