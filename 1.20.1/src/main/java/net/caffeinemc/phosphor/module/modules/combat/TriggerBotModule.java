@@ -68,10 +68,10 @@ public class TriggerBotModule extends Module {
 
         Entity target = mc.crosshairTarget instanceof EntityHitResult result ? result.getEntity() : null;
 
-        if (target == null || mc.interactionManager == null || mc.currentScreen instanceof HandledScreen)
+        if (target == null || mc.interactionManager == null || mc.currentScreen != null)
             return;
 
-        if (target.getName().equals(mc.player.getName()))
+        if (target.getName().getString().equals(mc.player.getName().getString()))
             return;
 
         if (target instanceof PlayerEntity player && PlayerUtils.isFriend(player))
@@ -87,9 +87,6 @@ public class TriggerBotModule extends Module {
             return;
 
         if ((mc.player.isOnGround() && mc.player.getAttackCooldownProgress(0.5f) < 0.92f) || (!mc.player.isOnGround() && mc.player.getAttackCooldownProgress(0.5f) < 0.95f))
-            return;
-
-        if (livingTarget.isDead() || !livingTarget.isAlive() || livingTarget.isInvisible())
             return;
 
         if (currentRange == 0) {

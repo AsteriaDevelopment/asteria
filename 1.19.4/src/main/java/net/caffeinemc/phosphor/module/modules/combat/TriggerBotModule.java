@@ -9,7 +9,6 @@ import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -68,10 +67,10 @@ public class TriggerBotModule extends Module {
 
         Entity target = mc.crosshairTarget instanceof EntityHitResult result ? result.getEntity() : null;
 
-        if (target == null || mc.interactionManager == null || mc.currentScreen instanceof HandledScreen)
+        if (target == null || mc.interactionManager == null || mc.currentScreen != null)
             return;
 
-        if (target.getName().equals(mc.player.getName()))
+        if (target.getName().getString().equals(mc.player.getName().getString()))
             return;
 
         if (target instanceof PlayerEntity player && PlayerUtils.isFriend(player))
@@ -87,9 +86,6 @@ public class TriggerBotModule extends Module {
             return;
 
         if ((mc.player.isOnGround() && mc.player.getAttackCooldownProgress(0.5f) < 0.92f) || (!mc.player.isOnGround() && mc.player.getAttackCooldownProgress(0.5f) < 0.95f))
-            return;
-
-        if (livingTarget.isDead() || !livingTarget.isAlive() || livingTarget.isInvisible())
             return;
 
         if (currentRange == 0) {
