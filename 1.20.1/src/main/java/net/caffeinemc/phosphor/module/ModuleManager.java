@@ -87,6 +87,7 @@ public class ModuleManager {
 		addModule(new AimAssistModule());
 		addModule(new AirAnchorModule());
 		addModule(new AutoAnchorModule());
+		addModule(new AutoArmorModule());
 		addModule(new AutoCrystalModule());
 		addModule(new AutoDoubleHandModule());
 		addModule(new AutoHitCrystalModule());

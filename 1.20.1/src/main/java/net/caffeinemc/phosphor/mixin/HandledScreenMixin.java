@@ -3,6 +3,7 @@ package net.caffeinemc.phosphor.mixin;
 import net.caffeinemc.phosphor.api.event.events.SlotCheckEvent;
 import net.caffeinemc.phosphor.api.util.KeyUtils;
 import net.caffeinemc.phosphor.common.Phosphor;
+import net.caffeinemc.phosphor.module.modules.combat.AutoArmorModule;
 import net.caffeinemc.phosphor.module.modules.combat.ChestStealerModule;
 import net.caffeinemc.phosphor.module.modules.combat.InventoryTotemModule;
 import net.caffeinemc.phosphor.module.modules.combat.PotRefillModule;
@@ -41,6 +42,7 @@ public abstract class HandledScreenMixin {
                 if (KeyUtils.isKeyPressed(potRefill.activateKey.getKeyCode())) {
                     args.set(2, 0d);
                     args.set(3, 0d);
+                    return;
                 }
             }
 
@@ -52,10 +54,19 @@ public abstract class HandledScreenMixin {
                 if (inventoryTotem.searchTotems()) {
                     args.set(2, 0d);
                     args.set(3, 0d);
+                    return;
                 }
             }
-        }
-        if ((HandledScreen) (Object) this instanceof GenericContainerScreen) {
+
+            AutoArmorModule autoArmor = Phosphor.moduleManager().getModule(AutoArmorModule.class);
+            if (autoArmor != null && autoArmor.isEnabled()) {
+                if (autoArmor.searchArmor()) {
+                    args.set(2, 0d);
+                    args.set(3, 0d);
+                    return;
+                }
+            }
+        } else if ((HandledScreen) (Object) this instanceof GenericContainerScreen) {
             ChestStealerModule chestStealer = Phosphor.moduleManager().getModule(ChestStealerModule.class);
             if (chestStealer != null && chestStealer.isEnabled() && chestStealer.mode.is("Normal")) {
                 if (!KeyUtils.isKeyPressed(chestStealer.activateKey.getKeyCode()) && chestStealer.workOnKey.isEnabled())
@@ -64,6 +75,7 @@ public abstract class HandledScreenMixin {
                 if (chestStealer.hasEmptySlots()) {
                     args.set(2, 0d);
                     args.set(3, 0d);
+                    return;
                 }
             }
         }
