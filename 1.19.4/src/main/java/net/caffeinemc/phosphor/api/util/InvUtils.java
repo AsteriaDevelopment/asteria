@@ -13,6 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.SplashPotionItem;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.potion.PotionUtil;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.SlotActionType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,10 +78,26 @@ public class InvUtils {
         return false;
     }
 
-    public static boolean hasItemInInventory(Predicate<ItemStack> itemSupplier) {
+    public static boolean hasItemInInventory(Predicate<ItemStack> itemPredicate) {
         PlayerInventory inventory = mc.player.getInventory();
         for (int i = 9; i < 36; ++i) {
-            if (itemSupplier.test(inventory.getStack(i))) return true;
+            if (itemPredicate.test(inventory.getStack(i))) return true;
+        }
+        return false;
+    }
+
+    public static boolean hasItemInHotbar(Predicate<ItemStack> itemPredicate) {
+        PlayerInventory inventory = mc.player.getInventory();
+        for (int i = 0; i < 9; ++i) {
+            if (itemPredicate.test(inventory.getStack(i))) return true;
+        }
+        return false;
+    }
+
+    public static boolean hasItemInMain(Predicate<ItemStack> itemPredicate) {
+        PlayerInventory inventory = mc.player.getInventory();
+        for (int i = 0; i < inventory.main.size(); ++i) {
+            if (itemPredicate.test(inventory.getStack(i))) return true;
         }
         return false;
     }
@@ -237,5 +255,173 @@ public class InvUtils {
     public static boolean isArmorSlotEmpty(ArmorItem armorItem) {
         ItemStack armorStack = mc.player.getInventory().getArmorStack(slotNumByType.get(armorItem.getType()));
         return armorStack == null || !(armorStack.getItem() instanceof ArmorItem);
+    }
+
+    private static final Action ACTION = new Action();
+
+    public static Action move() {
+        ACTION.type = SlotActionType.PICKUP;
+        ACTION.two = true;
+        return ACTION;
+    }
+
+    public static Action click() {
+        ACTION.type = SlotActionType.PICKUP;
+        return ACTION;
+    }
+
+    /**
+     * When writing code with quickSwap, both to and from should provide the ID of a slot, not the index.
+     * From should be the slot in the hotbar, to should be the slot you're switching an item from.
+     */
+
+    public static Action quickSwap() {
+        ACTION.type = SlotActionType.SWAP;
+        return ACTION;
+    }
+
+    public static Action shiftClick() {
+        ACTION.type = SlotActionType.QUICK_MOVE;
+        return ACTION;
+    }
+
+    public static Action drop() {
+        ACTION.type = SlotActionType.THROW;
+        ACTION.data = 1;
+        return ACTION;
+    }
+
+    public static void dropHand() {
+        if (!mc.player.currentScreenHandler.getCursorStack().isEmpty()) mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, ScreenHandler.EMPTY_SPACE_SLOT_INDEX, 0, SlotActionType.PICKUP, mc.player);
+    }
+
+    public static class Action {
+        private SlotActionType type = null;
+        private boolean two = false;
+        private int from = -1;
+        private int to = -1;
+        private int data = 0;
+
+        private boolean isRecursive = false;
+
+        private Action() {}
+
+        // From
+
+        public Action fromId(int id) {
+            from = id;
+            return this;
+        }
+
+        public Action from(int index) {
+            return fromId(SlotUtils.indexToId(index));
+        }
+
+        public Action fromHotbar(int i) {
+            return from(SlotUtils.HOTBAR_START + i);
+        }
+
+        public Action fromOffhand() {
+            return from(SlotUtils.OFFHAND);
+        }
+
+        public Action fromMain(int i) {
+            return from(SlotUtils.MAIN_START + i);
+        }
+
+        public Action fromArmor(int i) {
+            return from(SlotUtils.ARMOR_START + (3 - i));
+        }
+
+        // To
+
+        public void toId(int id) {
+            to = id;
+            run();
+        }
+
+        public void to(int index) {
+            toId(SlotUtils.indexToId(index));
+        }
+
+        public void toHotbar(int i) {
+            to(SlotUtils.HOTBAR_START + i);
+        }
+
+        public void toOffhand() {
+            to(SlotUtils.OFFHAND);
+        }
+
+        public void toMain(int i) {
+            to(SlotUtils.MAIN_START + i);
+        }
+
+        public void toArmor(int i) {
+            to(SlotUtils.ARMOR_START + (3 - i));
+        }
+
+        // Slot
+
+        public void slotId(int id) {
+            from = to = id;
+            run();
+        }
+
+        public void slot(int index) {
+            slotId(SlotUtils.indexToId(index));
+        }
+
+        public void slotHotbar(int i) {
+            slot(SlotUtils.HOTBAR_START + i);
+        }
+
+        public void slotOffhand() {
+            slot(SlotUtils.OFFHAND);
+        }
+
+        public void slotMain(int i) {
+            slot(SlotUtils.MAIN_START + i);
+        }
+
+        public void slotArmor(int i) {
+            slot(SlotUtils.ARMOR_START + (3 - i));
+        }
+
+        // Other
+
+        private void run() {
+            boolean hadEmptyCursor = mc.player.currentScreenHandler.getCursorStack().isEmpty();
+
+            if (type == SlotActionType.SWAP) {
+                data = from;
+                from = to;
+            }
+
+            if (type != null && from != -1 && to != -1) {
+                click(from);
+                if (two) click(to);
+            }
+
+            SlotActionType preType = type;
+            boolean preTwo = two;
+            int preFrom = from;
+            int preTo = to;
+
+            type = null;
+            two = false;
+            from = -1;
+            to = -1;
+            data = 0;
+
+            if (!isRecursive && hadEmptyCursor && preType == SlotActionType.PICKUP && preTwo && (preFrom != -1 && preTo != -1) && !mc.player.currentScreenHandler.getCursorStack().isEmpty()) {
+                isRecursive = true;
+                InvUtils.click().slotId(preFrom);
+                isRecursive = false;
+            }
+        }
+
+        private void click(int id) {
+            mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, id, data, type, mc.player);
+        }
     }
 }

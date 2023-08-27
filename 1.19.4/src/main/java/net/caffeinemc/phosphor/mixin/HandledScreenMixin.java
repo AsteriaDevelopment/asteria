@@ -3,7 +3,6 @@ package net.caffeinemc.phosphor.mixin;
 import net.caffeinemc.phosphor.api.event.events.SlotCheckEvent;
 import net.caffeinemc.phosphor.api.util.KeyUtils;
 import net.caffeinemc.phosphor.common.Phosphor;
-import net.caffeinemc.phosphor.module.modules.combat.AutoArmorModule;
 import net.caffeinemc.phosphor.module.modules.combat.ChestStealerModule;
 import net.caffeinemc.phosphor.module.modules.combat.InventoryTotemModule;
 import net.caffeinemc.phosphor.module.modules.combat.PotRefillModule;
@@ -52,15 +51,6 @@ public abstract class HandledScreenMixin {
                     return;
 
                 if (inventoryTotem.searchTotems()) {
-                    args.set(2, 0d);
-                    args.set(3, 0d);
-                    return;
-                }
-            }
-
-            AutoArmorModule autoArmor = Phosphor.moduleManager().getModule(AutoArmorModule.class);
-            if (autoArmor != null && autoArmor.isEnabled()) {
-                if (autoArmor.searchArmor()) {
                     args.set(2, 0d);
                     args.set(3, 0d);
                     return;

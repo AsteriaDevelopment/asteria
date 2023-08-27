@@ -5,8 +5,10 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "ClientPlayerInteractionManagerAccessor",
+    "CreativeInventoryScreenAccessor",
     "EntityVelocityUpdateS2CPacketAccessor",
     "HandledScreenAccessor",
+    "HorseScreenHandlerAccessor",
     "MinecraftClientAccessor",
     "MouseAccessor"
   ],
@@ -20,8 +22,8 @@
     "EndCrystalItemMixin",
     "EntityMixin",
     "EntityRenderDispatcherMixin",
-    "GameRendererMixin",
     "ExplosionMixin",
+    "GameRendererMixin",
     "HandledScreenMixin",
     "InGameHudMixin",
     "ItemStackMixin",
