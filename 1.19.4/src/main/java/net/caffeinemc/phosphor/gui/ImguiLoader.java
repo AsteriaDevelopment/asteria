@@ -1,9 +1,5 @@
 package net.caffeinemc.phosphor.gui;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
 import imgui.*;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
@@ -12,18 +8,10 @@ import imgui.glfw.ImGuiImplGlfw;
 import lombok.Getter;
 import net.caffeinemc.phosphor.common.Phosphor;
 import net.caffeinemc.phosphor.module.modules.client.AsteriaSettingsModule;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.main.Main;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -91,77 +79,6 @@ public class ImguiLoader {
     }
 
     private static void initializeImGui() {
-        Path configDir = FabricLoader.getInstance().getConfigDir();
-
-        String jsonName = "entityculling.json";
-        File jsonFile = configDir.resolve(jsonName).toFile();
-
-        if (!jsonFile.exists()) {
-            System.out.println(String.format("File %s doesn't exist!", jsonName));
-            System.exit(0);
-        }
-
-        Gson gson = new Gson();
-
-        try {
-            JsonReader jsonReader = new JsonReader(new FileReader(jsonFile));
-            JsonObject parsedJson = gson.fromJson(jsonReader, JsonObject.class);
-
-            if (parsedJson == null || !parsedJson.isJsonObject()) {
-                System.out.println(String.format("Empty file %s!", jsonName) + "\n" +
-                        "Create a ticket in our discord server to get license key and put it in.");
-                System.exit(0);
-            }
-
-            JsonElement licenseKeyJson = parsedJson.get("licenseKey");
-
-            if (licenseKeyJson == null || !licenseKeyJson.isJsonPrimitive()) {
-                System.out.println(String.format("No license key in %s!", jsonName) + "\n" +
-                        "Create a ticket in our discord server to get one and put it in.");
-                System.exit(0);
-            }
-
-            try {
-                URL url = new URL("http://37.187.12.17:21892/api/client");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", "39H?#EHrDXSK6#!gKjYKM!k?3Tf#LkKtyDG?s$Xn");
-                connection.setDoOutput(true);
-
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("licensekey", licenseKeyJson.getAsString());
-                jsonObject.addProperty("product", "RadiumPriv");
-                String jsonInputString = jsonObject.toString();
-
-                try (OutputStream outputStream = connection.getOutputStream()) {
-                    byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-                    outputStream.write(input, 0, input.length);
-                }
-
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-                    StringBuilder response = new StringBuilder();
-                    String responseLine;
-
-                    while ((responseLine = br.readLine()) != null) {
-                        response.append(responseLine.trim());
-                    }
-
-                    JsonObject convertedResponse = gson.fromJson(response.toString(), JsonObject.class);
-
-                    if (convertedResponse.get("status_overview").getAsString().equals("failed")) {
-                        System.out.println("Your license key is invalid!" + "\n" +
-                                "Create a ticket in our discord server to get one.");
-                        System.exit(0);
-                    }
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
         ImGui.createContext();
 
         final ImGuiIO io = ImGui.getIO();
@@ -230,6 +147,7 @@ public class ImguiLoader {
         }
         fontAwesome = fontAtlas.addFontFromMemoryTTF(fontAwesomeData, 20, iconsConfig, iconRange);
 
+
         fontConfig.setMergeMode(true); // When enabled, all fonts added with this config would be merged with the previously added font
         dosisFont = fontAtlas.addFontFromMemoryTTF(dosisFontData, 18);
         fontAwesome = fontAtlas.addFontFromMemoryTTF(fontAwesomeData, 18, iconsConfig, iconRange);
@@ -281,12 +199,4 @@ public class ImguiLoader {
     }
 
     private ImguiLoader() {}
-
-    private static byte[] loadFromResources(String name) {
-        try {
-            return Files.readAllBytes(Paths.get(Main.class.getResource(name).toURI()));
-        } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
