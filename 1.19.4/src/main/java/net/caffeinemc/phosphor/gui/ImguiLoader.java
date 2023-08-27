@@ -71,8 +71,10 @@ public class ImguiLoader {
         imGuiGlfw.newFrame();
         ImGui.newFrame();
 
-        AsteriaSettingsModule asteria = Phosphor.moduleManager().getModule(AsteriaSettingsModule.class);
-        if (asteria != null) asteria.updateMode();
+        if (AsteriaMenu.isClientEnabled()) {
+            AsteriaSettingsModule asteria = Phosphor.moduleManager().getModule(AsteriaSettingsModule.class);
+            if (asteria != null) asteria.updateMode();
+        }
 
         // User render code
         for (Renderable renderable : renderstack) {

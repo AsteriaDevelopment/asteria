@@ -47,7 +47,7 @@ public class KeybindSetting extends Setting implements RenderableSetting {
 		ImGui.popID();
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.LOW)
 	private void onKeyPress(KeyPressEvent event) {
 		if (event.action != GLFW.GLFW_RELEASE) {
 			isButtonWasPressed = false;
