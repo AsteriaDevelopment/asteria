@@ -18,7 +18,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
     @Inject(at = @At("HEAD"), method = "getReachDistance()F", cancellable = true)
     private void onGetReachDistance(CallbackInfoReturnable<Float> cir) {
         ReachModule reachModule = Phosphor.moduleManager().getModule(ReachModule.class);
-        if (AsteriaMenu.isClientEnabled() && reachModule.isEnabled()) {
+        if (AsteriaMenu.isClientEnabled() && reachModule != null && reachModule.isEnabled() && reachModule.blockReachToggle.isEnabled()) {
             cir.setReturnValue(reachModule.blockReach.getFValue());
         }
     }

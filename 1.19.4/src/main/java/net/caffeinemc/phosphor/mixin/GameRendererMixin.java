@@ -25,7 +25,7 @@ public class GameRendererMixin {
     @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9))
     private double updateTargetedEntityModifySquaredMaxReach(double d) {
         ReachModule reachModule = Phosphor.moduleManager().getModule(ReachModule.class);
-        if (reachModule.isEnabled()) return reachModule.entityReach.getValue();
+        if (reachModule.isEnabled()) return reachModule.entityReach.getValue() * reachModule.entityReach.getValue();
 
         return d;
     }
