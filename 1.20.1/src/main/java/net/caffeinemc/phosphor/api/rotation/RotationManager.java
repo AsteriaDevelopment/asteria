@@ -11,6 +11,7 @@ import static net.caffeinemc.phosphor.common.Phosphor.mc;
 
 public class RotationManager {
     private boolean enabled;
+    private boolean needToDisable;
 
     private RotationUtils.Rotation currentRotation;
     private float clientYaw, clientPitch;
@@ -18,6 +19,7 @@ public class RotationManager {
 
     public RotationManager() {
         enabled = true;
+        needToDisable = false;
 
         this.serverYaw = 0;
         this.serverPitch = 0;
@@ -32,10 +34,12 @@ public class RotationManager {
 
     public void enable() {
         enabled = true;
+        needToDisable = false;
     }
 
     public void disable() {
         enabled = false;
+        needToDisable = true;
     }
 
     public boolean isEnabled() {
@@ -86,6 +90,20 @@ public class RotationManager {
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void onSendMovementPacketPre(SendMovementPacketEvent.Pre event) {
+        if (needToDisable) {
+            RotationUtils.Rotation serverRot = new RotationUtils.Rotation(serverYaw, serverPitch);
+            RotationUtils.Rotation clientRot = new RotationUtils.Rotation(mc.player.getYaw(), mc.player.getPitch());
+
+            if (RotationUtils.getTotalDiff(serverRot, clientRot) > 50) {
+                RotationUtils.Rotation smoothRotation = RotationUtils.getSmoothRotation(serverRot, clientRot, 0.2);
+
+                setClientRotation(smoothRotation);
+                setServerRotation(smoothRotation);
+            } else {
+                needToDisable = false;
+            }
+        }
+
         if (currentRotation != null && isEnabled()) {
             setClientRotation(currentRotation);
             setServerRotation(currentRotation);
@@ -96,8 +114,11 @@ public class RotationManager {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onSendMovementPacketPost(SendMovementPacketEvent.Post event) {
-        if (currentRotation != null && isEnabled()) {
+        if (currentRotation != null) {
             currentRotation.runCallback();
+        }
+
+        if (isEnabled() || needToDisable) {
             resetClientRotation();
         }
 

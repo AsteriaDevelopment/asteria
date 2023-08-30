@@ -1,15 +1,15 @@
 package net.caffeinemc.phosphor.api.rotation;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.RaycastContext;
 
 import java.util.Collections;
@@ -71,45 +71,91 @@ public class RotationUtils {
     }
 
     public static Vec3d getPlayerLookVec(float yaw, float pitch) {
-        float f = 0.017453292F;
-        float pi = (float)Math.PI;
+        float f = pitch * 0.017453292F;
+        float g = -yaw * 0.017453292F;
 
-        float f1 = MathHelper.cos(-yaw * f - pi);
-        float f2 = MathHelper.sin(-yaw * f - pi);
-        float f3 = -MathHelper.cos(-pitch * f);
-        float f4 = MathHelper.sin(-pitch * f);
+        float h = MathHelper.cos(g);
+        float i = MathHelper.sin(g);
+        float j = MathHelper.cos(f);
+        float k = MathHelper.sin(f);
 
-        return new Vec3d(f2 * f3, f4, f1 * f3).normalize();
+        return new Vec3d((i * j), (-k), (h * j));
     }
 
     public static Vec3d getPlayerLookVec(PlayerEntity player) {
         return getPlayerLookVec(player.getYaw(), player.getPitch());
     }
 
-    public static HitResult getHitResult(PlayerEntity player, float yaw, float pitch) {
-        Vec3d start = player.getEyePos();
-        Vec3d end = start.add(getPlayerLookVec(yaw, pitch));
-        Box box = new Box(start, end);
-        List<Entity> entitiesInBox = mc.world.getEntitiesByClass(Entity.class, box, (entity) -> true);
+    public static HitResult getHitResult(PlayerEntity entity, float yaw, float pitch) {
+        HitResult result = null;
 
-        if (entitiesInBox == null || entitiesInBox.isEmpty()) {
-            return mc.world.raycast(new RaycastContext(start, end, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, player));
-        } else {
-            Entity closestEntity = null;
+        if (entity != null) {
+            if (mc.world != null) {
+                double d = mc.interactionManager.getReachDistance();
 
-            for (Entity entity : entitiesInBox) {
-                if (closestEntity == null)
-                    closestEntity = entity;
+                Vec3d cameraPosVec = entity.getCameraPosVec(mc.getTickDelta());
+                Vec3d rotationVec = getPlayerLookVec(yaw, pitch);
+                Vec3d range = cameraPosVec.add(rotationVec.x * d, rotationVec.y * d, rotationVec.z * d);
+                result = mc.world.raycast(new RaycastContext(cameraPosVec, range, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, entity));
 
-                if (closestEntity.distanceTo(player) > entity.distanceTo(player))
-                    closestEntity = entity;
+                boolean bl = false;
+                double e = d;
+                if (mc.interactionManager.hasExtendedReach()) {
+                    e = 6.0;
+                    d = e;
+                } else {
+                    if (d > 3.0) {
+                        bl = true;
+                    }
+
+                    d = d;
+                }
+
+                e *= e;
+                if (result != null) {
+                    e = result.getPos().squaredDistanceTo(cameraPosVec);
+                }
+
+                Vec3d vec3d3 = cameraPosVec.add(rotationVec.x * d, rotationVec.y * d, rotationVec.z * d);
+                float f = 1.0F;
+                Box box = entity.getBoundingBox().stretch(rotationVec.multiply(d)).expand(1.0, 1.0, 1.0);
+                EntityHitResult entityHitResult = ProjectileUtil.raycast(entity, cameraPosVec, vec3d3, box, (entityx) -> !entityx.isSpectator() && entityx.canHit(), e);
+                if (entityHitResult != null) {
+                    Vec3d vec3d4 = entityHitResult.getPos();
+                    double g = cameraPosVec.squaredDistanceTo(vec3d4);
+                    if (bl && g > 9.0) {
+                        result = BlockHitResult.createMissed(vec3d4, Direction.getFacing(rotationVec.x, rotationVec.y, rotationVec.z), BlockPos.ofFloored(vec3d4));
+                    } else if (g < e || result == null) {
+                        result = entityHitResult;
+                    }
+                }
             }
-
-            return new EntityHitResult(closestEntity);
         }
+
+        return result;
     }
 
     public static HitResult getHitResult(PlayerEntity player) {
         return getHitResult(player, player.getYaw(), player.getPitch());
+    }
+
+    public static Rotation getSmoothRotation(Rotation from, Rotation to, double speed) {
+        return new Rotation(
+                MathHelper.lerpAngleDegrees((float) speed, (float) from.yaw(), (float) to.yaw()),
+                MathHelper.lerpAngleDegrees((float) speed, (float) from.pitch(), (float) to.pitch())
+        );
+    }
+
+    public static Rotation getDiff(Rotation rotation1, Rotation rotation2) {
+        double yaw = Math.abs(Math.max(rotation1.yaw(), rotation2.yaw()) - Math.min(rotation1.yaw(), rotation2.yaw()));
+        double pitch = Math.abs(Math.max(rotation1.pitch(), rotation2.pitch()) - Math.min(rotation1.pitch(), rotation2.pitch()));
+
+        return new Rotation(yaw, pitch);
+    }
+
+    public static double getTotalDiff(Rotation rotation1, Rotation rotation2) {
+        Rotation diff = getDiff(rotation1, rotation2);
+
+        return diff.yaw() + diff.pitch();
     }
 }
