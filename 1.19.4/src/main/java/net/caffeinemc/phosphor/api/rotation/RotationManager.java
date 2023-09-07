@@ -10,7 +10,8 @@ import static net.caffeinemc.phosphor.common.Phosphor.mc;
 
 public class RotationManager {
     private boolean enabled;
-    private boolean needToDisable;
+    private boolean rotateBack;
+    private boolean resetRotation;
 
     private RotationUtils.Rotation currentRotation;
     private float clientYaw, clientPitch;
@@ -18,7 +19,8 @@ public class RotationManager {
 
     public RotationManager() {
         enabled = true;
-        needToDisable = false;
+        rotateBack = false;
+        resetRotation = false;
 
         this.serverYaw = 0;
         this.serverPitch = 0;
@@ -33,12 +35,14 @@ public class RotationManager {
 
     public void enable() {
         enabled = true;
-        needToDisable = false;
+        rotateBack = false;
     }
 
     public void disable() {
-        enabled = false;
-        needToDisable = true;
+        if (isEnabled()) {
+            enabled = false;
+            if (!rotateBack) rotateBack = true;
+        }
     }
 
     public boolean isEnabled() {
@@ -56,6 +60,8 @@ public class RotationManager {
     private void resetClientRotation() {
         mc.player.setYaw(clientYaw);
         mc.player.setPitch(clientPitch);
+
+        resetRotation = false;
     }
 
     private void setClientRotation(RotationUtils.Rotation rotation) {
@@ -64,6 +70,8 @@ public class RotationManager {
 
         mc.player.setYaw((float) rotation.yaw());
         mc.player.setPitch((float) rotation.pitch());
+
+        resetRotation = true;
     }
 
     private void setServerRotation(RotationUtils.Rotation rotation) {
@@ -89,25 +97,25 @@ public class RotationManager {
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void onSendMovementPacketPre(SendMovementPacketEvent.Pre event) {
-        if (needToDisable) {
+        if (isEnabled() && currentRotation != null) {
+            setClientRotation(currentRotation);
+            setServerRotation(currentRotation);
+
+            return;
+        }
+
+        if (rotateBack) {
             RotationUtils.Rotation serverRot = new RotationUtils.Rotation(serverYaw, serverPitch);
             RotationUtils.Rotation clientRot = new RotationUtils.Rotation(mc.player.getYaw(), mc.player.getPitch());
 
-            if (RotationUtils.getTotalDiff(serverRot, clientRot) > 50) {
+            if (RotationUtils.getTotalDiff(serverRot, clientRot) > 1) {
                 RotationUtils.Rotation smoothRotation = RotationUtils.getSmoothRotation(serverRot, clientRot, 0.2);
 
                 setClientRotation(smoothRotation);
                 setServerRotation(smoothRotation);
             } else {
-                needToDisable = false;
+                rotateBack = false;
             }
-        }
-
-        if (currentRotation != null && isEnabled()) {
-            setClientRotation(currentRotation);
-            setServerRotation(currentRotation);
-        } else {
-            setServerRotation(new RotationUtils.Rotation(mc.player.getYaw(), mc.player.getPitch()));
         }
     }
 
@@ -117,7 +125,7 @@ public class RotationManager {
             currentRotation.runCallback();
         }
 
-        if (isEnabled() || needToDisable) {
+        if (resetRotation) {
             resetClientRotation();
         }
 
@@ -129,7 +137,7 @@ public class RotationManager {
     @EventHandler(priority = EventPriority.LOWEST)
     private void onAttack(AttackEvent.Pre event) {
         if (!event.isCancelled() && isEnabled()) {
-            disable();
+            enabled = false;
             wasDisabled = true;
         }
     }
@@ -137,7 +145,7 @@ public class RotationManager {
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onAttack(AttackEvent.Post event) {
         if (!isEnabled() && wasDisabled) {
-            enable();
+            enabled = true;
             wasDisabled = false;
         }
     }
@@ -145,7 +153,7 @@ public class RotationManager {
     @EventHandler(priority = EventPriority.LOWEST)
     private void onItemUse(ItemUseEvent.Pre event) {
         if (!event.isCancelled() && isEnabled()) {
-            disable();
+            enabled = false;
             wasDisabled = true;
         }
     }
@@ -153,7 +161,7 @@ public class RotationManager {
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onItemUse(ItemUseEvent.Post event) {
         if (!isEnabled() && wasDisabled) {
-            enable();
+            enabled = true;
             wasDisabled = false;
         }
     }
@@ -161,7 +169,7 @@ public class RotationManager {
     @EventHandler(priority = EventPriority.LOWEST)
     private void onBlockBreak(BlockBreakEvent.Pre event) {
         if (!event.isCancelled() && isEnabled()) {
-            disable();
+            enabled = false;
             wasDisabled = true;
         }
     }
@@ -169,7 +177,7 @@ public class RotationManager {
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onBlockBreak(BlockBreakEvent.Post event) {
         if (!isEnabled() && wasDisabled) {
-            enable();
+            enabled = true;
             wasDisabled = false;
         }
     }
