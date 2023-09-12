@@ -250,7 +250,7 @@ public class MouseSimulation {
     }
 
     public MouseAccessor getMouse() {
-        return (MouseAccessor) ((MinecraftClientAccessor) mc).getMouse();
+        return (MouseAccessor) mc.mouse;
     }
 
     public void mouseClick(int keyCode, int frames) {

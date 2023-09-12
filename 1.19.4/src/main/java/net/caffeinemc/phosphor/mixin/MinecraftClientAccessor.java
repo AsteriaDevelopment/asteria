@@ -15,9 +15,6 @@ public interface MinecraftClientAccessor {
     void callDoItemUse();
 
     @Accessor
-    Mouse getMouse();
-
-    @Accessor
     int getItemUseCooldown();
 
     @Accessor
