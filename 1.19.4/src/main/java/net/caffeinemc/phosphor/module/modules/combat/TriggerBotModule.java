@@ -25,6 +25,7 @@ public class TriggerBotModule extends Module {
     public final NumberSetting maxRange = new NumberSetting("Max Range", this, 3d, 2d, 4d, 0.1d);
     public final BooleanSetting permTrigger = new BooleanSetting("Permament Trigger", this, true);
     public final BooleanSetting weaponOnly = new BooleanSetting("Weapon Only", this, true);
+    public final BooleanSetting invisible = new BooleanSetting("Invisible", this, true);
     public final BooleanSetting smartCPS = new BooleanSetting("Smart CPS", this, true);
     public final NumberSetting minCPS = new NumberSetting("Min CPS", this, 5d, 1d, 20d, 1d);
     public final NumberSetting maxCPS = new NumberSetting("Max CPS", this, 10d, 1d, 20d, 1d);
@@ -83,6 +84,9 @@ public class TriggerBotModule extends Module {
             return;
 
         if (mc.player.isBlocking() || mc.player.isUsingItem() || !(target instanceof LivingEntity livingTarget) || ((LivingEntity) target).getHealth() <= 0.0f)
+            return;
+
+        if (livingTarget.isInvisible() && !invisible.isEnabled())
             return;
 
         if ((mc.player.isOnGround() && mc.player.getAttackCooldownProgress(0.5f) < 0.92f) || (!mc.player.isOnGround() && mc.player.getAttackCooldownProgress(0.5f) < 0.95f))
