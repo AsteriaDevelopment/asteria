@@ -97,7 +97,7 @@ public class SilentAimModule extends Module {
 
             HitResult hitResult = RotationUtils.getHitResult(mc.player, (float) serverRotation.yaw(), (float) serverRotation.pitch());
 
-            canAttack = hitResult instanceof EntityHitResult;
+            canAttack = hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity().equals(targetPlayer);
 
             float randomiseYaw = (float) MathUtils.getRandomDouble(0, 0.2);
             float randomisePitch = (float) MathUtils.getRandomDouble(0, 0.2);
