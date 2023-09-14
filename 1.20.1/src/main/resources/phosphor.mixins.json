@@ -3,15 +3,6 @@
   "minVersion": "0.8",
   "package": "net.caffeinemc.phosphor.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
-    "ClientPlayerInteractionManagerAccessor",
-    "CreativeInventoryScreenAccessor",
-    "EntityVelocityUpdateS2CPacketAccessor",
-    "HandledScreenAccessor",
-    "HorseScreenHandlerAccessor",
-    "MinecraftClientAccessor",
-    "MouseAccessor"
-  ],
   "client": [
     "ClientConnectionMixin",
     "ClientPlayerEntityMixin",
@@ -31,7 +22,14 @@
     "MinecraftClientMixin",
     "MouseMixin",
     "RenderSystemMixin",
-    "WindowMixin"
+    "WindowMixin",
+    "ClientPlayerInteractionManagerAccessor",
+    "CreativeInventoryScreenAccessor",
+    "EntityVelocityUpdateS2CPacketAccessor",
+    "HandledScreenAccessor",
+    "HorseScreenHandlerAccessor",
+    "MinecraftClientAccessor",
+    "MouseAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
