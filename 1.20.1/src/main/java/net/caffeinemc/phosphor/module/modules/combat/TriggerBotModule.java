@@ -20,6 +20,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
 import org.lwjgl.glfw.GLFW;
 
+import static net.caffeinemc.phosphor.common.Phosphor.mc;
+
 public class TriggerBotModule extends Module {
     public final BooleanSetting clickSimulation = new BooleanSetting("Click Simulation", this, true);
     public final NumberSetting minRange = new NumberSetting("Min Range", this, 2.5d, 2d, 4d, 0.1d);
@@ -98,7 +100,7 @@ public class TriggerBotModule extends Module {
             currentRange *= currentRange;
         }
 
-        if (mc.player.squaredDistanceTo(livingTarget) > currentRange)
+        if (mc.player.getCameraPosVec(mc.getTickDelta()).squaredDistanceTo(mc.crosshairTarget.getPos()) > currentRange)
             return;
 
         if (focusMode.isEnabled()) {
