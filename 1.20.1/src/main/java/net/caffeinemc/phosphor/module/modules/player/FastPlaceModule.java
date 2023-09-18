@@ -52,7 +52,7 @@ public class FastPlaceModule extends Module {
             if (mainHandItem instanceof RangedWeaponItem || offHandItem instanceof RangedWeaponItem)
                 return;
 
-            ((MinecraftClientAccessor) mc).setItemUseCooldown(delay.getIValue());
+            mc.itemUseCooldown = delay.getIValue();
         } else {
             event.cancel();
         }

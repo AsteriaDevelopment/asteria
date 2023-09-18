@@ -13,7 +13,4 @@ public interface MinecraftClientAccessor {
 
     @Invoker
     void callDoItemUse();
-
-    @Accessor("itemUseCooldown")
-    void setItemUseCooldown(int itemUseCooldown);
 }

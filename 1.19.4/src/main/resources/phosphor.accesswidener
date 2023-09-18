@@ -12,3 +12,5 @@ accessible class net/minecraft/server/world/ServerLightingProvider$Stage
 
 extendable class net/minecraft/world/chunk/ChunkNibbleArray
 extendable method net/minecraft/world/chunk/ChunkNibbleArray get (I)I
+
+accessible field net/minecraft/client/MinecraftClient itemUseCooldown I
