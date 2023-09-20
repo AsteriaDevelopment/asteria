@@ -1,7 +1,6 @@
 package net.caffeinemc.phosphor.module.modules.combat;
 
 import net.caffeinemc.phosphor.api.event.events.PlayerTickEvent;
-import net.caffeinemc.phosphor.api.event.events.TickEvent;
 import net.caffeinemc.phosphor.api.event.orbit.EventHandler;
 import net.caffeinemc.phosphor.api.util.BlockUtils;
 import net.caffeinemc.phosphor.api.util.InvUtils;
@@ -9,6 +8,7 @@ import net.caffeinemc.phosphor.mixin.ClientPlayerInteractionManagerAccessor;
 import net.caffeinemc.phosphor.module.Module;
 import net.caffeinemc.phosphor.module.setting.settings.BooleanSetting;
 import net.caffeinemc.phosphor.module.setting.settings.NumberSetting;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -28,12 +28,11 @@ public class AutoAnchorModule extends Module {
         super("AutoAnchor", "Automatically achors", Category.COMBAT);
     }
 
-    private static boolean hasAnchored, hasGlowstoned;
+    private static boolean hasAnchored;
     private static int switchClock, placeClock, cooldownClock;
 
     private void reset() {
         hasAnchored = false;
-        hasGlowstoned = false;
         switchClock = 0;
         placeClock = 0;
         cooldownClock = 0;
@@ -72,56 +71,59 @@ public class AutoAnchorModule extends Module {
 
             BlockPos pos = hit.getBlockPos();
 
-            if (BlockUtils.isAnchorUncharged(pos) && !hasGlowstoned) {
-                if (!mc.player.isHolding(Items.GLOWSTONE)) {
-                    if (switchClock < switchDelay.getIValue()) {
-                        switchClock++;
+            if (BlockUtils.isBlock(Blocks.RESPAWN_ANCHOR, pos)) {
+                mc.options.useKey.setPressed(false);
+
+                if (BlockUtils.isAnchorUncharged(pos)) {
+                    if (!mc.player.isHolding(Items.GLOWSTONE)) {
+                        if (switchClock < switchDelay.getIValue()) {
+                            switchClock++;
+                            return;
+                        }
+
+                        InvUtils.selectItemFromHotbar(Items.GLOWSTONE);
+
+                        switchClock = 0;
+                    }
+
+                    if (placeClock < placeDelay.getIValue()) {
+                        placeClock++;
                         return;
                     }
 
-                    InvUtils.selectItemFromHotbar(Items.GLOWSTONE);
+                    ActionResult actionResult = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, hit);
+                    if (actionResult.isAccepted() && actionResult.shouldSwingHand()) {
+                        mc.player.swingHand(Hand.MAIN_HAND);
+                    }
 
-                    switchClock = 0;
+                    placeClock = 0;
                 }
+                if (BlockUtils.isAnchorCharged(pos) && !chargeOnly.isEnabled()) {
+                    if (mc.player.getInventory().selectedSlot != itemSwap.getIValue() - 1) {
+                        if (switchClock < switchDelay.getIValue()) {
+                            switchClock++;
+                            return;
+                        }
 
-                if (placeClock < placeDelay.getIValue()) {
-                    placeClock++;
-                    return;
-                }
+                        mc.player.getInventory().selectedSlot = itemSwap.getIValue() - 1;
+                        ((ClientPlayerInteractionManagerAccessor) mc.interactionManager).callSyncSelectedSlot();
 
-                ActionResult actionResult = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, hit);
-                if (actionResult.isAccepted() && actionResult.shouldSwingHand()) {
-                    mc.player.swingHand(Hand.MAIN_HAND);
-                }
+                        switchClock = 0;
+                    }
 
-                hasGlowstoned = true;
-                placeClock = 0;
-            }
-            if (BlockUtils.isAnchorCharged(pos) && hasGlowstoned && !chargeOnly.isEnabled()) {
-                if (mc.player.getInventory().selectedSlot != itemSwap.getIValue() - 1) {
-                    if (switchClock < switchDelay.getIValue()) {
-                        switchClock++;
+                    if (placeClock < placeDelay.getIValue()) {
+                        placeClock++;
                         return;
                     }
 
-                    mc.player.getInventory().selectedSlot = itemSwap.getIValue() - 1;
-                    ((ClientPlayerInteractionManagerAccessor) mc.interactionManager).callSyncSelectedSlot();
+                    ActionResult actionResult2 = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, hit);
+                    if (actionResult2.isAccepted() && actionResult2.shouldSwingHand()) {
+                        mc.player.swingHand(Hand.MAIN_HAND);
+                    }
 
-                    switchClock = 0;
+                    placeClock = 0;
+                    hasAnchored = true;
                 }
-
-                if (placeClock < placeDelay.getIValue()) {
-                    placeClock++;
-                    return;
-                }
-
-                ActionResult actionResult2 = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, hit);
-                if (actionResult2.isAccepted() && actionResult2.shouldSwingHand()) {
-                    mc.player.swingHand(Hand.MAIN_HAND);
-                }
-
-                placeClock = 0;
-                hasAnchored = true;
             }
         }
     }

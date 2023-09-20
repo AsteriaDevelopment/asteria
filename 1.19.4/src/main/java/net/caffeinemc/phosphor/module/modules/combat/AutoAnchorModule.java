@@ -28,12 +28,11 @@ public class AutoAnchorModule extends Module {
         super("AutoAnchor", "Automatically achors", Category.COMBAT);
     }
 
-    private static boolean hasAnchored, hasGlowstoned;
+    private static boolean hasAnchored;
     private static int switchClock, placeClock, cooldownClock;
 
     private void reset() {
         hasAnchored = false;
-        hasGlowstoned = false;
         switchClock = 0;
         placeClock = 0;
         cooldownClock = 0;
@@ -72,7 +71,7 @@ public class AutoAnchorModule extends Module {
 
             BlockPos pos = hit.getBlockPos();
 
-            if (BlockUtils.isAnchorUncharged(pos) && !hasGlowstoned) {
+            if (BlockUtils.isAnchorUncharged(pos)) {
                 if (!mc.player.isHolding(Items.GLOWSTONE)) {
                     if (switchClock < switchDelay.getIValue()) {
                         switchClock++;
@@ -94,10 +93,9 @@ public class AutoAnchorModule extends Module {
                     mc.player.swingHand(Hand.MAIN_HAND);
                 }
 
-                hasGlowstoned = true;
                 placeClock = 0;
             }
-            if (BlockUtils.isAnchorCharged(pos) && hasGlowstoned && !chargeOnly.isEnabled()) {
+            if (BlockUtils.isAnchorCharged(pos) && !chargeOnly.isEnabled()) {
                 if (mc.player.getInventory().selectedSlot != itemSwap.getIValue() - 1) {
                     if (switchClock < switchDelay.getIValue()) {
                         switchClock++;
