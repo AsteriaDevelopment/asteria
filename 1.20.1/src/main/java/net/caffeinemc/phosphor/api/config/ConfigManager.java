@@ -180,12 +180,16 @@ public class ConfigManager {
             this.pathProfile = pathProfile;
 
             try {
-                if (Files.isRegularFile(pathProfile)) {
-                    this.jsonProfile = GSON.fromJson(Files.readString(pathProfile), JsonObject.class);
+                if (name == null || name.isBlank()) {
+                    if (Files.isRegularFile(pathProfile)) {
+                        String stringProfile = Files.readString(pathProfile);
 
-                    if (jsonProfile == null || !jsonProfile.isJsonObject()) return;
+                        if (stringProfile.isBlank()) return;
 
-                    if (name == null || name.isEmpty()) {
+                        this.jsonProfile = GSON.fromJson(stringProfile, JsonObject.class);
+
+                        if (jsonProfile == null || !jsonProfile.isJsonObject()) return;
+
                         JsonElement profileNameJson = this.jsonProfile.get("profileName");
 
                         if (profileNameJson == null) return;
