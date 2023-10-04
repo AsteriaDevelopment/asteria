@@ -120,13 +120,9 @@ public class AutoCrystalModule extends Module {
         if (mc.currentScreen != null)
             return;
 
-        if (nullCheck()) {
-            placeCrystal();
-            breakCrystal();
+        placeCrystal();
+        breakCrystal();
 
-            ++tickTimer;
-        } else {
-            tickTimer = 0;
-        }
+        ++tickTimer;
     }
 }

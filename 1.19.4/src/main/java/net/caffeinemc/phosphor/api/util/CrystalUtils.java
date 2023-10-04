@@ -36,8 +36,7 @@ public class CrystalUtils {
     private static final HashMap<Entity, Boolean> brokenCrystals = new HashMap<>();
 
     public static boolean isCrystalBroken(Entity crystal) {
-        Boolean isCrystalBroken = brokenCrystals.get(crystal);
-        return isCrystalBroken != null ? isCrystalBroken : false;
+        return brokenCrystals.containsKey(crystal);
     }
 
     public static boolean canPlaceCrystalServer(BlockPos pos) {
