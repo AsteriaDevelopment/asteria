@@ -95,7 +95,7 @@ public class SilentAimModule extends Module {
 
             RotationUtils.Rotation serverRotation = Phosphor.rotationManager().getServerRotation();
 
-            HitResult hitResult = RotationUtils.getHitResult(mc.player, (float) serverRotation.yaw(), (float) serverRotation.pitch());
+            HitResult hitResult = RotationUtils.getHitResult(mc.player, false, (float) serverRotation.yaw(), (float) serverRotation.pitch());
 
             canAttack = hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity().equals(targetPlayer);
 

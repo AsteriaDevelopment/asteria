@@ -81,7 +81,7 @@ public class RotationUtils {
         return getPlayerLookVec(player.getYaw(), player.getPitch());
     }
 
-    public static HitResult getHitResult(PlayerEntity entity, float yaw, float pitch) {
+    public static HitResult getHitResult(PlayerEntity entity, boolean ignoreInvisibles, float yaw, float pitch) {
         HitResult result = null;
 
         if (entity != null) {
@@ -114,7 +114,7 @@ public class RotationUtils {
                 Vec3d vec3d3 = cameraPosVec.add(rotationVec.x * d, rotationVec.y * d, rotationVec.z * d);
                 float f = 1.0F;
                 Box box = entity.getBoundingBox().stretch(rotationVec.multiply(d)).expand(1.0, 1.0, 1.0);
-                EntityHitResult entityHitResult = ProjectileUtil.raycast(entity, cameraPosVec, vec3d3, box, (entityx) -> !entityx.isSpectator() && entityx.canHit(), e);
+                EntityHitResult entityHitResult = ProjectileUtil.raycast(entity, cameraPosVec, vec3d3, box, (entityx) -> !entityx.isSpectator() && entityx.canHit() && (entityx.isInvisible() && !ignoreInvisibles), e);
                 if (entityHitResult != null) {
                     Vec3d vec3d4 = entityHitResult.getPos();
                     double g = cameraPosVec.squaredDistanceTo(vec3d4);
@@ -130,8 +130,8 @@ public class RotationUtils {
         return result;
     }
 
-    public static HitResult getHitResult(PlayerEntity player) {
-        return getHitResult(player, player.getYaw(), player.getPitch());
+    public static HitResult getHitResult(PlayerEntity player, boolean ignoreInvisibles) {
+        return getHitResult(player, ignoreInvisibles, player.getYaw(), player.getPitch());
     }
 
     public static Rotation getSmoothRotation(Rotation from, Rotation to, double speed) {

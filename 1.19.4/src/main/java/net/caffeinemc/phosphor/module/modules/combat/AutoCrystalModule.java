@@ -63,31 +63,41 @@ public class AutoCrystalModule extends Module {
                     }
                 } else if (mc.crosshairTarget instanceof EntityHitResult entityHit) {
                     if (fastMode.isEnabled()) {
-                        if (entityHit.getEntity() instanceof EndCrystalEntity crystal) {
-                            if (isCrystalBroken(crystal)) {
-                                Vec3d eyePos = mc.player.getEyePos();
-                                BlockHitResult blockHit = mc.world.raycast(
-                                        new RaycastContext(
-                                                eyePos,
-                                                eyePos.add(RotationUtils.getPlayerLookVec(mc.player).add(0, -1, 0)),
-                                                RaycastContext.ShapeType.OUTLINE,
-                                                RaycastContext.FluidHandling.NONE,
-                                                mc.player));
-                                BlockState blockState = mc.world.getBlockState(blockHit.getBlockPos());
+                        if (entityHit.getEntity() instanceof SlimeEntity) {
+                            HitResult hitResult = RotationUtils.getHitResult(mc.player, true);
 
-                                if (blockState.isOf(Blocks.OBSIDIAN) || blockState.isOf(Blocks.BEDROCK)) {
-                                    if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
-
-                                    ActionResult result = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, blockHit);
-                                    if (result.isAccepted() && result.shouldSwingHand())
-                                        mc.player.swingHand(Hand.MAIN_HAND);
-
-                                    reset();
-                                }
+                            if (hitResult instanceof EntityHitResult entityHitNoInvisibles && entityHitNoInvisibles.getEntity() instanceof EndCrystalEntity crystal) {
+                                fastPlace(crystal);
                             }
+                        } else if (entityHit.getEntity() instanceof EndCrystalEntity crystal) {
+                            fastPlace(crystal);
                         }
                     }
                 }
+            }
+        }
+    }
+
+    public void fastPlace(EndCrystalEntity crystal) {
+        if (isCrystalBroken(crystal)) {
+            Vec3d eyePos = mc.player.getEyePos();
+            BlockHitResult blockHit = mc.world.raycast(
+                    new RaycastContext(
+                            eyePos,
+                            eyePos.add(RotationUtils.getPlayerLookVec(mc.player).add(0, -1, 0)),
+                            RaycastContext.ShapeType.OUTLINE,
+                            RaycastContext.FluidHandling.NONE,
+                            mc.player));
+            BlockState blockState = mc.world.getBlockState(blockHit.getBlockPos());
+
+            if (blockState.isOf(Blocks.OBSIDIAN) || blockState.isOf(Blocks.BEDROCK)) {
+                if (clickSimulation.isEnabled()) Phosphor.mouseSimulation().mouseClick(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+
+                ActionResult result = mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, blockHit);
+                if (result.isAccepted() && result.shouldSwingHand())
+                    mc.player.swingHand(Hand.MAIN_HAND);
+
+                reset();
             }
         }
     }
