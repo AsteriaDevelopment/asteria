@@ -80,14 +80,12 @@ public class AutoCrystalModule extends Module {
 
     public void fastPlace(EndCrystalEntity crystal) {
         if (isCrystalBroken(crystal)) {
-            Vec3d eyePos = mc.player.getEyePos();
-            BlockHitResult blockHit = mc.world.raycast(
-                    new RaycastContext(
-                            eyePos,
-                            eyePos.add(RotationUtils.getPlayerLookVec(mc.player).add(0, -1, 0)),
-                            RaycastContext.ShapeType.OUTLINE,
-                            RaycastContext.FluidHandling.NONE,
-                            mc.player));
+            double reach = mc.interactionManager.getReachDistance();
+            Vec3d cameraPosVec = mc.player.getCameraPosVec(mc.getTickDelta());
+            Vec3d rotationVec = RotationUtils.getPlayerLookVec(mc.player);
+            Vec3d range = cameraPosVec.add(rotationVec.x * reach, rotationVec.y * reach, rotationVec.z * reach);
+
+            BlockHitResult blockHit = mc.world.raycast(new RaycastContext(cameraPosVec, range, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
             BlockState blockState = mc.world.getBlockState(blockHit.getBlockPos());
 
             if (blockState.isOf(Blocks.OBSIDIAN) || blockState.isOf(Blocks.BEDROCK)) {
